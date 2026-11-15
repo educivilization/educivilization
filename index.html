@@ -3286,11 +3286,7 @@
         return;
       }
 
-      if (targetId !== state.uniqueId) {
-        showToast('Adjusting other citizens needs a server-side function (Cloud Function). From the browser you can only adjust your own account.', 'error');
-        return;
-      }
-
+      // 1. Agar khud ka (Admin ka) account hai
       if (targetId === state.uniqueId) {
         state.scBalance = Math.max(0, state.scBalance + amount);
         state.transactions.unshift({
@@ -3302,11 +3298,52 @@
         });
         await pushStateToFirestore();
       }
+      // 2. Agar kisi doosre Citizen ka account hai
+      else {
+        const targetCity = publicCities.find(c => c.uniqueId === targetId);
+        if (!targetCity || !targetCity.uid || targetCity.uid.startsWith('bot_')) {
+          showToast('Real Firebase user not found (Bot accounts cannot be edited in DB).', 'error');
+          return;
+        }
+
+        try {
+          const userRef = doc(db, 'users', targetCity.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (!userSnap.exists()) {
+            showToast('User document does not exist in Firestore.', 'error');
+            return;
+          }
+
+          const currentData = userSnap.data();
+          const newBalance = Math.max(0, (Number(currentData.scBalance) || 0) + amount);
+          const updatedTx = [
+            {
+              id: 'tx_' + Date.now(),
+              timestamp: new Date().toLocaleString(),
+              type: 'GRANT',
+              desc: `Admin Adjustment: ${reason}`,
+              amount
+           },
+           ...(Array.isArray(currentData.transactions) ? currentData.transactions.slice(0, 39) : [])
+         ];
+
+         // Users collection aur Public Cities dono update karein
+         await setDoc(userRef, { scBalance: newBalance, transactions: updatedTx, updatedAt: Date.now() }, { merge: true });
+         await setDoc(doc(db, 'public_cities', targetCity.uid), { scBalance: newBalance, updatedAt: Date.now() }, { merge: true });
+      
+         targetCity.scBalance = newBalance; // Local UI update ke liye
+       } catch (err) {
+         showToast('Failed to update user: ' + err.message, 'error');
+         return;
+       }
+     }
+          
 
       await logAdminAction(`Adjusted ${targetId} by ${amount} SC. Reason: "${reason}".`);
       refreshAllUI();
       renderAdminPanel();
-      showToast('Audited adjustment applied.', 'success');
+      showToast(`Audited adjustment (${amount} SC) applied to ${targetId}!`, 'success');
     };
 
     // =========================================================================
