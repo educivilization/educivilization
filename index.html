@@ -31,16 +31,20 @@
           },
           colors: {
             edu: {
-              bg: '#060A14',
-              panel: '#0D1426',
-              card: '#121B32',
-              border: '#1E2D4F',
-              cyan: '#06B6D4',
-              purple: '#8B5CF6',
-              emerald: '#10B981',
-              amber: '#F59E0B',
-              rose: '#F43F5E',
-            }
+              bg: '#0A0A12',
+              panel: '#11121C',
+              card: '#171827',
+              border: '#272940',
+              cyan: '#34E6B4',
+              purple: '#FF5FA6',
+              emerald: '#34D399',
+              amber: '#FFB84D',
+              rose: '#FF5C7A',
+            },
+            cyan: { 50:'#ecfff8',100:'#d1fff0',200:'#a4ffe1',300:'#6ff5cc',400:'#34e6b4',500:'#10c995',600:'#09a479',700:'#0a8362',800:'#0c674f',900:'#0b5442',950:'#033026' },
+            purple: { 50:'#fff0f7',100:'#ffe0ee',200:'#ffc2dd',300:'#ff94c3',400:'#ff5fa6',500:'#f43f8e',600:'#d92a78',700:'#b41d60',800:'#921b52',900:'#781a47',950:'#490a28' },
+            blue: { 50:'#f1efff',100:'#e4e0ff',200:'#cdc6ff',300:'#b4a9ff',400:'#9a8bff',500:'#7f6bff',600:'#6a52f0',700:'#5a41d6',800:'#4a37ad',900:'#3d3187',950:'#241c52' },
+            slate: { 50:'#f7f7fb',100:'#efeff6',200:'#e1e2ee',300:'#c9cbe0',400:'#9a9db8',500:'#6f7290',600:'#4b4e6a',700:'#2f3148',800:'#1c1d2d',900:'#11121c',950:'#0a0a12' }
           }
         }
       }
@@ -56,10 +60,10 @@
       font-family: 'Space Grotesk', sans-serif;
     }
     .glass-panel {
-      background: rgba(13, 20, 38, 0.84);
+      background: rgba(17, 18, 28, 0.74);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(56, 189, 248, 0.16);
+      border: 1px solid rgba(52, 230, 180, 0.14);
     }
     html:not(.dark) .glass-panel {
       background: rgba(255, 255, 255, 0.92);
@@ -67,14 +71,14 @@
     }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3); }
-    ::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.35); border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.65); }
+    ::-webkit-scrollbar-thumb { background: rgba(52, 230, 180, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(52, 230, 180, 0.65); }
 
     .holo-grid-bg {
       background-image:
-        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.14) 0%, transparent 65%),
-        linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(139, 92, 246, 0.08) 1px, transparent 1px);
+        radial-gradient(circle at 50% 50%, rgba(52, 230, 180, 0.14) 0%, transparent 65%),
+        linear-gradient(to right, rgba(52, 230, 180, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 95, 166, 0.07) 1px, transparent 1px);
       background-size: 100% 100%, 36px 36px, 36px 36px;
       animation: holoShift 18s linear infinite;
     }
@@ -108,6 +112,78 @@
       height: 100% !important;
       touch-action: none;
     }
+
+    /* ===================== GenV3 ===================== */
+    html.dark body::before {
+      content: ""; position: fixed; inset: -20%; z-index: -1; pointer-events: none;
+      background:
+        radial-gradient(40% 35% at 20% 25%, rgba(52,230,180,.15), transparent 70%),
+        radial-gradient(35% 40% at 80% 20%, rgba(255,95,166,.13), transparent 70%),
+        radial-gradient(45% 45% at 60% 85%, rgba(127,107,255,.16), transparent 70%);
+      animation: auroraDrift 24s ease-in-out infinite alternate;
+    }
+    html.dark body::after {
+      content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+      background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
+      mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
+    }
+    @keyframes auroraDrift { 0% { transform: translate3d(0,0,0) scale(1); } 100% { transform: translate3d(-4%,3%,0) scale(1.12); } }
+
+    .gate-bg {
+      background:
+        radial-gradient(60% 50% at 12% 8%, rgba(52,230,180,.20), transparent 60%),
+        radial-gradient(50% 50% at 92% 14%, rgba(255,95,166,.17), transparent 60%),
+        radial-gradient(60% 60% at 60% 105%, rgba(127,107,255,.22), transparent 60%),
+        #0A0A12;
+    }
+    .gate-bg > :not(canvas) { position: relative; z-index: 1; }
+    #gateFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #34e6b4, #9a8bff, #ff5fa6, #34e6b4);
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: gradientShift 6s linear infinite;
+    }
+    @keyframes gradientShift { to { background-position: 200% center; } }
+    @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+    .float-y { animation: floatY 6s ease-in-out infinite; filter: drop-shadow(0 20px 40px rgba(52,230,180,.25)); }
+
+    .tab-view:not(.hidden) { animation: viewIn .45s cubic-bezier(.2,.8,.2,1) both; }
+    .tab-view:not(.hidden) .glass-panel { animation: riseIn .55s cubic-bezier(.2,.8,.2,1) both; }
+    .tab-view:not(.hidden) .glass-panel:nth-child(2) { animation-delay: .05s; }
+    .tab-view:not(.hidden) .glass-panel:nth-child(3) { animation-delay: .10s; }
+    .tab-view:not(.hidden) .glass-panel:nth-child(4) { animation-delay: .15s; }
+    .tab-view:not(.hidden) .glass-panel:nth-child(5) { animation-delay: .20s; }
+    @keyframes viewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+
+    .glass-panel { transition: border-color .25s, box-shadow .25s; }
+    @media (hover: hover) {
+      .tab-view .glass-panel:hover {
+        border-color: rgba(52,230,180,.32);
+        background-image: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(52,230,180,.09), transparent 45%);
+      }
+    }
+    button { transition: transform .15s ease, background-color .2s, opacity .2s, border-color .2s; }
+    button:active:not(:disabled) { transform: scale(.97); }
+    :focus-visible { outline: 2px solid #34e6b4; outline-offset: 2px; }
+
+    #toastContainer > div { animation: toastIn .38s cubic-bezier(.2,.9,.3,1.2); }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(24px) scale(.96); } to { opacity: 1; transform: none; } }
+
+    .coin-burst { position: fixed; z-index: 70; pointer-events: none; font-size: 1.6rem; animation: coinFly 1s cubic-bezier(.2,.8,.3,1) forwards; }
+    @keyframes coinFly {
+      0% { transform: translate(-50%,-50%) scale(.4); opacity: 0; }
+      15% { opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity: 0; }
+    }
+
+    @media (max-width: 1023px) { main { padding-bottom: 5.5rem !important; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-900 dark:bg-edu-bg dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
@@ -116,7 +192,8 @@
   <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
   <!-- ==================== 1. LANDING & GOOGLE AUTH GATE ==================== -->
-  <div id="authGateScreen" class="fixed inset-0 z-50 bg-edu-bg flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
+  <div id="authGateScreen" class="gate-bg fixed inset-0 z-50 flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
+    <canvas id="gateFx"></canvas>
     <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center text-white font-display font-bold text-xl shadow-lg shadow-cyan-500/25">
@@ -132,29 +209,32 @@
       </button>
     </div>
 
-    <div class="max-w-4xl w-full mx-auto text-center space-y-6 my-auto py-10">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
-        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Persistent 3D Virtual Civilization & Study Engine
-      </div>
-      <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
-        Your Study. <br/>Your Assets. <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400">Your Civilization.</span>
-      </h1>
-      <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
-        Transform verified study hours into Study Credits (SC). Build 3D isometric districts, construct skyscrapers, run financial vaults, and compete on global leaderboards.
-      </p>
-
-      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <button onclick="loginWithGoogle()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center justify-center gap-3">
+    <div class="max-w-6xl w-full mx-auto grid lg:grid-cols-2 gap-10 items-center my-auto py-10">
+      <div class="space-y-6 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> GenV3 &bull; Study &times; 3D City &times; Earn SC
+        </div>
+        <h1 class="font-display text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05]">
+          Turn focus into <span class="gradient-text">a living city.</span>
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 max-w-xl mx-auto lg:mx-0">
+          Every verified 10 minutes of study earns <strong class="text-amber-400">100 SC</strong>. Spend it on land, skyscrapers and world wonders &mdash; then climb the global leaderboard.
+        </p>
+        <div class="pt-2 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <button onclick="loginWithGoogle()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center justify-center gap-3">
           <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.31 7.27 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.13 0 9.87 0 11.7s.43 3.57 1.18 5.1l4.09-2.56z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.17 2.69 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
           Sign In with Google
         </button>
+        </div>
+        <div class="grid grid-cols-3 gap-3 pt-4 max-w-md mx-auto lg:mx-0 text-left">
+          <div class="p-3 rounded-2xl glass-panel"><div class="text-cyan-400 font-display font-bold">1. Focus</div><div class="text-[11px] text-slate-400 mt-0.5">Start a timed session</div></div>
+          <div class="p-3 rounded-2xl glass-panel"><div class="text-amber-400 font-display font-bold">2. Earn</div><div class="text-[11px] text-slate-400 mt-0.5">100 SC per 10 min</div></div>
+          <div class="p-3 rounded-2xl glass-panel"><div class="text-purple-400 font-display font-bold">3. Build</div><div class="text-[11px] text-slate-400 mt-0.5">Grow your 3D city</div></div>
+        </div>
       </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 text-left max-w-3xl mx-auto">
-        <div class="p-4 rounded-2xl glass-panel"><div class="text-cyan-400 font-display font-bold text-xl">100,000 SC</div><div class="text-xs text-slate-400 mt-0.5">Welcome Grant</div></div>
-        <div class="p-4 rounded-2xl glass-panel"><div class="text-purple-400 font-display font-bold text-xl">3D World</div><div class="text-xs text-slate-400 mt-0.5">Isometric Builder</div></div>
-        <div class="p-4 rounded-2xl glass-panel"><div class="text-amber-400 font-display font-bold text-xl">10 Districts</div><div class="text-xs text-slate-400 mt-0.5">Civic Landmarks</div></div>
-        <div class="p-4 rounded-2xl glass-panel"><div class="text-emerald-400 font-display font-bold text-xl">Real-Time</div><div class="text-xs text-slate-400 mt-0.5">Cloud Persistence</div></div>
+      <div class="relative flex justify-center">
+        <div class="absolute inset-10 rounded-full bg-cyan-500/10 blur-3xl"></div>
+        <svg class="float-y w-full max-w-md" viewBox="0 0 400 380" aria-hidden="true"><polygon points="200,170 395,275 200,380 5,275" fill="rgba(52,230,180,.07)" stroke="rgba(52,230,180,.35)" stroke-width="1.5"/><polygon points="154,100 200,123 200,273 154,250" fill="#10c995"/><polygon points="200,123 246,100 246,250 200,273" fill="#09795c"/><polygon points="200,77 246,100 200,123 154,100" fill="#6ff5cc"/><polygon points="92,190 130,209 130,304 92,285" fill="#7f6bff"/><polygon points="130,209 168,190 168,285 130,304" fill="#4a37ad"/><polygon points="130,171 168,190 130,209 92,190" fill="#b4a9ff"/><polygon points="232,165 270,184 270,304 232,285" fill="#f43f8e"/><polygon points="270,184 308,165 308,285 270,304" fill="#a3185f"/><polygon points="270,146 308,165 270,184 232,165" fill="#ff94c3"/><polygon points="30,260 60,275 60,335 30,320" fill="#ffb84d"/><polygon points="60,275 90,260 90,320 60,335" fill="#b8741a"/><polygon points="60,245 90,260 60,275 30,260" fill="#ffd28a"/><polygon points="310,240 340,255 340,335 310,320" fill="#10c995"/><polygon points="340,255 370,240 370,320 340,335" fill="#09795c"/><polygon points="340,225 370,240 340,255 310,240" fill="#6ff5cc"/><polygon points="166,285 200,302 200,352 166,335" fill="#7f6bff"/><polygon points="200,302 234,285 234,335 200,352" fill="#4a37ad"/><polygon points="200,268 234,285 200,302 166,285" fill="#b4a9ff"/><circle cx="200" cy="40" r="6" fill="#ffb84d"><animate attributeName="opacity" values="1;.3;1" dur="2.4s" repeatCount="indefinite"/></circle></svg>
       </div>
     </div>
 
@@ -274,7 +354,7 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-display font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">EDUCIVILIZATION</span>
-              <span class="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">3D WORLD</span>
+              <span class="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">GenV3</span>
             </div>
             <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Build Your World. Earn Through Learning.</p>
           </div>
@@ -1058,6 +1138,15 @@
     </main>
   </div>
 
+  <!-- GenV3 mobile bottom navigation -->
+  <nav id="bottomNav" class="lg:hidden fixed bottom-0 inset-x-0 z-40 glass-panel border-t border-white/10 flex justify-around px-2 pt-2" style="padding-bottom:calc(env(safe-area-inset-bottom,0px) + .5rem)">
+    <button data-bn="dashboard" onclick="switchTab('dashboard')" class="bn-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] text-slate-400"><i class="fa-solid fa-house text-base"></i>Home</button>
+    <button data-bn="focus" onclick="switchTab('focus')" class="bn-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] text-slate-400"><i class="fa-solid fa-stopwatch text-base"></i>Focus</button>
+    <button data-bn="city" onclick="switchTab('city')" class="bn-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] text-slate-400"><i class="fa-solid fa-cubes text-base"></i>City</button>
+    <button data-bn="store" onclick="switchTab('store')" class="bn-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] text-slate-400"><i class="fa-solid fa-store text-base"></i>Store</button>
+    <button data-bn="explore" onclick="switchTab('explore')" class="bn-btn flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl text-[10px] text-slate-400"><i class="fa-solid fa-earth-asia text-base"></i>Explore</button>
+  </nav>
+
   <!-- Firebase v10.14.1 Modular SDK & App Engine -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -1333,6 +1422,41 @@
     let economy = { ...ECONOMY_DEFAULTS };
     let storageUid = 'guest';
     const storageKey = () => 'educivilization_state_v4:' + storageUid;
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const scAnim = {};
+    function animateSC(id, to) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const a = scAnim[id] || (scAnim[id] = { shown: to, raf: 0 });
+      cancelAnimationFrame(a.raf);
+      const from = a.shown;
+      if (reduceMotion || from === to) { a.shown = to; el.textContent = `${to.toLocaleString()} SC`; return; }
+      const t0 = performance.now(), dur = 650;
+      const step = (t) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 3);
+        const v = Math.round(from + (to - from) * e);
+        a.shown = v;
+        el.textContent = `${v.toLocaleString()} SC`;
+        if (p < 1) a.raf = requestAnimationFrame(step);
+      };
+      a.raf = requestAnimationFrame(step);
+    }
+    function coinBurst(n = 16) {
+      if (reduceMotion) return;
+      for (let i = 0; i < n; i++) {
+        const el = document.createElement('div');
+        el.className = 'coin-burst';
+        el.textContent = ['🪙', '✨', '⭐'][i % 3];
+        const ang = Math.random() * Math.PI * 2, dist = 120 + Math.random() * 180;
+        el.style.setProperty('--dx', Math.cos(ang) * dist + 'px');
+        el.style.setProperty('--dy', (Math.sin(ang) * dist - 60) + 'px');
+        el.style.left = '50%';
+        el.style.top = '45%';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1100);
+      }
+    }
     const DEMO_MODE = ['localhost', '127.0.0.1'].includes(location.hostname);
 
     function esc(v) {
@@ -1824,14 +1948,15 @@
     let camSpherical = { radius: 18, theta: Math.PI / 4, phi: Math.PI / 3.2 };
     let camTarget = new THREE.Vector3(0, 0, 0);
     let threeInitialized = false;
+    let lastCamInteract = Date.now();
 
     function initThreeCity() {
       const container = document.getElementById('threeCityContainer');
       if (!container || threeInitialized || typeof THREE === 'undefined') return;
 
       scene = new THREE.Scene();
-      scene.background = new THREE.Color('#060B18');
-      scene.fog = new THREE.FogExp2('#060B18', 0.022);
+      scene.background = new THREE.Color('#0A0A12');
+      scene.fog = new THREE.FogExp2('#0A0A12', 0.022);
 
       const width = container.clientWidth || 800;
       const height = container.clientHeight || 540;
@@ -1852,10 +1977,10 @@
       renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
       container.prepend(renderer3D.domElement);
 
-      hemiLight = new THREE.HemisphereLight(0x7dd3fc, 0x0f172a, 0.75);
+      hemiLight = new THREE.HemisphereLight(0x6ff5cc, 0x11121c, 0.75);
       scene.add(hemiLight);
 
-      ambientLight = new THREE.AmbientLight(0x38bdf8, 0.35);
+      ambientLight = new THREE.AmbientLight(0x9a8bff, 0.35);
       scene.add(ambientLight);
 
       sunLight = new THREE.DirectionalLight(0xfef08a, 1.15);
@@ -1864,14 +1989,14 @@
       scene.add(sunLight);
 
       const waterGeo = new THREE.PlaneGeometry(80, 80);
-      const waterMat = new THREE.MeshStandardMaterial({ color: 0x082f49, roughness: 0.25, metalness: 0.65 });
+      const waterMat = new THREE.MeshStandardMaterial({ color: 0x0b2a2e, roughness: 0.25, metalness: 0.65 });
       const waterPlane = new THREE.Mesh(waterGeo, waterMat);
       waterPlane.rotation.x = -Math.PI / 2;
       waterPlane.position.y = -0.22;
       scene.add(waterPlane);
 
       const islandGeo = new THREE.BoxGeometry(17.6, 0.4, 17.6);
-      const islandMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+      const islandMat = new THREE.MeshStandardMaterial({ color: 0x1c1d2d, roughness: 0.8 });
       const islandMesh = new THREE.Mesh(islandGeo, islandMat);
       islandMesh.position.y = -0.21;
       islandMesh.receiveShadow = true;
@@ -1903,6 +2028,7 @@
       let startX = 0, startY = 0, prevX = 0, prevY = 0;
 
       domEl.addEventListener('pointerdown', (e) => {
+        lastCamInteract = Date.now();
         isDown = true;
         startX = prevX = e.clientX;
         startY = prevY = e.clientY;
@@ -1915,6 +2041,7 @@
         prevX = e.clientX;
         prevY = e.clientY;
 
+        lastCamInteract = Date.now();
         camSpherical.theta -= dx * 0.008;
         camSpherical.phi = Math.max(0.28, Math.min(Math.PI / 2.15, camSpherical.phi - dy * 0.008));
         updateCamera3DPosition();
@@ -1932,6 +2059,7 @@
 
       domEl.addEventListener('wheel', (e) => {
         e.preventDefault();
+        lastCamInteract = Date.now();
         camSpherical.radius = Math.max(8, Math.min(32, camSpherical.radius + e.deltaY * 0.012));
         updateCamera3DPosition();
       }, { passive: false });
@@ -1959,6 +2087,7 @@
     }
 
     window.rotateCityCamera = function (deltaTheta) {
+      lastCamInteract = Date.now();
       camSpherical.theta += deltaTheta;
       updateCamera3DPosition();
     };
@@ -1993,8 +2122,8 @@
         sunLight.intensity = 1.3;
         hemiLight.intensity = 0.85;
       } else {
-        scene.background = new THREE.Color('#060B18');
-        scene.fog = new THREE.FogExp2('#060B18', 0.022);
+        scene.background = new THREE.Color('#0A0A12');
+        scene.fog = new THREE.FogExp2('#0A0A12', 0.022);
         sunLight.color.setHex(0x93c5fd);
         sunLight.intensity = 0.95;
         hemiLight.intensity = 0.7;
@@ -2077,7 +2206,7 @@
         tileGroup.position.set(wx, 0, wz);
         tileGroup.userData = { r: cell.r, c: cell.c };
 
-        const padColor = !cell.unlocked ? 0x334155 : cell.buildingId ? 0x1e293b : 0x065f46;
+        const padColor = !cell.unlocked ? 0x2f3148 : cell.buildingId ? 0x1c1d2d : 0x0b5442;
         const padMat = new THREE.MeshStandardMaterial({ color: isSelected ? 0xf59e0b : padColor, roughness: 0.7 });
         const padMesh = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.14, 1.85), padMat);
         padMesh.position.y = 0.07;
@@ -2103,6 +2232,7 @@
       const view = document.getElementById('view-city');
       if (!view || view.classList.contains('hidden')) return;
       if (renderer3D && scene && camera3D) {
+        if (!reduceMotion && Date.now() - lastCamInteract > 6000) { camSpherical.theta += 0.0014; updateCamera3DPosition(); }
         renderer3D.render(scene, camera3D);
       }
     }
@@ -2356,6 +2486,7 @@
         if (state.transactions.length > 300) state.transactions.length = 300;
 
         playChime('reward');
+        if (earnedSc > 0) coinBurst();
         if (earnedSc === 0 && capLeft === 0) {
           showToast(`Daily SC cap reached. +${earnedXp.toLocaleString()} XP banked - SC rewards resume tomorrow.`, 'info');
         } else {
@@ -2800,6 +2931,7 @@
       state.claimedAchievements.push(achId);
       state.xp += a.xp;
       playChime('reward');
+      coinBurst(10);
       showToast(`Trophy Claimed: ${a.title} (+${a.xp.toLocaleString()} XP)!`, 'reward');
       await pushStateToFirestore();
       refreshAllUI();
@@ -3092,6 +3224,12 @@
       });
 
       document.getElementById('sidebarNav').classList.add('-translate-x-full');
+      document.querySelectorAll('.bn-btn').forEach(b => {
+        const on = b.dataset.bn === tabName;
+        b.classList.toggle('text-cyan-300', on);
+        b.classList.toggle('bg-cyan-500/15', on);
+        b.classList.toggle('text-slate-400', !on);
+      });
 
       if (tabName === 'city') {
         setTimeout(() => {
@@ -3233,7 +3371,7 @@
       const titleObj = [...SCHOLAR_TITLES].reverse().find(t => scholarLevel >= t.minLevel) || SCHOLAR_TITLES[0];
       const unlockedPlots = state.grid.filter(c => c.unlocked).length;
 
-      document.getElementById('topScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
+      animateSC('topScBalance', state.scBalance);
       document.getElementById('topLevel').textContent = scholarLevel;
       document.getElementById('topXpText').textContent = `${state.xp.toLocaleString()} XP`;
       document.getElementById('topAvatar').textContent = state.avatar;
@@ -3243,7 +3381,7 @@
       document.getElementById('dashTitleBadge').textContent = `${titleObj.badge} ${titleObj.title}`;
       document.getElementById('dashCityName').textContent = state.cityName;
       document.getElementById('dashUsername').textContent = state.username;
-      document.getElementById('dashScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
+      animateSC('dashScBalance', state.scBalance);
       document.getElementById('dashNetWorth').textContent = `${netWorth.toLocaleString()} SC`;
       document.getElementById('dashStudyTime').textContent = `${(state.studyMinutes / 60).toFixed(1)} Hrs`;
       document.getElementById('dashSessionCount').textContent = Math.max(state.sessionCount || 0, state.sessions.length);
@@ -3296,6 +3434,57 @@
     }
 
     window.addEventListener('resize', resizeThreeCanvas);
+
+    // Card spotlight follows the pointer
+    document.addEventListener('pointermove', (e) => {
+      const c = e.target && e.target.closest ? e.target.closest('.glass-panel') : null;
+      if (!c) return;
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }, { passive: true });
+
+    // Cover particle network (only runs while the cover is visible)
+    (function gateParticles() {
+      const cv = document.getElementById('gateFx');
+      const gate = document.getElementById('authGateScreen');
+      if (!cv || !gate || reduceMotion) return;
+      const ctx = cv.getContext('2d');
+      const colors = ['52,230,180', '154,139,255', '255,95,166'];
+      let w = 0, h = 0, pts = [], running = false;
+      function size() {
+        w = cv.width = gate.clientWidth; h = cv.height = gate.clientHeight;
+        const n = Math.min(70, Math.floor(w * h / 22000));
+        pts = Array.from({ length: n }, () => ({
+          x: Math.random() * w, y: Math.random() * h,
+          vx: (Math.random() - .5) * .25, vy: (Math.random() - .5) * .25,
+          r: Math.random() * 1.8 + .6, c: colors[Math.floor(Math.random() * 3)]
+        }));
+      }
+      function frame() {
+        if (gate.classList.contains('hidden') || document.hidden) { running = false; return; }
+        ctx.clearRect(0, 0, w, h);
+        for (const p of pts) {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > w) p.vx *= -1;
+          if (p.y < 0 || p.y > h) p.vy *= -1;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fillStyle = `rgba(${p.c},.8)`; ctx.fill();
+        }
+        for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < 110) {
+            ctx.strokeStyle = `rgba(${a.c},${(1 - d / 110) * .18})`;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+      function start() { if (running || gate.classList.contains('hidden') || document.hidden) return; running = true; frame(); }
+      size(); start();
+      window.addEventListener('resize', size);
+      document.addEventListener('visibilitychange', start);
+      new MutationObserver(start).observe(gate, { attributes: true, attributeFilter: ['class'] });
+    })();
 
     // Warn before closing the tab in the middle of a focus session
     window.addEventListener('beforeunload', (e) => {
