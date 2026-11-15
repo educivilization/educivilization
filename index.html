@@ -1459,78 +1459,106 @@
         `<i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal Login`,
         `
           <form onsubmit="handleModalAdminLogin(event)" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
-              <input id="modalAdminEmail" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
-              <input id="modalAdminPass" type="password" placeholder="Enter password" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
-            </div>
-            <div id="modalAdminErr" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
-            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-sm shadow-lg transition">
-              Authenticate Root Admin
-            </button>
-          </form>
-        `
-      );
-    };
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
+          <input id="modalAdminEmail" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
+          <input id="modalAdminPass" type="password" placeholder="Enter password" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+        </div>
+        <div id="modalAdminErr" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
+        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-sm shadow-lg transition">
+          Authenticate Root Admin
+        </button>
+      </form>
+    `
+  );
+};
 
-    window.handleModalAdminLogin = async function (e) {
-      e.preventDefault();
-      const email = document.getElementById('modalAdminEmail').value.trim().toLowerCase();
-      const pass = document.getElementById('modalAdminPass').value;
-      const errEl = document.getElementById('modalAdminErr');
-      errEl.classList.add('hidden');
+window.handleModalAdminLogin = async function (e) {
+  e.preventDefault();
+  const email = document.getElementById('modalAdminEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('modalAdminPass').value;
+  const errEl = document.getElementById('modalAdminErr');
+  errEl.classList.add('hidden');
 
-      if (email !== ADMIN_AUTHORIZED_EMAIL) {
-        errEl.textContent = 'Access Denied: Unauthorized administrator email.';
-        errEl.classList.remove('hidden');
-        return;
-      }
+  if (email !== ADMIN_AUTHORIZED_EMAIL) {
+    errEl.textContent = 'Access Denied: Unauthorized administrator email.';
+    errEl.classList.remove('hidden');
+    return;
+  }
 
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, pass);
-        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
-          isAdminAuthenticated = true;
-          closeUniversalModal();
-          updateAdminLockUI();
-          switchTab('admin');
-          showToast('Admin Panel Unlocked!', 'success');
+  try {
+    let cred;
+    try {
+      cred = await signInWithEmailAndPassword(auth, email, pass);
+    } catch (signInErr) {
+      if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
+        try {
+          cred = await createUserWithEmailAndPassword(auth, email, pass);
+        } catch (createErr) {
+          throw signInErr;
         }
-      } catch (err) {
-        errEl.textContent = 'Authentication Failed: ' + err.message;
-        errEl.classList.remove('hidden');
+      } else {
+        throw signInErr;
       }
-    };
+    }
 
-    window.handleAdminEmailLogin = async function (e) {
-      e.preventDefault();
-      const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
-      const pass = document.getElementById('adminPassInput').value;
-      const errEl = document.getElementById('adminLoginErrorMsg');
-      errEl.classList.add('hidden');
+    if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+      isAdminAuthenticated = true;
+      closeUniversalModal();
+      updateAdminLockUI();
+      switchTab('admin');
+      showToast('Admin Panel Unlocked!', 'success');
+    }
+  } catch (err) {
+    errEl.textContent = 'Authentication Failed: ' + err.message;
+    errEl.classList.remove('hidden');
+  }
+};
 
-      if (email !== ADMIN_AUTHORIZED_EMAIL) {
-        errEl.textContent = 'Access Denied: Unauthorized admin credentials.';
-        errEl.classList.remove('hidden');
-        return;
-      }
+window.handleAdminEmailLogin = async function (e) {
+  e.preventDefault();
+  const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+  const pass = document.getElementById('adminPassInput').value;
+  const errEl = document.getElementById('adminLoginErrorMsg');
+  errEl.classList.add('hidden');
 
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, pass);
-        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
-          isAdminAuthenticated = true;
-          updateAdminLockUI();
-          showToast('Admin Panel Unlocked!', 'success');
+  if (email !== ADMIN_AUTHORIZED_EMAIL) {
+    errEl.textContent = 'Access Denied: Unauthorized admin credentials.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  try {
+    let cred;
+    try {
+      cred = await signInWithEmailAndPassword(auth, email, pass);
+    } catch (signInErr) {
+      if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
+        try {
+          cred = await createUserWithEmailAndPassword(auth, email, pass);
+        } catch (createErr) {
+          throw signInErr;
         }
-      } catch (err) {
-        errEl.textContent = 'Auth Error: ' + err.message;
-        errEl.classList.remove('hidden');
+      } else {
+        throw signInErr;
       }
-    };
+    }
 
-    window.handleAdminLogout = async function () {
+    if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+      isAdminAuthenticated = true;
+      updateAdminLockUI();
+      showToast('Admin Panel Unlocked!', 'success');
+    }
+  } catch (err) {
+    errEl.textContent = 'Auth Error: ' + err.message;
+    errEl.classList.remove('hidden');
+  }
+};
+
+window.handleAdminLogout = async function () {
       try {
         await signOut(auth);
         isAdminAuthenticated = false;
@@ -1649,27 +1677,27 @@
             ...remoteList,
             ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
           ];
-          renderExploreWorld();
-          renderLeaderboard('study');
-          if (isAdminAuthenticated) renderAdminPanel();
-        });
-      } catch (e) {}
-    }
-
-    async function logAdminAction(message) {
-      const entry = `[${new Date().toLocaleTimeString()}] ADMIN: ${message}`;
-      state.auditLogs.unshift(entry);
-      persistLocalState();
-      if (isAdminAuthenticated) {
-        try {
-          await addDoc(collection(db, 'admin_logs'), {
-            adminEmail: ADMIN_AUTHORIZED_EMAIL,
-            action: message,
-            timestamp: Date.now()
-          });
-        } catch (e) {}
-      }
-    }
+  <!-- Firebase v10.14.1 Modular SDK & App Engine -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      addDoc,
+      collection,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
     // =========================================================================
     // 5. THREE.JS 3D CITY BUILDER
