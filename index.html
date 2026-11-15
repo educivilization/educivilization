@@ -1,1 +1,3381 @@
-TESt - educivilization platform
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EDUCIVILIZATION — Build Your World. Earn Through Learning.</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <!-- Three.js r128 for Real 3D City Builder & 3D Store Previews -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Tone.js for subtle synthesized chimes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            edu: {
+              bg: '#060A14',
+              panel: '#0D1426',
+              card: '#121B32',
+              border: '#1E2D4F',
+              cyan: '#06B6D4',
+              purple: '#8B5CF6',
+              emerald: '#10B981',
+              amber: '#F59E0B',
+              rose: '#F43F5E',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-display {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .glass-panel {
+      background: rgba(13, 20, 38, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.16);
+    }
+    html:not(.dark) .glass-panel {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(15, 23, 42, 0.1);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3); }
+    ::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.65); }
+
+    /* Animated Holographic Grid Pattern for Explore World */
+    .holo-grid-bg {
+      background-image:
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.14) 0%, transparent 65%),
+        linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(139, 92, 246, 0.08) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+      animation: holoShift 18s linear infinite;
+    }
+    @keyframes holoShift {
+      0% { background-position: 0 0, 0 0, 0 0; }
+      100% { background-position: 0 0, 72px 72px, 72px 72px; }
+    }
+
+    @keyframes radarSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .radar-sweep {
+      animation: radarSpin 8s linear infinite;
+    }
+
+    @keyframes floatReactor {
+      0% { transform: translateY(0) scale(0.7); opacity: 0; }
+      20% { opacity: 1; transform: translateY(-25px) scale(1.15); }
+      100% { transform: translateY(-160px) scale(0.95); opacity: 0; }
+    }
+    .reactor-particle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 1.75rem;
+      animation: floatReactor 2.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 30;
+    }
+
+    #threeCityContainer canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 dark:bg-edu-bg dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- Full-Screen Distraction-Free Focus Overlay -->
+  <div id="fullScreenFocusOverlay" class="hidden fixed inset-0 z-50 bg-edu-bg/98 backdrop-blur-2xl flex flex-col items-center justify-between p-6 sm:p-10 text-white">
+    <div class="w-full max-w-5xl flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="font-display font-bold tracking-wider text-cyan-400 text-xs sm:text-sm">EDUCIVILIZATION • TIMESTAMP-VERIFIED FOCUS ENGINE</span>
+      </div>
+      <button onclick="toggleFullScreenFocus(false)" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs sm:text-sm font-medium transition flex items-center gap-2">
+        <i class="fa-solid fa-compress"></i> Exit Fullscreen
+      </button>
+    </div>
+
+    <div class="text-center my-auto">
+      <div id="fsModeBadge" class="inline-block px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold uppercase tracking-widest mb-4">
+        Deep Focus Session
+      </div>
+      <div id="fsTimerDisplay" class="font-display text-6xl sm:text-8xl md:text-9xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-purple-400 select-none">
+        50:00
+      </div>
+      <p id="fsSubjectLabel" class="mt-4 text-slate-300 text-base sm:text-lg">Subject: General Mastery</p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-slate-300">
+        <span class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10">
+          <i class="fa-solid fa-coins text-amber-400 mr-1.5"></i>Verified Earned: <strong id="fsEarnedSC" class="text-amber-300">0 SC</strong>
+        </span>
+        <span class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10">
+          <i class="fa-solid fa-shield-check text-emerald-400 mr-1.5"></i>Integrity: <strong id="fsIntegrityLabel" class="text-emerald-300">100%</strong>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <button id="fsPauseBtn" onclick="toggleTimerPause()" class="px-6 py-3.5 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-semibold transition flex items-center gap-2">
+        <i class="fa-solid fa-pause"></i> <span>Pause</span>
+      </button>
+      <button onclick="completeFocusSession()" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:opacity-95 text-slate-950 font-bold shadow-lg shadow-cyan-500/25 transition flex items-center gap-2">
+        <i class="fa-solid fa-check-circle"></i> Finish & Bank SC
+      </button>
+      <button onclick="cancelFocusSession()" class="px-5 py-3.5 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 font-medium transition">
+        Abort
+      </button>
+    </div>
+  </div>
+
+  <!-- Scholar Identity & Onboarding Modal -->
+  <div id="onboardingModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-cyan-500/30 shadow-2xl">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
+          <i class="fa-solid fa-globe"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold uppercase tracking-widest text-cyan-400">EDUCIVILIZATION ID</span>
+          <h2 class="font-display text-2xl font-bold">Found Your Civilization</h2>
+        </div>
+      </div>
+      <p class="text-sm text-slate-600 dark:text-slate-300 mb-5">
+        Every 10 minutes of verified study earns <strong class="text-amber-400">10 SC</strong> & <strong class="text-purple-400">100 XP</strong>. Your account starts with a one-time <strong class="text-emerald-400">100,000 SC</strong> Founding Grant!
+      </p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Scholar Name</label>
+          <input id="onboardUsername" type="text" maxlength="24" placeholder="e.g., Aarav Sharma" class="w-full px-4 py-3 rounded-xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 focus:border-cyan-400 focus:outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">3D City Name</label>
+          <input id="onboardCityName" type="text" maxlength="28" placeholder="e.g., Neo Nalanda" class="w-full px-4 py-3 rounded-xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 focus:border-cyan-400 focus:outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">City / Region Tag</label>
+          <input id="onboardRegion" type="text" maxlength="24" placeholder="e.g., Jodhpur, IN" class="w-full px-4 py-3 rounded-xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 focus:border-cyan-400 focus:outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Avatar Emblem</label>
+          <div id="avatarPicker" class="grid grid-cols-6 gap-2"></div>
+        </div>
+      </div>
+      <div class="mt-6 flex items-center justify-between gap-3">
+        <div class="text-xs text-slate-400">
+          Citizen ID: <span id="onboardPreviewId" class="font-mono font-bold text-cyan-400">EC-100001</span>
+        </div>
+        <button onclick="saveOnboardingProfile()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-95 text-white font-semibold text-sm shadow-lg shadow-cyan-500/25 transition">
+          Enter Educivilization <i class="fa-solid fa-arrow-right ml-1.5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Modal (City Hall / Details) -->
+  <div id="universalModal" class="hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-panel rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-cyan-500/25 shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200/10 flex items-center justify-between">
+        <h3 id="modalTitle" class="font-display text-lg sm:text-xl font-bold flex items-center gap-2"></h3>
+        <button onclick="closeUniversalModal()" class="w-9 h-9 rounded-xl bg-slate-500/15 hover:bg-slate-500/25 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modalBody" class="p-6 overflow-y-auto space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-30 glass-panel border-b border-slate-200/60 dark:border-edu-border px-4 lg:px-6 py-3">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleMobileSidebar()" class="lg:hidden w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div onclick="switchTab('dashboard')" class="flex items-center gap-3 cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center text-white font-display font-bold text-lg shadow-lg shadow-cyan-500/25">
+            EC
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-base sm:text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">EDUCIVILIZATION</span>
+              <span class="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">3D WORLD</span>
+            </div>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Build Your World. Earn Through Learning.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Telemetry Pills -->
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <!-- Active Timer Mini Pill -->
+        <button id="headerActiveTimerPill" onclick="switchTab('focus')" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-semibold animate-pulse">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span id="headerMiniTimerText">50:00</span>
+        </button>
+
+        <!-- SC Balance -->
+        <div onclick="switchTab('bank')" class="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition" title="Study Credits (Virtual Currency)">
+          <i class="fa-solid fa-coins text-amber-400 text-sm"></i>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 leading-none">Wallet</div>
+            <div id="topScBalance" class="font-display font-bold text-xs sm:text-sm text-amber-400">100,000 SC</div>
+          </div>
+        </div>
+
+        <!-- Level & XP -->
+        <div onclick="switchTab('achievements')" class="cursor-pointer hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition">
+          <i class="fa-solid fa-bolt text-purple-400 text-sm"></i>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-400 leading-none">Level <span id="topLevel">1</span></div>
+            <div id="topXpText" class="font-display font-bold text-xs sm:text-sm text-purple-300">0 XP</div>
+          </div>
+        </div>
+
+        <!-- Firebase Status Badge -->
+        <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-500/10 border border-slate-500/20 text-[11px] text-slate-400">
+          <span id="cloudDot" class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span id="cloudStatusText">Connecting Firebase...</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 border border-slate-500/20 flex items-center justify-center text-slate-400 hover:text-cyan-400 transition" title="Switch Theme">
+          <i id="themeIcon" class="fa-solid fa-sun"></i>
+        </button>
+
+        <!-- Scholar Profile Pill -->
+        <button onclick="openOnboardingEdit()" class="flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 transition">
+          <span id="topAvatar" class="text-lg">🧑‍🚀</span>
+          <div class="text-left">
+            <div id="topUsername" class="text-xs font-bold leading-tight">Scholar</div>
+            <div id="topUniqueId" class="text-[10px] font-mono text-cyan-400 leading-tight">EC-100001</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Shell -->
+  <div class="flex-1 max-w-[1600px] w-full mx-auto flex relative">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebarNav" class="fixed lg:static inset-y-0 left-0 z-30 w-64 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 glass-panel lg:bg-transparent border-r border-slate-200/60 dark:border-edu-border p-4 flex flex-col justify-between">
+      <div class="space-y-1.5 mt-14 lg:mt-0">
+        <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Command Deck</div>
+        <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-grid-2 w-5 text-center"></i> Dashboard
+        </button>
+        <button data-tab="focus" onclick="switchTab('focus')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-stopwatch w-5 text-center"></i> Focus Room
+          <span class="ml-auto text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">LIVE</span>
+        </button>
+        <button data-tab="city" onclick="switchTab('city')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-cubes w-5 text-center"></i> My 3D Virtual City
+        </button>
+        <button data-tab="store" onclick="switchTab('store')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-store w-5 text-center"></i> 3D Building Store
+        </button>
+
+        <div class="px-3 pt-4 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Economy & Mastery</div>
+        <button data-tab="bank" onclick="switchTab('bank')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-vault w-5 text-center"></i> My Bank & Ledger
+        </button>
+        <button data-tab="achievements" onclick="switchTab('achievements')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-trophy w-5 text-center"></i> Achievements & XP
+        </button>
+
+        <div class="px-3 pt-4 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Global Network</div>
+        <button data-tab="explore" onclick="switchTab('explore')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-earth-asia w-5 text-center"></i> Explore World
+          <span class="ml-auto w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        </button>
+        <button data-tab="leaderboard" onclick="switchTab('leaderboard')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i class="fa-solid fa-ranking-star w-5 text-center"></i> Leaderboards
+        </button>
+
+        <div class="px-3 pt-4 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Security</div>
+        <button data-tab="admin" onclick="switchTab('admin')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
+          <i id="sidebarAdminLockIcon" class="fa-solid fa-lock w-5 text-center text-rose-400"></i> Admin Panel
+        </button>
+      </div>
+
+      <!-- Daily Goal Progress Widget -->
+      <div class="mt-6 p-3.5 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-cyan-500/20">
+        <div class="flex items-center justify-between text-xs mb-1.5">
+          <span class="font-semibold text-cyan-300">Daily Focus Target</span>
+          <span id="sidebarGoalText" class="font-mono text-slate-300">0 / 240m</span>
+        </div>
+        <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+          <div id="sidebarGoalBar" class="h-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+        </div>
+        <p class="text-[10px] text-slate-400 mt-2">10m Verified Study = 10 SC + 100 XP</p>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
+
+      <!-- ==================== 1. MODERN BENTO DASHBOARD ==================== -->
+      <section id="view-dashboard" class="tab-view space-y-6">
+        <!-- Hero Command Card -->
+        <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/25 relative overflow-hidden">
+          <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-purple-600/10 blur-3xl pointer-events-none"></div>
+
+          <div class="relative flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+            <div class="space-y-2">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
+                <span id="dashTitleBadge">🌱 Novice Learner</span> • <span id="dashCityName" class="text-white font-bold">Neo Nalanda</span>
+              </div>
+              <h1 class="font-display text-2xl sm:text-4xl font-bold tracking-tight">
+                Command Center: <span id="dashUsername" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Scholar</span>
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
+                आपकी हर मिनट की पढ़ाई आपकी 3D Civilization की नींव है। Start a timestamp-verified Focus Session to earn Study Credits (SC) and construct real 3D landmarks.
+              </p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+              <button onclick="switchTab('focus')" class="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2">
+                <i class="fa-solid fa-play"></i> Launch Focus Room
+              </button>
+              <button onclick="switchTab('city')" class="px-5 py-3.5 rounded-2xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 font-bold text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-cubes"></i> Open 3D City
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bento KPI Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          <div class="glass-panel rounded-2xl p-5 border border-amber-500/25 hover:border-amber-400/50 transition">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Liquid Study Credits</span>
+              <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-coins"></i></div>
+            </div>
+            <div id="dashScBalance" class="font-display text-2xl sm:text-3xl font-bold text-amber-400">100,000 SC</div>
+            <div class="text-xs text-slate-400 mt-1">Total Net Worth: <span id="dashNetWorth" class="text-slate-200 font-semibold">100,000 SC</span></div>
+          </div>
+
+          <div class="glass-panel rounded-2xl p-5 border border-cyan-500/25 hover:border-cyan-400/50 transition">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verified Study Time</span>
+              <div class="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+            </div>
+            <div id="dashStudyTime" class="font-display text-2xl sm:text-3xl font-bold text-cyan-400">0.0 Hrs</div>
+            <div class="text-xs text-slate-400 mt-1"><span id="dashSessionCount" class="text-slate-200 font-semibold">0</span> Verified Focus Sessions</div>
+          </div>
+
+          <div class="glass-panel rounded-2xl p-5 border border-purple-500/25 hover:border-purple-400/50 transition">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">3D Structures</span>
+              <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-building"></i></div>
+            </div>
+            <div id="dashBuildingCount" class="font-display text-2xl sm:text-3xl font-bold text-purple-400">1</div>
+            <div class="text-xs text-slate-400 mt-1">Unlocked Land: <span id="dashPlotCount" class="text-slate-200 font-semibold">16 / 64</span></div>
+          </div>
+
+          <div class="glass-panel rounded-2xl p-5 border border-emerald-500/25 hover:border-emerald-400/50 transition">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Civilization Rank</span>
+              <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
+            </div>
+            <div class="font-display text-2xl sm:text-3xl font-bold text-emerald-400">City Lv.<span id="dashCityLevel">1</span></div>
+            <div class="text-xs text-slate-400 mt-1">Citizens: <span id="dashPopulation" class="text-slate-200 font-semibold">150</span> • Streak: <span id="dashStreak" class="text-amber-400 font-bold">1d 🔥</span></div>
+          </div>
+        </div>
+
+        <!-- Bento Row 2: Radial Goal + XP Bar + Live City Telemetry -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Radial Daily Focus Ring + XP -->
+          <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-6">
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+              <!-- Animated SVG Radial Progress -->
+              <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
+                <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" stroke="rgba(148,163,184,0.18)" stroke-width="10" fill="none" />
+                  <circle id="dashRadialCircle" cx="60" cy="60" r="50" stroke="url(#gradCyanPurple)" stroke-width="10" stroke-linecap="round" fill="none" stroke-dasharray="314.16" stroke-dashoffset="314.16" class="transition-all duration-700" />
+                  <defs>
+                    <linearGradient id="gradCyanPurple" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#06B6D4" />
+                      <stop offset="100%" stop-color="#8B5CF6" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute text-center">
+                  <div id="dashRadialPercent" class="font-display font-bold text-xl text-cyan-300">0%</div>
+                  <div class="text-[10px] text-slate-400 uppercase">Daily Goal</div>
+                </div>
+              </div>
+
+              <div class="flex-1 w-full space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <h3 class="font-display font-bold text-lg">Daily Focus Target</h3>
+                    <p id="dashTodayMins" class="text-xs text-slate-400">Today: 0 mins (0 SC earned)</p>
+                  </div>
+                  <select id="dailyGoalSelect" onchange="updateDailyGoal(this.value)" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-cyan-300 font-semibold">
+                    <option value="120">2 Hrs / Day</option>
+                    <option value="240" selected>4 Hrs / Day</option>
+                    <option value="300">5 Hrs / Day (300 SC)</option>
+                    <option value="480">8 Hrs / Day</option>
+                  </select>
+                </div>
+
+                <!-- Scholar XP Bar -->
+                <div>
+                  <div class="flex justify-between text-xs mb-1.5">
+                    <span class="font-semibold text-purple-300">Scholar Level <span id="dashScholarLevel">1</span></span>
+                    <span class="text-slate-400"><span id="dashXpCurrent">0</span> / <span id="dashXpNext">1,000</span> XP</span>
+                  </div>
+                  <div class="w-full h-3 rounded-full bg-slate-800/90 overflow-hidden p-0.5 border border-slate-700">
+                    <div id="dashXpBar" class="h-full rounded-full bg-gradient-to-r from-purple-500 via-cyan-400 to-emerald-400 transition-all duration-500" style="width: 5%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Verified Study Logs -->
+            <div class="pt-4 border-t border-slate-200/10">
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Recent Verified Study Logs</h4>
+                <button onclick="switchTab('focus')" class="text-xs text-cyan-400 hover:underline font-semibold">+ New Session</button>
+              </div>
+              <div id="dashRecentSessions" class="space-y-2 text-xs">
+                <div class="text-slate-500 italic">No study sessions recorded yet. Open Focus Room to begin earning SC!</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- City Hall Quick Telemetry -->
+          <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-purple-500/20">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-display font-bold text-lg">3D City Telemetry</h3>
+                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-xs font-semibold">Online</span>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800 space-y-2.5 text-xs">
+                <div class="flex justify-between"><span class="text-slate-400">Civilization</span><span id="briefCityName" class="font-bold text-cyan-300">Neo Nalanda</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Citizen ID</span><span id="briefUserId" class="font-mono text-slate-200">EC-100001</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Infrastructure</span><span id="briefInfraScore" class="font-bold text-emerald-400">100 pts</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Active Districts</span><span id="briefDistricts" class="font-bold text-purple-300">1 / 10</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">World Visibility</span><span id="briefPrivacy" class="font-semibold text-amber-300">Public</span></div>
+              </div>
+            </div>
+
+            <div class="mt-6 space-y-2.5">
+              <button onclick="openCityHallModal()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold transition">
+                <i class="fa-solid fa-landmark mr-1.5 text-cyan-400"></i> City Hall Registry
+              </button>
+              <button onclick="switchTab('store')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold shadow-md transition">
+                <i class="fa-solid fa-cube mr-1.5"></i> Browse 3D Store
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 2. VERIFIED FOCUS ROOM ==================== -->
+      <section id="view-focus" class="tab-view hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/30">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+              <div>
+                <h2 class="font-display text-2xl font-bold flex items-center gap-2">
+                  <i class="fa-solid fa-stopwatch text-cyan-400"></i> Verified Focus Room
+                </h2>
+                <p class="text-xs text-slate-400">Hardware Timestamp Delta Engine • 10m Verified Study = 10 SC + 100 XP</p>
+              </div>
+              <button onclick="toggleFullScreenFocus(true)" class="px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition flex items-center gap-2">
+                <i class="fa-solid fa-expand"></i> Fullscreen Mode
+              </button>
+            </div>
+
+            <!-- Timer Mode Tabs -->
+            <div class="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 mb-6">
+              <button onclick="setTimerMode('pomodoro')" id="modeBtn-pomodoro" class="timer-mode-btn py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-cyan-500 text-slate-950">
+                Pomodoro (50m)
+              </button>
+              <button onclick="setTimerMode('custom')" id="modeBtn-custom" class="timer-mode-btn py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-400 hover:text-white">
+                Custom Timer
+              </button>
+              <button onclick="setTimerMode('stopwatch')" id="modeBtn-stopwatch" class="timer-mode-btn py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-400 hover:text-white">
+                Stopwatch
+              </button>
+            </div>
+
+            <!-- Subject & Duration -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Focus Subject / Syllabus Topic</label>
+                <input id="focusSubjectInput" type="text" value="Physics & Calculus Mastery" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-sm focus:border-cyan-400 focus:outline-none" />
+              </div>
+              <div id="customMinutesWrapper">
+                <label class="block text-xs font-semibold text-slate-400 mb-1">Duration (Minutes)</label>
+                <div class="flex gap-2">
+                  <input id="customMinutesInput" type="number" min="1" max="240" value="50" onchange="updateCustomMinutes(this.value)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-sm focus:border-cyan-400 focus:outline-none" />
+                  <button onclick="updateCustomMinutes(25)" class="px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs">25m</button>
+                  <button onclick="updateCustomMinutes(50)" class="px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs">50m</button>
+                  <button onclick="updateCustomMinutes(90)" class="px-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs">90m</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Real-Time Clock Display -->
+            <div class="my-6 py-8 px-4 rounded-3xl bg-slate-950/80 border border-cyan-500/20 text-center relative">
+              <div id="timerStatusPill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold mb-3">
+                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Ready for Verified Focus
+              </div>
+              <div id="mainTimerDisplay" class="font-display text-6xl sm:text-7xl md:text-8xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-purple-400">
+                50:00
+              </div>
+
+              <!-- Real-time 10-minute Reward Tick Progress -->
+              <div class="max-w-md mx-auto mt-4">
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Next +10 SC Reward Tick</span>
+                  <span id="nextTickCountdown">10m 00s</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                  <div id="nextTickBar" class="h-full bg-gradient-to-r from-amber-400 to-emerald-400 transition-all duration-300" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400">
+                <span>Verified Active: <strong id="elapsedVerifiedText" class="text-cyan-300">0m 0s</strong></span>
+                <span>•</span>
+                <span>Accrued: <strong id="estRewardText" class="text-amber-400">0 SC</strong></span>
+                <span>•</span>
+                <span>Integrity: <strong id="sessionIntegrityScore" class="text-emerald-400">100%</strong></span>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <button id="startTimerBtn" onclick="startFocusSession()" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2">
+                <i class="fa-solid fa-play"></i> Start Verified Session
+              </button>
+              <button id="pauseTimerBtn" onclick="toggleTimerPause()" class="hidden px-6 py-3.5 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 font-semibold text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-pause"></i> <span>Pause</span>
+              </button>
+              <button id="completeTimerBtn" onclick="completeFocusSession()" class="hidden px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm shadow-lg transition flex items-center gap-2">
+                <i class="fa-solid fa-check-circle"></i> Finish & Bank SC
+              </button>
+              <button id="resetTimerBtn" onclick="cancelFocusSession()" class="hidden px-5 py-3.5 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 font-semibold text-sm transition">
+                Cancel
+              </button>
+            </div>
+
+            <!-- Quick Verification Test Bar -->
+            <div class="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div class="text-xs text-slate-400">
+                <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> <strong>Instant Demo Verify:</strong> Test SC & 3D City unlocks right now:
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button onclick="simulateVerifiedStudy(10)" class="px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 text-xs font-semibold transition">
+                  +10m (+10 SC)
+                </button>
+                <button onclick="simulateVerifiedStudy(60)" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition">
+                  +1 Hr (+60 SC)
+                </button>
+                <button onclick="simulateVerifiedStudy(300)" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
+                  +5 Hrs (+300 SC)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Verification Telemetry Card -->
+          <div class="space-y-6">
+            <div class="glass-panel rounded-3xl p-6 border border-emerald-500/25">
+              <h3 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-emerald-400"></i> Verification Protocols
+              </h3>
+              <ul class="space-y-2.5 text-xs text-slate-300">
+                <li class="flex items-start gap-2">
+                  <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>Real Wall-Clock Delta:</strong> Computed via <code>Date.now()</code> timestamps so background throttling never cheats or loses seconds.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>BroadcastChannel Tab Lock:</strong> Prevents earning duplicate SC across multiple browser tabs simultaneously.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>Visibility Integrity Audit:</strong> Monitors tab switches during focus and displays an honest Focus Integrity score.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
+                  <span><strong>Daily Economy Cap:</strong> Up to <span id="guardDailyCap">600</span> SC/day to keep leaderboards fair.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="glass-panel rounded-3xl p-6">
+              <h3 class="font-display font-bold text-lg mb-3">Reward Conversion</h3>
+              <div class="space-y-2 text-xs">
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Minutes Focus</span><span class="font-bold text-amber-400">10 SC + 100 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>1 Hour Focus</span><span class="font-bold text-amber-400">60 SC + 600 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>5 Hours Focus</span><span class="font-bold text-amber-400">300 SC + 3,000 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Hours Focus</span><span class="font-bold text-amber-400">600 SC + 6,000 XP</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 3. REAL 3D VIRTUAL CITY BUILDER (THREE.JS) ==================== -->
+      <section id="view-city" class="tab-view hidden space-y-4">
+        <!-- Visitor Mode Banner -->
+        <div id="visitingCityBanner" class="hidden glass-panel rounded-2xl p-4 border border-purple-500/40 bg-purple-950/40 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full bg-purple-500 text-white text-xs font-bold uppercase tracking-wider animate-pulse">3D Visit Mode</span>
+            <div>
+              <h3 class="font-display font-bold text-base">Exploring <span id="visitCityTitle" class="text-cyan-300">City</span> by <span id="visitOwnerName" class="text-purple-300">Scholar</span></h3>
+              <p id="visitCityMeta" class="text-xs text-slate-300">City Lv.1 • 0 Hrs</p>
+            </div>
+          </div>
+
+          <!-- Live Social Reactors Bar -->
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="flex items-center gap-1 bg-slate-900/80 border border-slate-700 rounded-xl p-1">
+              <button onclick="triggerCityReactor('👏')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Applaud">👏</button>
+              <button onclick="triggerCityReactor('🔥')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Fire">🔥</button>
+              <button onclick="triggerCityReactor('🚀')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Rocket">🚀</button>
+              <button onclick="triggerCityReactor('💎')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Gem">💎</button>
+              <button onclick="triggerCityReactor('❤️')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Love">❤️</button>
+            </div>
+            <button onclick="likeVisitedCity()" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400/40 text-rose-300 text-xs font-bold transition">
+              <i class="fa-solid fa-heart mr-1"></i> <span id="visitLikesCount">0</span>
+            </button>
+            <button onclick="exitVisitMode()" class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 text-xs font-bold transition">
+              <i class="fa-solid fa-house mr-1"></i> My City
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Toolbar -->
+        <div class="glass-panel rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <h2 class="font-display font-bold text-lg sm:text-xl flex items-center gap-2">
+              <i class="fa-solid fa-cubes text-cyan-400"></i> <span id="activeCityHeaderName">Neo Nalanda</span>
+            </h2>
+            <span class="text-xs px-2.5 py-1 rounded-lg bg-cyan-500/15 text-cyan-300 font-semibold">Three.js WebGL 3D</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Atmosphere / Lighting Switcher -->
+            <div class="flex items-center rounded-xl bg-slate-900/80 border border-slate-700 overflow-hidden text-xs">
+              <button onclick="setCityAtmosphere('day')" id="atmoBtn-day" class="atmo-btn px-3 py-1.5 hover:bg-slate-800 transition">☀️ Day</button>
+              <button onclick="setCityAtmosphere('sunset')" id="atmoBtn-sunset" class="atmo-btn px-3 py-1.5 hover:bg-slate-800 border-x border-slate-700 transition">🌅 Sunset</button>
+              <button onclick="setCityAtmosphere('night')" id="atmoBtn-night" class="atmo-btn px-3 py-1.5 bg-cyan-500/20 text-cyan-300 font-semibold transition">🌙 Cyber Night</button>
+            </div>
+
+            <!-- Camera Orbit Controls -->
+            <div class="flex items-center rounded-xl bg-slate-900/80 border border-slate-700 overflow-hidden text-xs">
+              <button onclick="rotateCityCamera(-0.35)" class="px-2.5 py-1.5 hover:bg-slate-800" title="Rotate Left"><i class="fa-solid fa-rotate-left"></i></button>
+              <button onclick="adjustCityZoom(-2.5)" class="px-2.5 py-1.5 hover:bg-slate-800 border-l border-slate-700" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+              <button onclick="resetCityCamera()" class="px-2.5 py-1.5 hover:bg-slate-800 border-x border-slate-700" title="Reset Camera">Reset</button>
+              <button onclick="adjustCityZoom(2.5)" class="px-2.5 py-1.5 hover:bg-slate-800 border-r border-slate-700" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+              <button onclick="rotateCityCamera(0.35)" class="px-2.5 py-1.5 hover:bg-slate-800" title="Rotate Right"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+
+            <button onclick="openCityHallModal()" class="px-3.5 py-1.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 text-xs font-semibold transition">
+              <i class="fa-solid fa-landmark mr-1"></i> City Hall
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D Viewport + Tile Inspector -->
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
+          <div id="threeCityContainer" class="xl:col-span-3 glass-panel rounded-3xl overflow-hidden border border-cyan-500/25 relative h-[480px] sm:h-[600px]">
+            <!-- Three.js WebGL Canvas mounts here -->
+            <div id="reactorOverlayLayer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+
+            <!-- Controls Hint Pill -->
+            <div class="absolute bottom-3 left-3 right-3 sm:right-auto glass-panel rounded-2xl px-3.5 py-2 text-[11px] flex flex-wrap items-center gap-3 pointer-events-none">
+              <span class="text-cyan-300 font-semibold"><i class="fa-solid fa-hand-pointer mr-1"></i> Click Plot to Build / Upgrade</span>
+              <span class="text-slate-400">• Drag to Orbit 360° • Scroll / Pinch to Zoom</span>
+            </div>
+          </div>
+
+          <!-- Plot & Building Inspector -->
+          <div class="glass-panel rounded-3xl p-5 flex flex-col justify-between space-y-4">
+            <div id="tileInspectorPanel">
+              <div class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">3D Plot Inspector</div>
+              <h3 class="font-display text-lg font-bold">Click Any Plot in 3D World</h3>
+              <p class="text-xs text-slate-400 mt-1">
+                Select any land plot in your 3D city to construct realistic architectural buildings, unlock new territory, or upgrade towers up to Level 3!
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">District Development</div>
+              <div id="cityDistrictMiniBars" class="space-y-1.5 text-xs max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 4. 3D BUILDING STORE ==================== -->
+      <section id="view-store" class="tab-view hidden space-y-6">
+        <div class="glass-panel rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="font-display text-2xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-store text-purple-400"></i> 3D Architectural Building Store
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+              Every building includes a real-time 3D architectural model preview. Unlock advanced landmarks through Study Hour milestones!
+            </p>
+          </div>
+          <div class="px-4 py-2 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-display font-bold text-sm">
+            Wallet: <span id="storeBalanceDisplay">100,000 SC</span>
+          </div>
+        </div>
+
+        <!-- District Filter Bar -->
+        <div id="storeDistrictFilters" class="flex flex-wrap gap-2"></div>
+
+        <!-- 3D Building Cards Grid -->
+        <div id="storeCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+      </section>
+
+      <!-- ==================== 5. MY BANK & LEDGER ==================== -->
+      <section id="view-bank" class="tab-view hidden space-y-6">
+        <div class="glass-panel rounded-3xl p-6 border border-amber-500/25">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 class="font-display text-2xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-vault text-amber-400"></i> Reserve Bank of Educivilization
+              </h2>
+              <p class="text-xs text-slate-400 mt-1">
+                Study Credits (SC) are a virtual in-game reward currency with zero real-money withdrawal value.
+              </p>
+            </div>
+            <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+              <i class="fa-solid fa-shield-check mr-1"></i> Double-Entry Verified
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+              <div class="text-xs text-slate-400">Liquid SC Balance</div>
+              <div id="bankWalletSc" class="font-display text-2xl font-bold text-amber-400 mt-1">100,000 SC</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+              <div class="text-xs text-slate-400">3D Real Estate Valuation</div>
+              <div id="bankAssetValue" class="font-display text-2xl font-bold text-cyan-400 mt-1">0 SC</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+              <div class="text-xs text-slate-400">Total Civilization Net Worth</div>
+              <div id="bankNetWorth" class="font-display text-2xl font-bold text-purple-400 mt-1">100,000 SC</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+              <div class="text-xs text-slate-400">Lifetime Study Earnings</div>
+              <div id="bankLifetimeEarned" class="font-display text-2xl font-bold text-emerald-400 mt-1">0 SC</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h3 class="font-display text-lg font-bold">Immutable Transaction Ledger</h3>
+            <select id="bankFilterType" onchange="renderBankLedger()" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200">
+              <option value="ALL">All Transactions</option>
+              <option value="STUDY_REWARD">Study Rewards</option>
+              <option value="BUILD">Building Construction</option>
+              <option value="UPGRADE">Upgrades</option>
+              <option value="PLOT_BUY">Land Purchases</option>
+              <option value="GRANT">Grants & Admin</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <th class="py-3 px-3">Timestamp</th>
+                  <th class="py-3 px-3">Category</th>
+                  <th class="py-3 px-3">Description</th>
+                  <th class="py-3 px-3 text-right">Amount (SC)</th>
+                </tr>
+              </thead>
+              <tbody id="bankLedgerBody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 6. ENHANCED ACHIEVEMENTS & XP ==================== -->
+      <section id="view-achievements" class="tab-view hidden space-y-6">
+        <div class="glass-panel rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-purple-500/25">
+          <div>
+            <h2 class="font-display text-2xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-amber-400"></i> Scholar Ranks, XP & Trophies
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+              Complete Study, Architecture, and Exploration milestones to earn XP and unlock prestigious Scholar Titles.
+            </p>
+          </div>
+          <div class="px-4 py-2.5 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-300 font-display font-bold text-sm">
+            Current Rank: <span id="achCurrentTitle">🌱 Novice Learner</span>
+          </div>
+        </div>
+
+        <!-- Scholar Titles Ladder -->
+        <div class="glass-panel rounded-3xl p-6">
+          <h3 class="font-display font-bold text-lg mb-4">Scholar Title Hierarchy</h3>
+          <div id="titlesLadderGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="filterAchievements('ALL')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
+          <button onclick="filterAchievements('STUDY')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
+          <button onclick="filterAchievements('CITY')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">City Architecture</button>
+          <button onclick="filterAchievements('SOCIAL')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Exploration & Economy</button>
+        </div>
+
+        <div id="achievementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+      </section>
+
+      <!-- ==================== 7. EXPLORE WORLD (HOLOGRAPHIC MAP, EFFECTS, REACTORS) ==================== -->
+      <section id="view-explore" class="tab-view hidden space-y-6">
+        <!-- Animated Holographic World Radar Header -->
+        <div class="glass-panel holo-grid-bg rounded-3xl p-6 sm:p-8 border border-cyan-500/30 relative overflow-hidden">
+          <!-- Animated Orbital Rings SVG -->
+          <div class="absolute right-6 top-1/2 -translate-y-1/2 w-56 h-56 opacity-35 pointer-events-none hidden md:block">
+            <svg viewBox="0 0 200 200" class="w-full h-full">
+              <circle cx="100" cy="100" r="88" stroke="#06B6D4" stroke-width="1" stroke-dasharray="6 6" fill="none" class="radar-sweep" style="transform-origin: 100px 100px;" />
+              <circle cx="100" cy="100" r="62" stroke="#8B5CF6" stroke-width="1.5" stroke-dasharray="14 8" fill="none" />
+              <circle cx="100" cy="100" r="32" stroke="#10B981" stroke-width="1" fill="rgba(6,182,212,0.12)" />
+              <circle cx="145" cy="60" r="4" fill="#F59E0B" />
+              <circle cx="65" cy="135" r="4" fill="#06B6D4" />
+              <circle cx="130" cy="130" r="3.5" fill="#EC4899" />
+            </svg>
+          </div>
+
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-semibold mb-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Civilization Telemetry Matrix
+              </div>
+              <h2 class="font-display text-2xl sm:text-3xl font-bold">Explore World Civilizations</h2>
+              <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
+                Orbit around fellow scholars' 3D cities in real time, inspect their architectural districts, and fire live Social Reactors (👏 🔥 🚀 💎 ❤️)!
+              </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              <label class="text-xs text-slate-300 font-semibold">My City Privacy:</label>
+              <select id="cityPrivacySelect" onchange="updateCityPrivacy(this.value)" class="px-3.5 py-2 rounded-xl bg-slate-900/90 border border-cyan-500/30 text-xs font-bold text-cyan-300">
+                <option value="Public">Public (World Map)</option>
+                <option value="Friends Only">Friends Only</option>
+                <option value="Private">Private</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Public Cities Cards Grid -->
+        <div id="exploreCitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+      </section>
+
+      <!-- ==================== 8. REALISTIC STUDENT LEADERBOARDS ==================== -->
+      <section id="view-leaderboard" class="tab-view hidden space-y-6">
+        <!-- Weekly City vs City Duel -->
+        <div class="glass-panel rounded-3xl p-6 border border-cyan-500/30 bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-purple-950/40">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <div>
+              <span class="text-[11px] font-bold uppercase tracking-widest text-cyan-400">Weekly Inter-City Challenge</span>
+              <h3 class="font-display text-xl font-bold">City vs City Focus Championship</h3>
+            </div>
+            <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold">🏆 Champion Trophy + 500 SC</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 items-center gap-4 text-center">
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-cyan-500/30">
+              <div id="duelMyCity" class="font-display font-bold text-lg text-cyan-300">Neo Nalanda</div>
+              <div id="duelMyHours" class="text-2xl font-bold mt-1">0.0 Hrs</div>
+              <div class="text-xs text-slate-400">Your Civilization</div>
+            </div>
+            <div class="font-display text-2xl font-extrabold text-purple-400">VS</div>
+            <div class="p-4 rounded-2xl bg-slate-900/75 border border-purple-500/30">
+              <div class="font-display font-bold text-lg text-purple-300">Pink City Citadel (Ravi Sharma)</div>
+              <div class="text-2xl font-bold mt-1">42.5 Hrs</div>
+              <div class="text-xs text-slate-400">Weekly Rival</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Rankings Table -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h3 class="font-display text-xl font-bold">National & Global Scholar Rankings</h3>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="renderLeaderboard('study')" class="lb-tab-btn px-3.5 py-1.5 rounded-xl bg-cyan-500 text-slate-950 text-xs font-bold">Study Hours</button>
+              <button onclick="renderLeaderboard('networth')" class="lb-tab-btn px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Net Worth (SC)</button>
+              <button onclick="renderLeaderboard('citylevel')" class="lb-tab-btn px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">City Level</button>
+              <button onclick="renderLeaderboard('streak')" class="lb-tab-btn px-3.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold">Study Streak</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <th class="py-3 px-3">Rank</th>
+                  <th class="py-3 px-3">Scholar & City</th>
+                  <th class="py-3 px-3">Region</th>
+                  <th class="py-3 px-3">Study Hours</th>
+                  <th class="py-3 px-3">Streak</th>
+                  <th class="py-3 px-3">City Lv</th>
+                  <th class="py-3 px-3 text-right">Net Worth</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboardTableBody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== 9. LOCKED FIREBASE ADMIN CONTROL PANEL ==================== -->
+      <section id="view-admin" class="tab-view hidden space-y-6">
+        <!-- LOCK SCREEN (Shown until Firebase Auth signs in strictly as educivilization@gmail.com) -->
+        <div id="adminLockScreen" class="max-w-md mx-auto glass-panel rounded-3xl p-8 border border-rose-500/30 shadow-2xl text-center space-y-5 my-6">
+          <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 flex items-center justify-center text-2xl mx-auto shadow-lg">
+            <i class="fa-solid fa-shield-keyhole"></i>
+          </div>
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-widest text-rose-400">Restricted Root Access</span>
+            <h2 class="font-display text-2xl font-bold mt-1">Admin Control Panel Locked</h2>
+            <p class="text-xs text-slate-400 mt-1.5">
+              Authenticate via Firebase Email & Password using the authorized administrator account (<code>educivilization@gmail.com</code>).
+            </p>
+          </div>
+
+          <form onsubmit="handleAdminFirebaseLogin(event)" class="space-y-3.5 text-left">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Firebase Email</label>
+              <input id="adminLoginEmail" type="email" value="educivilization@gmail.com" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-cyan-300 font-mono focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
+              <input id="adminLoginPassword" type="password" placeholder="Enter Firebase Auth password" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div id="adminLoginError" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
+            <button type="submit" id="adminLoginSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 hover:opacity-95 text-white font-bold text-sm shadow-lg transition">
+              <i class="fa-solid fa-unlock-keyhole mr-1.5"></i> Verify & Unlock Admin Panel
+            </button>
+          </form>
+        </div>
+
+        <!-- UNLOCKED ADMIN DASHBOARD (Visible ONLY when verified Firebase user.email === 'educivilization@gmail.com') -->
+        <div id="adminUnlockedContent" class="hidden space-y-6">
+          <div class="glass-panel rounded-3xl p-6 border border-emerald-500/30">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold mb-1">
+                  <i class="fa-solid fa-shield-check"></i> Authenticated Root Admin: educivilization@gmail.com
+                </div>
+                <h2 class="font-display text-2xl font-bold">EDUCIVILIZATION Command & Governance</h2>
+              </div>
+              <button onclick="handleAdminLogout()" class="px-4 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-bold transition">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> Lock & Sign Out
+              </button>
+            </div>
+
+            <!-- Platform KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+                <div class="text-xs text-slate-400">Tracked Civilizations</div>
+                <div id="adminTotalCities" class="font-display text-2xl font-bold text-cyan-400 mt-1">9</div>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+                <div class="text-xs text-slate-400">Reward Rate (SC / 10m)</div>
+                <div id="adminCurrentRate" class="font-display text-2xl font-bold text-amber-400 mt-1">10 SC</div>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+                <div class="text-xs text-slate-400">Daily Earning Cap</div>
+                <div id="adminCurrentCap" class="font-display text-2xl font-bold text-emerald-400 mt-1">600 SC</div>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
+                <div class="text-xs text-slate-400">3D Store Buildings</div>
+                <div id="adminCatalogCount" class="font-display text-2xl font-bold text-purple-400 mt-1">15</div>
+              </div>
+            </div>
+
+            <!-- Economy Rules & Grant/Deduct Controls -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+                <h3 class="font-display font-bold text-base text-cyan-300">Global Economy Parameters</h3>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">SC per 10 Mins Study</label>
+                    <input id="adminRateInput" type="number" min="1" max="200" value="10" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-400 mb-1">Daily Earning Cap (SC)</label>
+                    <input id="adminCapInput" type="number" min="60" max="10000" value="600" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
+                  </div>
+                </div>
+                <button onclick="saveAdminEconomySettings()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs transition">
+                  Save Global Rules & Record Audit
+                </button>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+                <h3 class="font-display font-bold text-base text-amber-300">Direct SC Adjustment (With Audit Reason)</h3>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="adjTargetId" type="text" placeholder="Citizen ID (e.g. EC-100001)" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs font-mono" />
+                  <input id="adjAmount" type="number" placeholder="Amount (+500 or -200)" value="1000" class="px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs" />
+                </div>
+                <input id="adjReason" type="text" placeholder="Mandatory Audit Reason (e.g., Weekly Event Winner)" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs" />
+                <button onclick="adminAdjustUserCredits()" class="px-4 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs transition">
+                  Execute Audited Credit Adjustment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Registered Citizens Table -->
+          <div class="glass-panel rounded-3xl p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <h3 class="font-display font-bold text-lg">Live Scholar & City Directory</h3>
+              <input id="adminUserSearch" oninput="renderAdminPanel()" type="text" placeholder="Search by name, ID, or city..." class="px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs w-64" />
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
+                    <th class="py-2.5 px-3">Citizen ID</th>
+                    <th class="py-2.5 px-3">Scholar</th>
+                    <th class="py-2.5 px-3">City Name</th>
+                    <th class="py-2.5 px-3">Study Hrs</th>
+                    <th class="py-2.5 px-3">Wallet SC</th>
+                    <th class="py-2.5 px-3 text-right">Quick Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminUsersTableBody" class="divide-y divide-slate-800/60"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Immutable Audit Logs -->
+          <div class="glass-panel rounded-3xl p-6">
+            <h3 class="font-display font-bold text-lg mb-3">Firestore & System Admin Audit Trail</h3>
+            <div id="adminAuditLogList" class="space-y-2 text-xs font-mono text-slate-300 max-h-60 overflow-y-auto"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Firebase v10.14.1 Modular SDK + Complete Application Engine -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      addDoc,
+      collection,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    // =========================================================================
+    // 1. EXACT USER-PROVIDED FIREBASE CONFIGURATION
+    // =========================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBIn-SB8aJyJGu5qYWIx6ddCulFB_-z4bw",
+      authDomain: "educivilization-c1c5a.firebaseapp.com",
+      projectId: "educivilization-c1c5a",
+      storageBucket: "educivilization-c1c5a.firebasestorage.app",
+      messagingSenderId: "740245457329",
+      appId: "1:740245457329:web:11d4be791bd437d0249590",
+      measurementId: "G-RQC326T5V8"
+    };
+
+    const ADMIN_AUTHORIZED_EMAIL = "educivilization@gmail.com";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentFirebaseUser = null;
+    let isAdminAuthenticated = false;
+
+    // =========================================================================
+    // 2. CATALOG, ACHIEVEMENTS & REALISTIC INDIAN STUDENT LEADERBOARDS
+    // =========================================================================
+    const AVATARS = ['🧑‍🚀', '👩‍🔬', '🧑‍🎓', '🧙‍♂️', '🥷', '🤖', '🦁', '🦉', '⚡', '🏛️', '🚀', '💎'];
+
+    const SCHOLAR_TITLES = [
+      { minLevel: 1, title: 'Novice Learner', badge: '🌱' },
+      { minLevel: 3, title: 'Focus Apprentice', badge: '🎯' },
+      { minLevel: 6, title: 'Knowledge Builder', badge: '📚' },
+      { minLevel: 10, title: 'City Architect', badge: '🏛️' },
+      { minLevel: 15, title: 'Grand Scholar', badge: '👑' },
+      { minLevel: 25, title: 'Civilization Founder', badge: '🌌' },
+    ];
+
+    const DEFAULT_BUILDINGS = [
+      { id: 'city_hall', name: 'Grand City Hall', district: 'Administration', price: 0, minHours: 0, pop: 150, infra: 120, rarity: 'Core', color: '#06B6D4', accent: '#F59E0B', height: 2.2, shape: 'capitol', desc: 'Central administrative command of your civilization.' },
+      { id: 'small_house', name: 'Solar Villa', district: 'Residential', price: 5000, minHours: 0, pop: 120, infra: 30, rarity: 'Common', color: '#38BDF8', accent: '#F8FAFC', height: 1.1, shape: 'house', desc: 'Modern eco-friendly residence with pitched roof.' },
+      { id: 'sky_apartments', name: 'Skyline Residency', district: 'Residential', price: 18000, minHours: 3, pop: 450, infra: 75, rarity: 'Rare', color: '#3B82F6', accent: '#93C5FD', height: 2.8, shape: 'tower', desc: 'High-density glass residential skyscraper.' },
+      { id: 'school', name: 'Vidya Public School', district: 'Education', price: 15000, minHours: 1, pop: 80, infra: 100, rarity: 'Common', color: '#A855F7', accent: '#FDE047', height: 1.5, shape: 'campus', desc: 'Foundation academy boosting city knowledge output.' },
+      { id: 'university', name: 'Nalanda Tech University', district: 'Education', price: 50000, minHours: 15, pop: 320, infra: 280, rarity: 'Epic', color: '#7C3AED', accent: '#38BDF8', height: 2.6, shape: 'capitol', desc: 'Premier research campus unlocked at 15 Study Hours.' },
+      { id: 'hospital', name: 'ApolloCare Super Hospital', district: 'Healthcare', price: 25000, minHours: 2, pop: 140, infra: 150, rarity: 'Rare', color: '#F43F5E', accent: '#FFFFFF', height: 2.0, shape: 'hospital', desc: 'Multi-specialty medical tower with helipad.' },
+      { id: 'police_station', name: 'Cyber Command HQ', district: 'Administration', price: 12000, minHours: 0, pop: 60, infra: 90, rarity: 'Common', color: '#2563EB', accent: '#38BDF8', height: 1.4, shape: 'campus', desc: 'Maintains civic safety and smart traffic.' },
+      { id: 'central_bank', name: 'Reserve Vault Tower', district: 'Banking', price: 40000, minHours: 10, pop: 110, infra: 210, rarity: 'Epic', color: '#F59E0B', accent: '#FEF08A', height: 2.5, shape: 'tower', desc: 'Financial hub unlocked at 10 Study Hours.' },
+      { id: 'tech_mall', name: 'CyberHub Galleria', district: 'Commercial', price: 22000, minHours: 4, pop: 220, infra: 120, rarity: 'Rare', color: '#EC4899', accent: '#FBCFE8', height: 1.7, shape: 'mall', desc: 'Bustling commercial plaza & innovation center.' },
+      { id: 'clean_factory', name: 'Quantum Robotics Plant', district: 'Industrial', price: 28000, minHours: 6, pop: 190, infra: 155, rarity: 'Rare', color: '#F97316', accent: '#FED7AA', height: 1.6, shape: 'factory', desc: 'Zero-emission automated clean manufacturing.' },
+      { id: 'neon_park', name: 'Botanical Bio-Dome', district: 'Recreation', price: 8000, minHours: 0, pop: 95, infra: 80, rarity: 'Common', color: '#10B981', accent: '#A7F3D0', height: 0.9, shape: 'park', desc: 'Lush green sanctuary boosting citizen happiness.' },
+      { id: 'metro_station', name: 'Hyperloop Metro Hub', district: 'Transport', price: 32000, minHours: 8, pop: 160, infra: 230, rarity: 'Epic', color: '#14B8A6', accent: '#99F6E4', height: 1.4, shape: 'mall', desc: 'High-speed transit station connecting districts.' },
+      { id: 'solar_grid', name: 'Helios Solar Array', district: 'Infrastructure', price: 16000, minHours: 2, pop: 40, infra: 190, rarity: 'Rare', color: '#EAB308', accent: '#38BDF8', height: 1.0, shape: 'solar', desc: 'Clean renewable energy powerhouse.' },
+      { id: 'wisdom_library', name: 'Great Library Wonder', district: 'World Wonders', price: 75000, minHours: 50, pop: 550, infra: 480, rarity: 'Legendary', color: '#8B5CF6', accent: '#FBBF24', height: 3.1, shape: 'capitol', desc: 'World Wonder unlocked after 50 Verified Study Hours.' },
+      { id: 'space_elevator', name: 'Aether Orbital Spire', district: 'World Wonders', price: 120000, minHours: 100, pop: 1100, infra: 850, rarity: 'Legendary', color: '#06B6D4', accent: '#F43F5E', height: 3.9, shape: 'spire', desc: 'Ultimate Civilization Wonder unlocked at 100 Study Hours.' },
+    ];
+
+    const ACHIEVEMENTS_LIST = [
+      { id: 'first_session', cat: 'STUDY', title: 'First Spark', desc: 'Complete your first verified focus session', check: (s) => s.studyMinutes >= 1, progress: (s) => Math.min(100, s.studyMinutes * 100), xp: 150, badge: '🔥', rarity: 'Common' },
+      { id: 'five_hours', cat: 'STUDY', title: 'Consistent Scholar', desc: 'Reach 5 hours (300 mins) of verified study', check: (s) => s.studyMinutes >= 300, progress: (s) => Math.min(100, Math.round((s.studyMinutes / 300) * 100)), xp: 400, badge: '📖', rarity: 'Common' },
+      { id: 'ten_hours', cat: 'STUDY', title: '10-Hour Club', desc: 'Accumulate 10 hours of verified focus', check: (s) => s.studyMinutes >= 600, progress: (s) => Math.min(100, Math.round((s.studyMinutes / 600) * 100)), xp: 800, badge: '📘', rarity: 'Rare' },
+      { id: 'twenty_five_hours', cat: 'STUDY', title: 'Deep Work Specialist', desc: 'Accumulate 25 hours of verified study', check: (s) => s.studyMinutes >= 1500, progress: (s) => Math.min(100, Math.round((s.studyMinutes / 1500) * 100)), xp: 1500, badge: '⚡', rarity: 'Rare' },
+      { id: 'fifty_hours', cat: 'STUDY', title: 'Half-Century Master', desc: 'Accumulate 50 hours of verified focus', check: (s) => s.studyMinutes >= 3000, progress: (s) => Math.min(100, Math.round((s.studyMinutes / 3000) * 100)), xp: 3000, badge: '🏛️', rarity: 'Epic' },
+      { id: 'hundred_hours', cat: 'STUDY', title: 'Centurion Scholar', desc: '100 Hours Mastery — Unlocks Orbital Spire', check: (s) => s.studyMinutes >= 6000, progress: (s) => Math.min(100, Math.round((s.studyMinutes / 6000) * 100)), xp: 6000, badge: '💎', rarity: 'Legendary' },
+      { id: 'first_build', cat: 'CITY', title: 'Urban Planner', desc: 'Construct 3 buildings in your 3D City', check: (s) => countBuildings(s) >= 3, progress: (s) => Math.min(100, Math.round((countBuildings(s) / 3) * 100)), xp: 250, badge: '🏗️', rarity: 'Common' },
+      { id: 'eight_builds', cat: 'CITY', title: 'District Developer', desc: 'Construct 8 buildings across your city', check: (s) => countBuildings(s) >= 8, progress: (s) => Math.min(100, Math.round((countBuildings(s) / 8) * 100)), xp: 900, badge: '🏙️', rarity: 'Rare' },
+      { id: 'first_upgrade', cat: 'CITY', title: 'Vertical Expansion', desc: 'Upgrade any 3D building to Level 2 or 3', check: (s) => s.grid.some(c => c.buildingId && c.level >= 2), progress: (s) => s.grid.some(c => c.buildingId && c.level >= 2) ? 100 : 0, xp: 450, badge: '⬆️', rarity: 'Common' },
+      { id: 'land_baron', cat: 'CITY', title: 'Territory Pioneer', desc: 'Unlock at least 20 land plots in your city', check: (s) => s.grid.filter(c => c.unlocked).length >= 20, progress: (s) => Math.min(100, Math.round((s.grid.filter(c => c.unlocked).length / 20) * 100)), xp: 700, badge: '🗺️', rarity: 'Rare' },
+      { id: 'pop_thousand', cat: 'CITY', title: 'Thriving Metropolis', desc: 'Grow city population past 1,500 citizens', check: (s) => calculateCityMetrics(s).totalPop >= 1500, progress: (s) => Math.min(100, Math.round((calculateCityMetrics(s).totalPop / 1500) * 100)), xp: 1200, badge: '👥', rarity: 'Epic' },
+      { id: 'five_districts', cat: 'CITY', title: 'Balanced Civilization', desc: 'Build across 5 or more distinct districts', check: (s) => calculateCityMetrics(s).districtsCount >= 5, progress: (s) => Math.min(100, Math.round((calculateCityMetrics(s).districtsCount / 5) * 100)), xp: 1400, badge: '🧭', rarity: 'Epic' },
+      { id: 'explorer_one', cat: 'SOCIAL', title: 'World Traveler', desc: 'Visit another scholar’s 3D city in Explore World', check: (s) => (s.citiesVisited || 0) >= 1, progress: (s) => Math.min(100, (s.citiesVisited || 0) * 100), xp: 200, badge: '✈️', rarity: 'Common' },
+      { id: 'reactor_fan', cat: 'SOCIAL', title: 'Community Supporter', desc: 'Send 5 Social Reactors in 3D Visit Mode', check: (s) => (s.reactorsSent || 0) >= 5, progress: (s) => Math.min(100, Math.round(((s.reactorsSent || 0) / 5) * 100)), xp: 350, badge: '🚀', rarity: 'Common' },
+      { id: 'networth_150k', cat: 'SOCIAL', title: 'Wealth Architect', desc: 'Reach 150,000 SC Total Net Worth', check: (s) => (s.scBalance + calculateCityMetrics(s).assetValue) >= 150000, progress: (s) => Math.min(100, Math.round(((s.scBalance + calculateCityMetrics(s).assetValue) / 150000) * 100)), xp: 1000, badge: '💰', rarity: 'Rare' },
+      { id: 'networth_300k', cat: 'SOCIAL', title: 'Grand Sovereign', desc: 'Reach 300,000 SC Total Net Worth', check: (s) => (s.scBalance + calculateCityMetrics(s).assetValue) >= 300000, progress: (s) => Math.min(100, Math.round(((s.scBalance + calculateCityMetrics(s).assetValue) / 300000) * 100)), xp: 3500, badge: '👑', rarity: 'Legendary' },
+    ];
+
+    // Realistic Indian Student Community Cities & Leaderboard Profiles
+    const COMMUNITY_SCHOLARS = [
+      {
+        uid: 'bot_ravi',
+        uniqueId: 'EC-100108',
+        username: 'Ravi Sharma',
+        region: 'Jaipur, RJ',
+        avatar: '🧑‍🚀',
+        cityName: 'Pink City Citadel',
+        studyMinutes: 2550, // 42.5 hrs
+        streak: 19,
+        xp: 25500,
+        scBalance: 48200,
+        likes: 64,
+        visitors: 410,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 3], [3, 4, 'university', 2], [4, 3, 'central_bank', 2],
+          [4, 4, 'hospital', 2], [2, 3, 'sky_apartments', 2], [2, 4, 'tech_mall', 2],
+          [3, 2, 'metro_station', 1], [4, 2, 'solar_grid', 2], [5, 3, 'neon_park', 1],
+          [5, 4, 'school', 2], [2, 2, 'small_house', 3], [5, 5, 'police_station', 1]
+        ])
+      },
+      {
+        uid: 'bot_ankit',
+        uniqueId: 'EC-100142',
+        username: 'Ankit Verma',
+        region: 'Kota, RJ',
+        avatar: '🧑‍🎓',
+        cityName: 'Quantum Kota Hub',
+        studyMinutes: 4920, // 82.0 hrs
+        streak: 34,
+        xp: 49200,
+        scBalance: 76400,
+        likes: 112,
+        visitors: 790,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 3], [3, 4, 'wisdom_library', 2], [4, 3, 'university', 3],
+          [4, 4, 'central_bank', 2], [2, 3, 'hospital', 2], [2, 4, 'sky_apartments', 3],
+          [3, 2, 'metro_station', 2], [4, 2, 'solar_grid', 3], [5, 3, 'tech_mall', 2],
+          [5, 4, 'clean_factory', 2], [2, 2, 'school', 3], [5, 2, 'neon_park', 2],
+          [3, 5, 'police_station', 2]
+        ])
+      },
+      {
+        uid: 'bot_neha',
+        uniqueId: 'EC-100119',
+        username: 'Neha Singh',
+        region: 'New Delhi, DL',
+        avatar: '👩‍🔬',
+        cityName: 'Indraprastha Nova',
+        studyMinutes: 3780, // 63.0 hrs
+        streak: 27,
+        xp: 37800,
+        scBalance: 63900,
+        likes: 89,
+        visitors: 540,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 3], [3, 4, 'wisdom_library', 1], [4, 3, 'university', 2],
+          [4, 4, 'hospital', 2], [2, 3, 'central_bank', 2], [2, 4, 'tech_mall', 2],
+          [3, 2, 'metro_station', 2], [4, 2, 'neon_park', 2], [5, 3, 'sky_apartments', 2],
+          [5, 4, 'solar_grid', 2], [2, 2, 'school', 2]
+        ])
+      },
+      {
+        uid: 'bot_priya',
+        uniqueId: 'EC-100156',
+        username: 'Priya Patel',
+        region: 'Ahmedabad, GJ',
+        avatar: '🧙‍♂️',
+        cityName: 'Sabarmati Zenith',
+        studyMinutes: 1980, // 33.0 hrs
+        streak: 14,
+        xp: 19800,
+        scBalance: 54100,
+        likes: 43,
+        visitors: 280,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 2], [3, 4, 'university', 1], [4, 3, 'central_bank', 1],
+          [4, 4, 'hospital', 2], [2, 3, 'tech_mall', 1], [2, 4, 'solar_grid', 2],
+          [3, 2, 'neon_park', 2], [4, 2, 'small_house', 2], [5, 3, 'school', 2]
+        ])
+      },
+      {
+        uid: 'bot_vikram',
+        uniqueId: 'EC-100163',
+        username: 'Vikram Rathore',
+        region: 'Jodhpur, RJ',
+        avatar: '🦁',
+        cityName: 'Mehrangarh Cyberia',
+        studyMinutes: 3120, // 52.0 hrs
+        streak: 22,
+        xp: 31200,
+        scBalance: 58900,
+        likes: 76,
+        visitors: 465,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 3], [3, 4, 'wisdom_library', 1], [4, 3, 'central_bank', 2],
+          [4, 4, 'university', 2], [2, 3, 'sky_apartments', 2], [2, 4, 'hospital', 1],
+          [3, 2, 'solar_grid', 2], [4, 2, 'police_station', 2], [5, 3, 'metro_station', 1],
+          [5, 4, 'neon_park', 2]
+        ])
+      },
+      {
+        uid: 'bot_sneha',
+        uniqueId: 'EC-100171',
+        username: 'Sneha Gupta',
+        region: 'Lucknow, UP',
+        avatar: '🦉',
+        cityName: 'Awadh TechnoPolis',
+        studyMinutes: 1440, // 24.0 hrs
+        streak: 11,
+        xp: 14400,
+        scBalance: 67300,
+        likes: 31,
+        visitors: 195,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 2], [3, 4, 'school', 2], [4, 3, 'hospital', 1],
+          [4, 4, 'small_house', 2], [2, 3, 'neon_park', 1], [2, 4, 'police_station', 1],
+          [3, 2, 'solar_grid', 1], [4, 2, 'tech_mall', 1]
+        ])
+      },
+      {
+        uid: 'bot_rohan',
+        uniqueId: 'EC-100184',
+        username: 'Rohan Meena',
+        region: 'Udaipur, RJ',
+        avatar: '⚡',
+        cityName: 'Lakefront Aether',
+        studyMinutes: 1080, // 18.0 hrs
+        streak: 8,
+        xp: 10800,
+        scBalance: 72500,
+        likes: 24,
+        visitors: 150,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 2], [3, 4, 'school', 1], [4, 3, 'small_house', 2],
+          [4, 4, 'neon_park', 2], [2, 3, 'hospital', 1], [2, 4, 'solar_grid', 1]
+        ])
+      },
+      {
+        uid: 'bot_kavita',
+        uniqueId: 'EC-100192',
+        username: 'Kavita Joshi',
+        region: 'Pune, MH',
+        avatar: '💎',
+        cityName: 'Sahyadri Silicon',
+        studyMinutes: 2220, // 37.0 hrs
+        streak: 16,
+        xp: 22200,
+        scBalance: 51400,
+        likes: 52,
+        visitors: 330,
+        privacy: 'Public',
+        grid: createPresetGrid([
+          [3, 3, 'city_hall', 2], [3, 4, 'university', 2], [4, 3, 'tech_mall', 2],
+          [4, 4, 'clean_factory', 1], [2, 3, 'sky_apartments', 2], [2, 4, 'metro_station', 1],
+          [3, 2, 'hospital', 1], [4, 2, 'neon_park', 2]
+        ])
+      }
+    ];
+
+    function createPresetGrid(placements) {
+      const grid = [];
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const isUnlockedDefault = r >= 2 && r <= 5 && c >= 2 && c <= 5;
+          const zone = getPlotZone(r, c);
+          grid.push({
+            r, c,
+            unlocked: isUnlockedDefault,
+            zone,
+            plotPrice: getPlotPrice(zone),
+            buildingId: null,
+            level: 1
+          });
+        }
+      }
+      placements.forEach(([r, c, bId, lvl]) => {
+        const cell = grid.find(x => x.r === r && x.c === c);
+        if (cell) {
+          cell.unlocked = true;
+          cell.buildingId = bId;
+          cell.level = lvl || 1;
+        }
+      });
+      return grid;
+    }
+
+    function getPlotZone(r, c) {
+      if (r >= 2 && r <= 5 && c >= 2 && c <= 5) return 'Central Core';
+      if (r === 0 || c === 0 || r === 7 || c === 7) return 'Waterfront & Outer';
+      if ((r + c) % 2 === 0) return 'Commercial & Tech';
+      return 'Residential & Civic';
+    }
+
+    function getPlotPrice(zone) {
+      if (zone === 'Central Core') return 0;
+      if (zone === 'Residential & Civic') return 3000;
+      if (zone === 'Commercial & Tech') return 6000;
+      return 12000;
+    }
+
+    // =========================================================================
+    // 3. APPLICATION STATE & LOCAL + FIRESTORE PERSISTENCE
+    // =========================================================================
+    const LOCAL_STORAGE_KEY = 'educivilization_state_v2';
+
+    let state = {
+      uniqueId: 'EC-' + Math.floor(100200 + Math.random() * 899000),
+      username: 'Aarav Scholar',
+      region: 'Jodhpur, IN',
+      avatar: '🧑‍🚀',
+      cityName: 'Neo Nalanda',
+      privacy: 'Public',
+      scBalance: 100000,
+      xp: 0,
+      studyMinutes: 0,
+      todayMinutes: 0,
+      todayEarnedSc: 0,
+      dailyGoalMinutes: 240,
+      streak: 1,
+      likes: 1,
+      visitors: 1,
+      citiesVisited: 0,
+      reactorsSent: 0,
+      onboarded: false,
+      claimedAchievements: [],
+      sessions: [],
+      transactions: [
+        {
+          id: 'tx_init',
+          timestamp: new Date().toLocaleString(),
+          type: 'GRANT',
+          desc: 'Initial Civilization Founding Grant (One-Time)',
+          amount: 100000
+        }
+      ],
+      grid: createPresetGrid([[3, 3, 'city_hall', 1]]),
+      catalog: [...DEFAULT_BUILDINGS],
+      adminConfig: {
+        rewardPer10Min: 10,
+        dailyCapSc: 600
+      },
+      auditLogs: [
+        `[${new Date().toLocaleTimeString()}] SYSTEM: Educivilization Economy initialized (10 SC / 10m, 100,000 SC Founding Grant).`
+      ]
+    };
+
+    // Load saved local state immediately for zero-latency boot
+    try {
+      const savedRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (savedRaw) {
+        const parsed = JSON.parse(savedRaw);
+        state = { ...state, ...parsed, catalog: parsed.catalog || [...DEFAULT_BUILDINGS] };
+      }
+    } catch (e) {}
+
+    let publicCities = [...COMMUNITY_SCHOLARS];
+    let visitingCity = null;
+    let selectedTile = { r: 3, c: 3 };
+    let selectedStoreDistrict = 'ALL';
+    let selectedAchFilter = 'ALL';
+
+    function persistLocalState() {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 4. FIREBASE AUTH & FIRESTORE REAL-TIME SYNC
+    // =========================================================================
+    onAuthStateChanged(auth, async (user) => {
+      const dot = document.getElementById('cloudDot');
+      const statusText = document.getElementById('cloudStatusText');
+
+      if (user) {
+        currentFirebaseUser = user;
+        const email = (user.email || '').toLowerCase();
+        isAdminAuthenticated = (email === ADMIN_AUTHORIZED_EMAIL);
+
+        updateAdminLockUI();
+
+        if (isAdminAuthenticated) {
+          dot.className = 'w-2 h-2 rounded-full bg-rose-400';
+          statusText.textContent = 'Admin Verified';
+        } else {
+          dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+          statusText.textContent = 'Firebase Synced';
+        }
+
+        await syncUserWithFirestore(user.uid);
+        subscribeToFirestorePublicCities();
+      } else {
+        isAdminAuthenticated = false;
+        updateAdminLockUI();
+        try {
+          await signInAnonymously(auth);
+        } catch (err) {
+          console.warn('Anonymous Auth fallback:', err.message);
+          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          statusText.textContent = 'Local Sync Active';
+        }
+      }
+    });
+
+    async function syncUserWithFirestore(uid) {
+      try {
+        const userRef = doc(db, 'users', uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists() && !isAdminAuthenticated) {
+          const remote = snap.data();
+          if ((remote.updatedAt || 0) > (state.updatedAt || 0)) {
+            state = {
+              ...state,
+              ...remote,
+              grid: remote.gridJson ? JSON.parse(remote.gridJson) : state.grid
+            };
+            persistLocalState();
+          }
+        }
+        await pushStateToFirestore();
+        refreshAllUI();
+      } catch (err) {
+        console.warn('Firestore sync notice (check rules):', err.message);
+      }
+    }
+
+    async function pushStateToFirestore() {
+      state.updatedAt = Date.now();
+      persistLocalState();
+      if (!currentFirebaseUser) return;
+
+      try {
+        const userRef = doc(db, 'users', currentFirebaseUser.uid);
+        await setDoc(userRef, {
+          uid: currentFirebaseUser.uid,
+          uniqueId: state.uniqueId,
+          username: state.username,
+          region: state.region,
+          avatar: state.avatar,
+          cityName: state.cityName,
+          privacy: state.privacy,
+          scBalance: state.scBalance,
+          xp: state.xp,
+          studyMinutes: state.studyMinutes,
+          todayMinutes: state.todayMinutes,
+          todayEarnedSc: state.todayEarnedSc,
+          streak: state.streak,
+          likes: state.likes,
+          visitors: state.visitors,
+          sessions: state.sessions.slice(0, 25),
+          transactions: state.transactions.slice(0, 40),
+          gridJson: JSON.stringify(state.grid),
+          updatedAt: state.updatedAt
+        }, { merge: true });
+
+        if (state.privacy === 'Public') {
+          const pubRef = doc(db, 'public_cities', currentFirebaseUser.uid);
+          await setDoc(pubRef, {
+            uid: currentFirebaseUser.uid,
+            uniqueId: state.uniqueId,
+            username: state.username,
+            region: state.region,
+            avatar: state.avatar,
+            cityName: state.cityName,
+            privacy: state.privacy,
+            studyMinutes: state.studyMinutes,
+            streak: state.streak,
+            xp: state.xp,
+            scBalance: state.scBalance,
+            likes: state.likes,
+            visitors: state.visitors,
+            gridJson: JSON.stringify(state.grid),
+            updatedAt: state.updatedAt
+          }, { merge: true });
+        }
+      } catch (err) {
+        console.warn('Firestore write skipped:', err.message);
+      }
+    }
+
+    function subscribeToFirestorePublicCities() {
+      try {
+        onSnapshot(collection(db, 'public_cities'), (snapshot) => {
+          const remoteList = [];
+          snapshot.forEach(docSnap => {
+            const d = docSnap.data();
+            if (d.privacy === 'Public' && d.cityName) {
+              remoteList.push({
+                ...d,
+                grid: d.gridJson ? JSON.parse(d.gridJson) : createPresetGrid([[3, 3, 'city_hall', 1]])
+              });
+            }
+          });
+          const seenIds = new Set(remoteList.map(x => x.uniqueId));
+          publicCities = [
+            ...remoteList,
+            ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
+          ];
+          renderExploreWorld();
+          renderLeaderboard('study');
+          if (isAdminAuthenticated) renderAdminPanel();
+        });
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 5. LOCKED FIREBASE EMAIL/PASSWORD ADMIN AUTHENTICATION
+    // =========================================================================
+    window.handleAdminFirebaseLogin = async function (event) {
+      event.preventDefault();
+      const email = document.getElementById('adminLoginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('adminLoginPassword').value;
+      const errBox = document.getElementById('adminLoginError');
+      const btn = document.getElementById('adminLoginSubmitBtn');
+
+      errBox.classList.add('hidden');
+
+      if (email !== ADMIN_AUTHORIZED_EMAIL) {
+        errBox.textContent = `Access Denied: Only ${ADMIN_AUTHORIZED_EMAIL} is permitted to unlock the Admin Panel.`;
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Verifying with Firebase...`;
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+          isAdminAuthenticated = true;
+          updateAdminLockUI();
+          logAdminAction(`Admin authenticated via Firebase Email/Password (${email}).`);
+          showToast('Admin Control Panel Unlocked!', 'success');
+        }
+      } catch (err) {
+        errBox.textContent = `Firebase Auth Error: ${err.message}`;
+        errBox.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-unlock-keyhole mr-1.5"></i> Verify & Unlock Admin Panel`;
+      }
+    };
+
+    window.handleAdminLogout = async function () {
+      try {
+        await signOut(auth);
+        isAdminAuthenticated = false;
+        updateAdminLockUI();
+        showToast('Admin Panel Locked & Signed Out.', 'info');
+      } catch (e) {}
+    };
+
+    function updateAdminLockUI() {
+      const lockScreen = document.getElementById('adminLockScreen');
+      const unlockedContent = document.getElementById('adminUnlockedContent');
+      const sidebarIcon = document.getElementById('sidebarAdminLockIcon');
+
+      if (isAdminAuthenticated) {
+        lockScreen.classList.add('hidden');
+        unlockedContent.classList.remove('hidden');
+        sidebarIcon.className = 'fa-solid fa-lock-open w-5 text-center text-emerald-400';
+        renderAdminPanel();
+      } else {
+        lockScreen.classList.remove('hidden');
+        unlockedContent.classList.add('hidden');
+        sidebarIcon.className = 'fa-solid fa-lock w-5 text-center text-rose-400';
+      }
+    }
+
+    async function logAdminAction(message) {
+      const entry = `[${new Date().toLocaleTimeString()}] ADMIN (${ADMIN_AUTHORIZED_EMAIL}): ${message}`;
+      state.auditLogs.unshift(entry);
+      persistLocalState();
+      if (isAdminAuthenticated) {
+        try {
+          await addDoc(collection(db, 'admin_logs'), {
+            adminEmail: ADMIN_AUTHORIZED_EMAIL,
+            action: message,
+            timestamp: Date.now()
+          });
+        } catch (e) {}
+      }
+    }
+
+    // =========================================================================
+    // 6. REAL 3D VIRTUAL CITY ENGINE (THREE.JS WEBGL)
+    // =========================================================================
+    let scene, camera3D, renderer3D, raycaster, mouseVec;
+    let plotMeshes = [];
+    let cityGroup = null;
+    let ambientLight, sunLight, hemiLight;
+    let camSpherical = { radius: 18, theta: Math.PI / 4, phi: Math.PI / 3.2 };
+    let camTarget = new THREE.Vector3(0, 0, 0);
+    let threeInitialized = false;
+
+    function initThreeCity() {
+      const container = document.getElementById('threeCityContainer');
+      if (!container || threeInitialized || typeof THREE === 'undefined') return;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color('#060B18');
+      scene.fog = new THREE.FogExp2('#060B18', 0.022);
+
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 540;
+      camera3D = new THREE.PerspectiveCamera(42, width / height, 0.1, 150);
+      updateCamera3DPosition();
+
+      renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer3D.setSize(width, height);
+      renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer3D.shadowMap.enabled = true;
+      renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.prepend(renderer3D.domElement);
+
+      // Lighting
+      hemiLight = new THREE.HemisphereLight(0x7dd3fc, 0x0f172a, 0.75);
+      scene.add(hemiLight);
+
+      ambientLight = new THREE.AmbientLight(0x38bdf8, 0.35);
+      scene.add(ambientLight);
+
+      sunLight = new THREE.DirectionalLight(0xfef08a, 1.15);
+      sunLight.position.set(14, 22, 12);
+      sunLight.castShadow = true;
+      sunLight.shadow.mapSize.width = 1024;
+      sunLight.shadow.mapSize.height = 1024;
+      scene.add(sunLight);
+
+      // Base Ocean / Cyber Ground Plane
+      const waterGeo = new THREE.PlaneGeometry(80, 80);
+      const waterMat = new THREE.MeshStandardMaterial({
+        color: 0x082f49,
+        roughness: 0.25,
+        metalness: 0.65
+      });
+      const waterPlane = new THREE.Mesh(waterGeo, waterMat);
+      waterPlane.rotation.x = -Math.PI / 2;
+      waterPlane.position.y = -0.22;
+      scene.add(waterPlane);
+
+      // City Island Platform Base
+      const islandGeo = new THREE.BoxGeometry(17.6, 0.4, 17.6);
+      const islandMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+      const islandMesh = new THREE.Mesh(islandGeo, islandMat);
+      islandMesh.position.y = -0.21;
+      islandMesh.receiveShadow = true;
+      scene.add(islandMesh);
+
+      cityGroup = new THREE.Group();
+      scene.add(cityGroup);
+
+      raycaster = new THREE.Raycaster();
+      mouseVec = new THREE.Vector2();
+
+      setupThreeOrbitControls(renderer3D.domElement);
+      threeInitialized = true;
+      rebuild3DCityMeshes();
+      animateThreeLoop();
+    }
+
+    function updateCamera3DPosition() {
+      if (!camera3D) return;
+      const x = camTarget.x + camSpherical.radius * Math.sin(camSpherical.phi) * Math.sin(camSpherical.theta);
+      const y = camTarget.y + camSpherical.radius * Math.cos(camSpherical.phi);
+      const z = camTarget.z + camSpherical.radius * Math.sin(camSpherical.phi) * Math.cos(camSpherical.theta);
+      camera3D.position.set(x, y, z);
+      camera3D.lookAt(camTarget);
+    }
+
+    function setupThreeOrbitControls(domEl) {
+      let isDown = false;
+      let startX = 0, startY = 0, prevX = 0, prevY = 0;
+
+      domEl.addEventListener('pointerdown', (e) => {
+        isDown = true;
+        startX = prevX = e.clientX;
+        startY = prevY = e.clientY;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDown) return;
+        const dx = e.clientX - prevX;
+        const dy = e.clientY - prevY;
+        prevX = e.clientX;
+        prevY = e.clientY;
+
+        camSpherical.theta -= dx * 0.008;
+        camSpherical.phi = Math.max(0.28, Math.min(Math.PI / 2.15, camSpherical.phi - dy * 0.008));
+        updateCamera3DPosition();
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (!isDown) return;
+        isDown = false;
+        if (Math.hypot(e.clientX - startX, e.clientY - startY) < 6) {
+          handle3DPlotClick(e.clientX, e.clientY);
+        }
+      });
+
+      domEl.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        camSpherical.radius = Math.max(8, Math.min(32, camSpherical.radius + e.deltaY * 0.012));
+        updateCamera3DPosition();
+      }, { passive: false });
+    }
+
+    function handle3DPlotClick(clientX, clientY) {
+      if (!renderer3D || !camera3D) return;
+      const rect = renderer3D.domElement.getBoundingClientRect();
+      mouseVec.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouseVec.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouseVec, camera3D);
+      const hits = raycaster.intersectObjects(plotMeshes, true);
+      if (hits.length > 0) {
+        let obj = hits[0].object;
+        while (obj && obj.userData.r === undefined) {
+          obj = obj.parent;
+        }
+        if (obj && obj.userData.r !== undefined) {
+          selectedTile = { r: obj.userData.r, c: obj.userData.c };
+          rebuild3DCityMeshes();
+          renderTileInspector();
+        }
+      }
+    }
+
+    window.rotateCityCamera = function (deltaTheta) {
+      camSpherical.theta += deltaTheta;
+      updateCamera3DPosition();
+    };
+
+    window.adjustCityZoom = function (deltaR) {
+      camSpherical.radius = Math.max(8, Math.min(32, camSpherical.radius + deltaR));
+      updateCamera3DPosition();
+    };
+
+    window.resetCityCamera = function () {
+      camSpherical = { radius: 18, theta: Math.PI / 4, phi: Math.PI / 3.2 };
+      camTarget.set(0, 0, 0);
+      updateCamera3DPosition();
+    };
+
+    window.setCityAtmosphere = function (mode) {
+      document.querySelectorAll('.atmo-btn').forEach(b => b.classList.remove('bg-cyan-500/20', 'text-cyan-300', 'font-semibold'));
+      const active = document.getElementById('atmoBtn-' + mode);
+      if (active) active.classList.add('bg-cyan-500/20', 'text-cyan-300', 'font-semibold');
+
+      if (!scene) return;
+      if (mode === 'day') {
+        scene.background = new THREE.Color('#7dd3fc');
+        scene.fog = new THREE.FogExp2('#bae6fd', 0.015);
+        sunLight.color.setHex(0xffffff);
+        sunLight.intensity = 1.45;
+        hemiLight.intensity = 1.05;
+      } else if (mode === 'sunset') {
+        scene.background = new THREE.Color('#3b1d4a');
+        scene.fog = new THREE.FogExp2('#4c1d57', 0.018);
+        sunLight.color.setHex(0xfb923c);
+        sunLight.intensity = 1.3;
+        hemiLight.intensity = 0.85;
+      } else {
+        scene.background = new THREE.Color('#060B18');
+        scene.fog = new THREE.FogExp2('#060B18', 0.022);
+        sunLight.color.setHex(0x93c5fd);
+        sunLight.intensity = 0.95;
+        hemiLight.intensity = 0.7;
+      }
+    };
+
+    // Build Detailed 3D Architectural Mesh for any Building Type & Level
+    function create3DBuildingMesh(b, level = 1) {
+      const group = new THREE.Group();
+      const levelScaleH = 1 + (level - 1) * 0.38;
+      const h = b.height * levelScaleH;
+      const mainColor = new THREE.Color(b.color);
+      const accentColor = new THREE.Color(b.accent || '#ffffff');
+
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: mainColor,
+        roughness: 0.35,
+        metalness: 0.25
+      });
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: 0xe0f2fe,
+        emissive: 0x38bdf8,
+        emissiveIntensity: 0.45,
+        roughness: 0.15,
+        metalness: 0.8
+      });
+      const roofMat = new THREE.MeshStandardMaterial({
+        color: accentColor,
+        roughness: 0.4,
+        metalness: 0.3
+      });
+
+      if (b.shape === 'house') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(1.1, h * 0.65, 1.0), bodyMat);
+        base.position.y = (h * 0.65) / 2;
+        base.castShadow = true;
+        group.add(base);
+
+        const roof = new THREE.Mesh(new THREE.ConeGeometry(0.92, h * 0.5, 4), roofMat);
+        roof.position.y = h * 0.65 + (h * 0.25);
+        roof.rotation.y = Math.PI / 4;
+        roof.castShadow = true;
+        group.add(roof);
+      } else if (b.shape === 'capitol' || b.shape === 'hospital') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(1.45, h * 0.75, 1.25), bodyMat);
+        base.position.y = (h * 0.75) / 2;
+        base.castShadow = true;
+        group.add(base);
+
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(0.52, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), roofMat);
+        dome.position.y = h * 0.75;
+        group.add(dome);
+
+        // Glowing window band
+        const winBand = new THREE.Mesh(new THREE.BoxGeometry(1.48, h * 0.16, 1.28), glassMat);
+        winBand.position.y = h * 0.45;
+        group.add(winBand);
+      } else if (b.shape === 'park') {
+        const lawn = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.8, 0.18, 16), bodyMat);
+        lawn.position.y = 0.09;
+        group.add(lawn);
+
+        const dome = new THREE.Mesh(
+          new THREE.SphereGeometry(0.62, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
+          new THREE.MeshPhysicalMaterial({ color: 0x34d399, transparent: true, opacity: 0.55, roughness: 0.1 })
+        );
+        dome.position.y = 0.18;
+        group.add(dome);
+      } else if (b.shape === 'spire') {
+        const base = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.75, h * 0.75, 8), bodyMat);
+        base.position.y = (h * 0.75) / 2;
+        base.castShadow = true;
+        group.add(base);
+
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.08, 8, 24), glassMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = h * 0.65;
+        group.add(ring);
+
+        const needle = new THREE.Mesh(new THREE.ConeGeometry(0.14, h * 0.4, 8), roofMat);
+        needle.position.y = h * 0.75 + h * 0.2;
+        group.add(needle);
+      } else {
+        // Modern Tower / Campus / Mall / Factory
+        const tower = new THREE.Mesh(new THREE.BoxGeometry(1.25, h, 1.25), bodyMat);
+        tower.position.y = h / 2;
+        tower.castShadow = true;
+        group.add(tower);
+
+        // Tiered glowing window strips
+        const tiers = level + 1;
+        for (let t = 1; t <= tiers; t++) {
+          const strip = new THREE.Mesh(new THREE.BoxGeometry(1.29, 0.14, 1.29), glassMat);
+          strip.position.y = (h / (tiers + 1)) * t;
+          group.add(strip);
+        }
+
+        const crown = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.22, 0.85), roofMat);
+        crown.position.y = h + 0.11;
+        group.add(crown);
+      }
+
+      // Level 3 Golden Beacon Spire
+      if (level >= 3) {
+        const beacon = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.18),
+          new THREE.MeshBasicMaterial({ color: 0xfbbf24 })
+        );
+        beacon.position.y = h + 0.48;
+        group.add(beacon);
+      }
+
+      return group;
+    }
+
+    function rebuild3DCityMeshes() {
+      if (!cityGroup) return;
+      while (cityGroup.children.length > 0) {
+        cityGroup.remove(cityGroup.children[0]);
+      }
+      plotMeshes = [];
+
+      const cityData = visitingCity ? visitingCity : state;
+      const spacing = 2.05;
+      const offset = (8 - 1) * spacing * 0.5;
+
+      cityData.grid.forEach(cell => {
+        const wx = cell.c * spacing - offset;
+        const wz = cell.r * spacing - offset;
+        const isSelected = selectedTile && selectedTile.r === cell.r && selectedTile.c === cell.c;
+
+        const tileGroup = new THREE.Group();
+        tileGroup.position.set(wx, 0, wz);
+        tileGroup.userData = { r: cell.r, c: cell.c };
+
+        // Plot Tile Pad
+        const padColor = !cell.unlocked
+          ? 0x334155
+          : cell.buildingId
+            ? 0x1e293b
+            : 0x065f46;
+
+        const padMat = new THREE.MeshStandardMaterial({
+          color: isSelected ? 0xf59e0b : padColor,
+          roughness: 0.7
+        });
+        const padMesh = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.14, 1.85), padMat);
+        padMesh.position.y = 0.07;
+        padMesh.receiveShadow = true;
+        tileGroup.add(padMesh);
+
+        // Neon selection ring
+        if (isSelected) {
+          const borderGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.94, 0.22, 1.94));
+          const borderLine = new THREE.LineSegments(borderGeo, new THREE.LineBasicMaterial({ color: 0xfde047 }));
+          borderLine.position.y = 0.11;
+          tileGroup.add(borderLine);
+        }
+
+        // If building exists, construct 3D building mesh
+        if (cell.buildingId) {
+          const b = state.catalog.find(x => x.id === cell.buildingId);
+          if (b) {
+            const bMesh = create3DBuildingMesh(b, cell.level || 1);
+            bMesh.position.y = 0.14;
+            tileGroup.add(bMesh);
+          }
+        } else if (cell.unlocked) {
+          // Decorative corner tree on unlocked plots
+          const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+          trunk.position.set(-0.65, 0.25, -0.65);
+          const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x10b981 }));
+          leaves.position.set(-0.65, 0.48, -0.65);
+          tileGroup.add(trunk, leaves);
+        }
+
+        cityGroup.add(tileGroup);
+        plotMeshes.push(tileGroup);
+      });
+    }
+
+    function animateThreeLoop() {
+      requestAnimationFrame(animateThreeLoop);
+      if (renderer3D && scene && camera3D) {
+        renderer3D.render(scene, camera3D);
+      }
+    }
+
+    function resizeThreeCanvas() {
+      const container = document.getElementById('threeCityContainer');
+      if (!container || !renderer3D || !camera3D) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (w > 0 && h > 0) {
+        camera3D.aspect = w / h;
+        camera3D.updateProjectionMatrix();
+        renderer3D.setSize(w, h);
+      }
+    }
+
+    // =========================================================================
+    // 7. 3D ARCHITECTURAL PREVIEWS IN BUILDING STORE ("3D IMAGES")
+    // =========================================================================
+    function generate3DBuildingPreviewSVG(b) {
+      // High-detail isometric 3D architectural vector illustration tailored to each building's colors & shape
+      const c1 = b.color;
+      const c2 = shadeHex(b.color, -26);
+      const c3 = b.accent || '#38BDF8';
+      const isTall = b.height >= 2.2;
+      const topY = isTall ? 24 : 44;
+
+      return `
+        <svg viewBox="0 0 180 130" class="w-full h-36 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/95 to-cyan-950/50 border border-slate-800/80">
+          <defs>
+            <linearGradient id="glow_${b.id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="${c3}" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="${c1}" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Isometric Base Platform -->
+          <polygon points="90,82 146,104 90,124 34,104" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.35" stroke-width="1.2"/>
+          <polygon points="90,85 138,104 90,120 42,104" fill="url(#glow_${b.id})"/>
+
+          <!-- Left 3D Facade -->
+          <polygon points="56,${topY + 18} 90,${topY + 34} 90,112 56,96" fill="${c1}" />
+          <!-- Right 3D Facade (Shaded) -->
+          <polygon points="124,${topY + 18} 90,${topY + 34} 90,112 124,96" fill="${c2}" />
+          <!-- 3D Roof Deck -->
+          <polygon points="90,${topY + 2} 124,${topY + 18} 90,${topY + 34} 56,${topY + 18}" fill="${c3}" />
+
+          <!-- Illuminated Architectural Windows -->
+          <line x1="64" y1="${topY + 32}" x2="83" y2="${topY + 41}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+          <line x1="64" y1="${topY + 46}" x2="83" y2="${topY + 55}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+          <line x1="64" y1="${topY + 60}" x2="83" y2="${topY + 69}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+
+          <line x1="116" y1="${topY + 32}" x2="97" y2="${topY + 41}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+          <line x1="116" y1="${topY + 46}" x2="97" y2="${topY + 55}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+          <line x1="116" y1="${topY + 60}" x2="97" y2="${topY + 69}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
+
+          ${b.shape === 'capitol' || b.shape === 'hospital' ? `
+            <ellipse cx="90" cy="${topY + 14}" rx="18" ry="11" fill="${c3}" stroke="#ffffff" stroke-width="1" stroke-opacity="0.5"/>
+          ` : ''}
+          ${b.shape === 'spire' ? `
+            <line x1="90" y1="${topY + 16}" x2="90" y2="6" stroke="#fde047" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="90" cy="6" r="3" fill="#f43f5e"/>
+          ` : ''}
+        </svg>
+      `;
+    }
+
+    function shadeHex(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+      const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+      const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    // =========================================================================
+    // 8. VERIFIED FOCUS ROOM (REAL TIMESTAMP DELTA + ANTI-CHEAT)
+    // =========================================================================
+    let timerState = {
+      mode: 'pomodoro',
+      running: false,
+      paused: false,
+      targetSeconds: 50 * 60,
+      accumulatedVerifiedMs: 0,
+      lastResumeTimestamp: 0,
+      tabSwitches: 0,
+      intervalId: null,
+      tabId: 'tab_' + Math.random().toString(36).slice(2)
+    };
+
+    const focusChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('educivilization_focus_lock') : null;
+    if (focusChannel) {
+      focusChannel.onmessage = (ev) => {
+        if (ev.data && ev.data.type === 'SESSION_ACTIVE' && ev.data.tabId !== timerState.tabId && timerState.running) {
+          cancelFocusSession();
+          showToast('Focus Session paused/stopped because another tab started a verified session.', 'error');
+        }
+      };
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && timerState.running && !timerState.paused) {
+        timerState.tabSwitches += 1;
+        updateFocusClockUI();
+      }
+    });
+
+    window.setTimerMode = function (mode) {
+      if (timerState.running) {
+        showToast('Finish or cancel your active session before changing timer mode.', 'error');
+        return;
+      }
+      timerState.mode = mode;
+      document.querySelectorAll('.timer-mode-btn').forEach(b => {
+        b.classList.remove('bg-cyan-500', 'text-slate-950');
+        b.classList.add('text-slate-400');
+      });
+      const btn = document.getElementById('modeBtn-' + mode);
+      btn.classList.add('bg-cyan-500', 'text-slate-950');
+      btn.classList.remove('text-slate-400');
+
+      const wrap = document.getElementById('customMinutesWrapper');
+      if (mode === 'stopwatch') {
+        wrap.classList.add('opacity-40', 'pointer-events-none');
+        timerState.targetSeconds = 0;
+      } else {
+        wrap.classList.remove('opacity-40', 'pointer-events-none');
+        if (mode === 'pomodoro') document.getElementById('customMinutesInput').value = 50;
+        const mins = parseInt(document.getElementById('customMinutesInput').value || '50', 10);
+        timerState.targetSeconds = mins * 60;
+      }
+      timerState.accumulatedVerifiedMs = 0;
+      updateFocusClockUI();
+    };
+
+    window.updateCustomMinutes = function (val) {
+      if (timerState.running) return;
+      const mins = Math.max(1, Math.min(240, parseInt(val || '25', 10)));
+      document.getElementById('customMinutesInput').value = mins;
+      timerState.targetSeconds = mins * 60;
+      updateFocusClockUI();
+    };
+
+    function getRealVerifiedElapsedSeconds() {
+      if (!timerState.running) return 0;
+      const liveDelta = timerState.paused ? 0 : (Date.now() - timerState.lastResumeTimestamp);
+      return Math.floor((timerState.accumulatedVerifiedMs + liveDelta) / 1000);
+    }
+
+    window.startFocusSession = function () {
+      if (timerState.running) return;
+      if (focusChannel) focusChannel.postMessage({ type: 'SESSION_ACTIVE', tabId: timerState.tabId });
+
+      const mins = Math.max(1, parseInt(document.getElementById('customMinutesInput').value || '50', 10));
+      timerState.targetSeconds = timerState.mode === 'stopwatch' ? 0 : mins * 60;
+      timerState.accumulatedVerifiedMs = 0;
+      timerState.lastResumeTimestamp = Date.now();
+      timerState.tabSwitches = 0;
+      timerState.running = true;
+      timerState.paused = false;
+
+      document.getElementById('startTimerBtn').classList.add('hidden');
+      document.getElementById('pauseTimerBtn').classList.remove('hidden');
+      document.getElementById('completeTimerBtn').classList.remove('hidden');
+      document.getElementById('resetTimerBtn').classList.remove('hidden');
+      document.getElementById('headerActiveTimerPill').classList.remove('hidden');
+      document.getElementById('headerActiveTimerPill').classList.add('flex');
+
+      timerState.intervalId = setInterval(() => {
+        const elapsed = getRealVerifiedElapsedSeconds();
+        if (timerState.mode !== 'stopwatch' && elapsed >= timerState.targetSeconds) {
+          completeFocusSession();
+          return;
+        }
+        updateFocusClockUI();
+      }, 500);
+
+      updateFocusClockUI();
+      showToast('Verified Focus Session started! Real-time clock active.', 'info');
+    };
+
+    window.toggleTimerPause = function () {
+      if (!timerState.running) return;
+      if (!timerState.paused) {
+        timerState.accumulatedVerifiedMs += (Date.now() - timerState.lastResumeTimestamp);
+        timerState.paused = true;
+      } else {
+        timerState.lastResumeTimestamp = Date.now();
+        timerState.paused = false;
+      }
+      const label = timerState.paused ? 'Resume' : 'Pause';
+      const icon = timerState.paused ? 'fa-play' : 'fa-pause';
+      document.getElementById('pauseTimerBtn').innerHTML = `<i class="fa-solid ${icon}"></i> <span>${label}</span>`;
+      document.getElementById('fsPauseBtn').innerHTML = `<i class="fa-solid ${icon}"></i> <span>${label}</span>`;
+      updateFocusClockUI();
+    };
+
+    window.cancelFocusSession = function () {
+      clearInterval(timerState.intervalId);
+      timerState.running = false;
+      timerState.paused = false;
+      timerState.accumulatedVerifiedMs = 0;
+
+      document.getElementById('startTimerBtn').classList.remove('hidden');
+      document.getElementById('pauseTimerBtn').classList.add('hidden');
+      document.getElementById('completeTimerBtn').classList.add('hidden');
+      document.getElementById('resetTimerBtn').classList.add('hidden');
+      document.getElementById('headerActiveTimerPill').classList.add('hidden');
+      toggleFullScreenFocus(false);
+      setTimerMode(timerState.mode);
+    };
+
+    window.completeFocusSession = async function () {
+      if (!timerState.running) return;
+      const totalSeconds = getRealVerifiedElapsedSeconds();
+      const verifiedMins = Math.floor(totalSeconds / 60);
+      const integrity = Math.max(60, 100 - timerState.tabSwitches * 5);
+
+      clearInterval(timerState.intervalId);
+      timerState.running = false;
+      timerState.paused = false;
+      timerState.accumulatedVerifiedMs = 0;
+
+      document.getElementById('startTimerBtn').classList.remove('hidden');
+      document.getElementById('pauseTimerBtn').classList.add('hidden');
+      document.getElementById('completeTimerBtn').classList.add('hidden');
+      document.getElementById('resetTimerBtn').classList.add('hidden');
+      document.getElementById('headerActiveTimerPill').classList.add('hidden');
+      toggleFullScreenFocus(false);
+
+      if (verifiedMins < 1) {
+        showToast('Study at least 1 full minute to record a verified session.', 'error');
+        setTimerMode(timerState.mode);
+        return;
+      }
+
+      const subject = document.getElementById('focusSubjectInput').value.trim() || 'Focused Study';
+      await awardVerifiedStudy(verifiedMins, subject, integrity);
+      setTimerMode(timerState.mode);
+    };
+
+    window.simulateVerifiedStudy = async function (mins) {
+      const subject = document.getElementById('focusSubjectInput').value.trim() || 'Deep Study Sprint';
+      await awardVerifiedStudy(mins, `${subject} (Verified)`, 100);
+    };
+
+    async function awardVerifiedStudy(mins, subject, integrity = 100) {
+      const ratePerMin = state.adminConfig.rewardPer10Min / 10;
+      const capLeft = Math.max(0, state.adminConfig.dailyCapSc - state.todayEarnedSc);
+      const earnedSc = Math.min(Math.round(mins * ratePerMin), capLeft);
+      const earnedXp = mins * 10;
+
+      state.studyMinutes += mins;
+      state.todayMinutes += mins;
+      state.todayEarnedSc += earnedSc;
+      state.scBalance += earnedSc;
+      state.xp += earnedXp;
+
+      state.sessions.unshift({
+        id: 'ses_' + Date.now(),
+        subject,
+        minutes: mins,
+        sc: earnedSc,
+        xp: earnedXp,
+        integrity,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      state.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        type: 'STUDY_REWARD',
+        desc: `Verified Study (${mins}m • ${integrity}% Integrity): ${subject}`,
+        amount: earnedSc
+      });
+
+      playChime('reward');
+      showToast(`Verified ${mins}m Study! +${earnedSc.toLocaleString()} SC & +${earnedXp.toLocaleString()} XP banked!`, 'reward');
+      await pushStateToFirestore();
+      refreshAllUI();
+    }
+
+    function updateFocusClockUI() {
+      const elapsedSec = getRealVerifiedElapsedSeconds();
+      const displaySec = timerState.mode === 'stopwatch'
+        ? elapsedSec
+        : Math.max(0, timerState.targetSeconds - elapsedSec);
+
+      const m = Math.floor(displaySec / 60);
+      const s = displaySec % 60;
+      const formatted = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+      document.getElementById('mainTimerDisplay').textContent = formatted;
+      document.getElementById('fsTimerDisplay').textContent = formatted;
+      document.getElementById('headerMiniTimerText').textContent = formatted;
+
+      const elM = Math.floor(elapsedSec / 60);
+      const elS = elapsedSec % 60;
+      document.getElementById('elapsedVerifiedText').textContent = `${elM}m ${elS}s`;
+
+      const accruedSc = Math.floor((elapsedSec / 60) * (state.adminConfig.rewardPer10Min / 10));
+      document.getElementById('estRewardText').textContent = `${accruedSc} SC`;
+      document.getElementById('fsEarnedSC').textContent = `${accruedSc} SC`;
+
+      const integrity = Math.max(60, 100 - timerState.tabSwitches * 5);
+      document.getElementById('sessionIntegrityScore').textContent = `${integrity}%`;
+      document.getElementById('fsIntegrityLabel').textContent = `${integrity}%`;
+
+      // Next 10-min tick progress bar
+      const secIntoCycle = elapsedSec % 600;
+      const remCycle = 600 - secIntoCycle;
+      document.getElementById('nextTickCountdown').textContent = `${Math.floor(remCycle / 60)}m ${String(remCycle % 60).padStart(2, '0')}s`;
+      document.getElementById('nextTickBar').style.width = `${(secIntoCycle / 600) * 100}%`;
+
+      const pill = document.getElementById('timerStatusPill');
+      if (!timerState.running) {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> Ready for Verified Focus`;
+      } else if (timerState.paused) {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Paused (Clock Halted)`;
+      } else {
+        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Recording Verified Delta`;
+      }
+    }
+
+    window.toggleFullScreenFocus = function (open) {
+      const overlay = document.getElementById('fullScreenFocusOverlay');
+      if (open) {
+        document.getElementById('fsSubjectLabel').textContent = `Subject: ${document.getElementById('focusSubjectInput').value || 'Deep Study'}`;
+        overlay.classList.remove('hidden');
+        updateFocusClockUI();
+      } else {
+        overlay.classList.add('hidden');
+      }
+    };
+
+    // =========================================================================
+    // 9. TILE INSPECTOR, CONSTRUCTION, UPGRADES & SOCIAL REACTORS
+    // =========================================================================
+    function countBuildings(cityObj) {
+      return cityObj.grid.filter(c => Boolean(c.buildingId)).length;
+    }
+
+    function calculateCityMetrics(cityObj) {
+      let totalPop = 0, totalInfra = 0, assetValue = 0, buildingCount = 0;
+      const distSet = new Set();
+
+      cityObj.grid.forEach(cell => {
+        if (cell.unlocked && cell.plotPrice > 0) assetValue += cell.plotPrice;
+        if (cell.buildingId) {
+          const b = state.catalog.find(x => x.id === cell.buildingId);
+          if (b) {
+            buildingCount++;
+            distSet.add(b.district);
+            const mult = 1 + (cell.level - 1) * 0.5;
+            totalPop += Math.round(b.pop * mult);
+            totalInfra += Math.round(b.infra * mult);
+            assetValue += Math.round(b.price * (1 + (cell.level - 1) * 0.6));
+          }
+        }
+      });
+
+      const cityLevel = Math.max(1, Math.floor((totalInfra + totalPop) / 260) + 1);
+      return { totalPop, totalInfra, assetValue, buildingCount, districtsCount: distSet.size, cityLevel };
+    }
+
+    function renderTileInspector() {
+      const panel = document.getElementById('tileInspectorPanel');
+      if (!panel) return;
+      const cityData = visitingCity ? visitingCity : state;
+      const cell = cityData.grid.find(x => x.r === selectedTile.r && x.c === selectedTile.c);
+      if (!cell) return;
+
+      const isVisiting = Boolean(visitingCity);
+      const b = cell.buildingId ? state.catalog.find(x => x.id === cell.buildingId) : null;
+
+      if (!cell.unlocked) {
+        panel.innerHTML = `
+          <div class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-1">Locked 3D Plot [${cell.r + 1}, ${cell.c + 1}]</div>
+          <h3 class="font-display text-lg font-bold">${cell.zone}</h3>
+          <p class="text-xs text-slate-400 mt-1">Expand your 3D island territory by acquiring this land plot.</p>
+          <div class="my-4 p-3 rounded-2xl bg-slate-900/75 border border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Plot Price</span>
+            <span class="font-display font-bold text-amber-400 text-sm">${cell.plotPrice.toLocaleString()} SC</span>
+          </div>
+          ${isVisiting ? `<div class="text-xs text-purple-300 italic">Exploring in Visitor Mode</div>` : `
+            <button onclick="purchaseLandPlot(${cell.r}, ${cell.c})" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-xs shadow-lg transition">
+              <i class="fa-solid fa-map-pin mr-1.5"></i> Unlock 3D Plot (${cell.plotPrice.toLocaleString()} SC)
+            </button>
+          `}
+        `;
+        return;
+      }
+
+      if (b) {
+        const upgradeCost = Math.round(b.price * 0.75 * cell.level);
+        const canUpgrade = !isVisiting && cell.level < 3 && b.id !== 'city_hall';
+        const isCityHall = b.id === 'city_hall';
+
+        panel.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">${b.district}</span>
+            <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 text-[11px] font-bold">Level ${cell.level} / 3</span>
+          </div>
+          ${generate3DBuildingPreviewSVG(b)}
+          <h3 class="font-display text-lg font-bold mt-2">${b.name}</h3>
+          <p class="text-xs text-slate-400 mt-1">${b.desc}</p>
+
+          <div class="my-3 p-3 rounded-2xl bg-slate-900/75 border border-slate-800 space-y-1.5 text-xs">
+            <div class="flex justify-between"><span class="text-slate-400">Population</span><span class="text-emerald-400 font-bold">+${Math.round(b.pop * (1 + (cell.level - 1) * 0.5))}</span></div>
+            <div class="flex justify-between"><span class="text-slate-400">Infrastructure</span><span class="text-cyan-400 font-bold">+${Math.round(b.infra * (1 + (cell.level - 1) * 0.5))} pts</span></div>
+          </div>
+
+          ${isVisiting ? '' : `
+            <div class="space-y-2">
+              ${isCityHall ? `<button onclick="openCityHallModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs">Open City Hall Stats</button>` : ''}
+              ${canUpgrade ? `
+                <button onclick="upgradeBuilding(${cell.r}, ${cell.c})" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white font-bold text-xs shadow transition">
+                  <i class="fa-solid fa-angles-up mr-1"></i> Upgrade to Lv.${cell.level + 1} (${upgradeCost.toLocaleString()} SC)
+                </button>
+              ` : (!isCityHall ? `<div class="text-center text-xs text-emerald-400 font-semibold py-1">Max Level 3 Reached!</div>` : '')}
+              ${!isCityHall ? `
+                <button onclick="demolishBuilding(${cell.r}, ${cell.c})" class="w-full py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition">
+                  Relocate / Sell (+50% SC)
+                </button>
+              ` : ''}
+            </div>
+          `}
+        `;
+        return;
+      }
+
+      const userHours = state.studyMinutes / 60;
+      const buildable = state.catalog.filter(x => x.id !== 'city_hall');
+
+      panel.innerHTML = `
+        <div class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Empty 3D Plot [${cell.r + 1}, ${cell.c + 1}]</div>
+        <h3 class="font-display text-lg font-bold">${cell.zone}</h3>
+        <p class="text-xs text-slate-400 mt-1 mb-3">${isVisiting ? 'Available land in this city.' : 'Construct a 3D structure on this plot:'}</p>
+        ${isVisiting ? '' : `
+          <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+            ${buildable.map(item => {
+              const lockedByHours = userHours < item.minHours;
+              return `
+                <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between gap-2">
+                  <div class="min-w-0">
+                    <div class="text-xs font-bold truncate">${item.name}</div>
+                    <div class="text-[10px] text-slate-400">${item.district} • ${item.price.toLocaleString()} SC</div>
+                  </div>
+                  ${lockedByHours ? `
+                    <span class="text-[10px] px-2 py-1 rounded bg-slate-800 text-amber-400 whitespace-nowrap">${item.minHours}h req</span>
+                  ` : `
+                    <button onclick="constructBuildingOnPlot(${cell.r}, ${cell.c}, '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[11px] whitespace-nowrap transition">
+                      Build 3D
+                    </button>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `}
+      `;
+    }
+
+    window.purchaseLandPlot = async function (r, c) {
+      const cell = state.grid.find(x => x.r === r && x.c === c);
+      if (!cell || cell.unlocked) return;
+      if (state.scBalance < cell.plotPrice) {
+        showToast(`Need ${cell.plotPrice.toLocaleString()} SC to unlock this plot.`, 'error');
+        return;
+      }
+      state.scBalance -= cell.plotPrice;
+      cell.unlocked = true;
+      state.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        type: 'PLOT_BUY',
+        desc: `Unlocked 3D Land Plot [${r + 1}, ${c + 1}] (${cell.zone})`,
+        amount: -cell.plotPrice
+      });
+      playChime('build');
+      showToast(`3D Plot [${r + 1}, ${c + 1}] unlocked!`, 'success');
+      await pushStateToFirestore();
+      refreshAllUI();
+      rebuild3DCityMeshes();
+      renderTileInspector();
+    };
+
+    window.constructBuildingOnPlot = async function (r, c, buildingId) {
+      const cell = state.grid.find(x => x.r === r && x.c === c);
+      const b = state.catalog.find(x => x.id === buildingId);
+      if (!cell || !cell.unlocked || cell.buildingId || !b) return;
+
+      if ((state.studyMinutes / 60) < b.minHours) {
+        showToast(`Requires ${b.minHours} Verified Study Hours to unlock ${b.name}.`, 'error');
+        return;
+      }
+      if (state.scBalance < b.price) {
+        showToast(`Insufficient SC! ${b.name} costs ${b.price.toLocaleString()} SC.`, 'error');
+        return;
+      }
+
+      state.scBalance -= b.price;
+      cell.buildingId = b.id;
+      cell.level = 1;
+      state.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        type: 'BUILD',
+        desc: `Constructed 3D ${b.name} (${b.district})`,
+        amount: -b.price
+      });
+
+      playChime('build');
+      showToast(`${b.name} constructed in 3D!`, 'success');
+      await pushStateToFirestore();
+      refreshAllUI();
+      rebuild3DCityMeshes();
+      renderTileInspector();
+    };
+
+    window.upgradeBuilding = async function (r, c) {
+      const cell = state.grid.find(x => x.r === r && x.c === c);
+      if (!cell || !cell.buildingId || cell.level >= 3) return;
+      const b = state.catalog.find(x => x.id === cell.buildingId);
+      const cost = Math.round(b.price * 0.75 * cell.level);
+      if (state.scBalance < cost) {
+        showToast(`Need ${cost.toLocaleString()} SC to upgrade.`, 'error');
+        return;
+      }
+
+      state.scBalance -= cost;
+      cell.level += 1;
+      state.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        type: 'UPGRADE',
+        desc: `Upgraded ${b.name} to 3D Level ${cell.level}`,
+        amount: -cost
+      });
+
+      playChime('reward');
+      showToast(`${b.name} upgraded to Level ${cell.level}!`, 'success');
+      await pushStateToFirestore();
+      refreshAllUI();
+      rebuild3DCityMeshes();
+      renderTileInspector();
+    };
+
+    window.demolishBuilding = async function (r, c) {
+      const cell = state.grid.find(x => x.r === r && x.c === c);
+      if (!cell || !cell.buildingId || cell.buildingId === 'city_hall') return;
+      const b = state.catalog.find(x => x.id === cell.buildingId);
+      const refund = Math.round(b.price * 0.5);
+
+      state.scBalance += refund;
+      cell.buildingId = null;
+      cell.level = 1;
+      state.transactions.unshift({
+        id: 'tx_' + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        type: 'GRANT',
+        desc: `Salvaged ${b.name} (+50% refund)`,
+        amount: refund
+      });
+
+      showToast(`Sold ${b.name} for +${refund.toLocaleString()} SC.`, 'info');
+      await pushStateToFirestore();
+      refreshAllUI();
+      rebuild3DCityMeshes();
+      renderTileInspector();
+    };
+
+    // Social Reactors in 3D City Visit Mode
+    window.triggerCityReactor = function (emoji) {
+      const layer = document.getElementById('reactorOverlayLayer');
+      if (!layer) return;
+      state.reactorsSent = (state.reactorsSent || 0) + 1;
+      persistLocalState();
+
+      for (let i = 0; i < 6; i++) {
+        const el = document.createElement('div');
+        el.className = 'reactor-particle';
+        el.textContent = emoji;
+        el.style.left = `${20 + Math.random() * 60}%`;
+        el.style.bottom = `${12 + Math.random() * 20}%`;
+        el.style.animationDelay = `${i * 0.08}s`;
+        layer.appendChild(el);
+        setTimeout(() => el.remove(), 2200);
+      }
+      playChime('build');
+    };
+
+    window.openCityHallModal = function () {
+      const cityData = visitingCity ? visitingCity : state;
+      const m = calculateCityMetrics(cityData);
+      openUniversalModal(
+        `<i class="fa-solid fa-landmark text-cyan-400"></i> ${cityData.cityName} — City Hall Registry`,
+        `
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">Scholar Mayor</div>
+              <div class="font-bold text-sm text-cyan-300 mt-1">${cityData.avatar} ${cityData.username}</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">City Development</div>
+              <div class="font-bold text-sm text-emerald-400 mt-1">Level ${m.cityLevel}</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">Virtual Population</div>
+              <div class="font-bold text-sm text-purple-300 mt-1">${m.totalPop.toLocaleString()} Citizens</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">Infrastructure</div>
+              <div class="font-bold text-sm text-amber-400 mt-1">${m.totalInfra.toLocaleString()} pts</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">Active Districts</div>
+              <div class="font-bold text-sm text-white mt-1">${m.districtsCount} / 10 Districts</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400">3D Asset Value</div>
+              <div class="font-bold text-sm text-cyan-400 mt-1">${m.assetValue.toLocaleString()} SC</div>
+            </div>
+          </div>
+        `
+      );
+    };
+
+    // =========================================================================
+    // 10. STORE, BANK, ACHIEVEMENTS, EXPLORE WORLD, LEADERBOARDS & ADMIN RENDERERS
+    // =========================================================================
+    function renderBuildingStore() {
+      document.getElementById('storeBalanceDisplay').textContent = `${state.scBalance.toLocaleString()} SC`;
+      const districts = ['ALL', 'Residential', 'Education', 'Healthcare', 'Administration', 'Banking', 'Commercial', 'Industrial', 'Recreation', 'Transport', 'Infrastructure', 'World Wonders'];
+
+      document.getElementById('storeDistrictFilters').innerHTML = districts.map(d => `
+        <button onclick="filterStoreDistrict('${d}')"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${selectedStoreDistrict === d ? 'bg-cyan-500 text-slate-950' : 'glass-panel text-slate-300 hover:border-cyan-500/40'}">
+          ${d}
+        </button>
+      `).join('');
+
+      const userHours = state.studyMinutes / 60;
+      const items = state.catalog.filter(b => b.id !== 'city_hall' && (selectedStoreDistrict === 'ALL' || b.district === selectedStoreDistrict));
+
+      document.getElementById('storeCatalogGrid').innerHTML = items.map(b => {
+        const locked = userHours < b.minHours;
+        const rarityColors = {
+          Common: 'text-slate-300 bg-slate-700/60',
+          Rare: 'text-cyan-300 bg-cyan-500/20',
+          Epic: 'text-purple-300 bg-purple-500/20',
+          Legendary: 'text-amber-300 bg-amber-500/20'
+        };
+        return `
+          <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between border ${locked ? 'border-slate-800 opacity-85' : 'border-cyan-500/20 hover:border-cyan-400/60'} transition group">
+            <div>
+              <div class="relative mb-3">
+                ${generate3DBuildingPreviewSVG(b)}
+                <span class="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full backdrop-blur-md ${rarityColors[b.rarity] || rarityColors.Common}">${b.rarity}</span>
+                <span class="absolute top-2.5 right-2.5 text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-slate-950/80 text-slate-300">${b.district}</span>
+              </div>
+
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="font-display font-bold text-base">${b.name}</h4>
+                <div class="font-display font-bold text-amber-400 text-sm whitespace-nowrap">${b.price.toLocaleString()} SC</div>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">${b.desc}</p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-slate-800/80 space-y-2.5">
+              <div class="flex justify-between text-[11px] text-slate-400">
+                <span>+${b.pop} Pop • +${b.infra} Infra</span>
+                <span class="${locked ? 'text-amber-400 font-semibold' : 'text-emerald-400'}">
+                  ${b.minHours > 0 ? `${b.minHours}h Study Req` : 'Unlocked'}
+                </span>
+              </div>
+              ${locked ? `
+                <button disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed">
+                  <i class="fa-solid fa-lock mr-1"></i> Study ${b.minHours} Hrs to Unlock
+                </button>
+              ` : `
+                <button onclick="quickBuildFromStore('${b.id}')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-95 text-white text-xs font-bold shadow transition">
+                  Construct in 3D City
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.filterStoreDistrict = function (d) {
+      selectedStoreDistrict = d;
+      renderBuildingStore();
+    };
+
+    window.quickBuildFromStore = async function (buildingId) {
+      const emptyCell = state.grid.find(c => c.unlocked && !c.buildingId);
+      if (!emptyCell) {
+        showToast('No empty plots left! Click a locked plot in your 3D City to unlock new land.', 'error');
+        switchTab('city');
+        return;
+      }
+      await constructBuildingOnPlot(emptyCell.r, emptyCell.c, buildingId);
+      selectedTile = { r: emptyCell.r, c: emptyCell.c };
+      switchTab('city');
+    };
+
+    window.renderBankLedger = function () {
+      const metrics = calculateCityMetrics(state);
+      const lifetimeEarned = state.transactions
+        .filter(t => t.type === 'STUDY_REWARD')
+        .reduce((acc, t) => acc + t.amount, 0);
+
+      document.getElementById('bankWalletSc').textContent = `${state.scBalance.toLocaleString()} SC`;
+      document.getElementById('bankAssetValue').textContent = `${metrics.assetValue.toLocaleString()} SC`;
+      document.getElementById('bankNetWorth').textContent = `${(state.scBalance + metrics.assetValue).toLocaleString()} SC`;
+      document.getElementById('bankLifetimeEarned').textContent = `${lifetimeEarned.toLocaleString()} SC`;
+
+      const filterType = document.getElementById('bankFilterType')?.value || 'ALL';
+      const list = state.transactions.filter(tx => filterType === 'ALL' || tx.type === filterType);
+
+      document.getElementById('bankLedgerBody').innerHTML = list.map(tx => `
+        <tr class="hover:bg-slate-800/30">
+          <td class="py-3 px-3 text-slate-400 whitespace-nowrap">${tx.timestamp}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold">${tx.type}</span></td>
+          <td class="py-3 px-3">${tx.desc}</td>
+          <td class="py-3 px-3 text-right font-mono font-bold ${tx.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+            ${tx.amount >= 0 ? '+' : ''}${tx.amount.toLocaleString()} SC
+          </td>
+        </tr>
+      `).join('');
+    };
+
+    window.filterAchievements = function (cat) {
+      selectedAchFilter = cat;
+      document.querySelectorAll('.ach-filter-btn').forEach(b => {
+        b.classList.remove('bg-purple-500', 'text-white', 'font-bold');
+        b.classList.add('glass-panel', 'text-slate-300');
+      });
+      event.target.classList.add('bg-purple-500', 'text-white', 'font-bold');
+      event.target.classList.remove('glass-panel', 'text-slate-300');
+      renderAchievements();
+    };
+
+    function renderAchievements() {
+      const scholarLevel = Math.floor(state.xp / 1000) + 1;
+      const titleObj = [...SCHOLAR_TITLES].reverse().find(t => scholarLevel >= t.minLevel) || SCHOLAR_TITLES[0];
+      document.getElementById('achCurrentTitle').textContent = `${titleObj.badge} ${titleObj.title}`;
+
+      document.getElementById('titlesLadderGrid').innerHTML = SCHOLAR_TITLES.map(t => {
+        const unlocked = scholarLevel >= t.minLevel;
+        return `
+          <div class="p-3 rounded-2xl border text-center ${unlocked ? 'bg-purple-500/15 border-purple-400/40' : 'bg-slate-900/50 border-slate-800 opacity-50'}">
+            <div class="text-2xl mb-1">${t.badge}</div>
+            <div class="text-xs font-bold">${t.title}</div>
+            <div class="text-[10px] text-slate-400 mt-0.5">Level ${t.minLevel}+</div>
+          </div>
+        `;
+      }).join('');
+
+      const list = ACHIEVEMENTS_LIST.filter(a => selectedAchFilter === 'ALL' || a.cat === selectedAchFilter);
+
+      document.getElementById('achievementsGrid').innerHTML = list.map(a => {
+        const unlocked = a.check(state);
+        const claimed = state.claimedAchievements.includes(a.id);
+        const pct = a.progress(state);
+
+        return `
+          <div class="glass-panel rounded-2xl p-5 border ${unlocked ? 'border-amber-400/45' : 'border-slate-800'} flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-3xl">${a.badge}</span>
+                <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-300 text-xs font-bold">+${a.xp.toLocaleString()} XP</span>
+              </div>
+              <div class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">${a.rarity} • ${a.cat}</div>
+              <h4 class="font-display font-bold text-base mt-0.5">${a.title}</h4>
+              <p class="text-xs text-slate-400 mt-1">${a.desc}</p>
+            </div>
+            <div class="mt-4">
+              <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2">
+                <div class="h-full bg-gradient-to-r from-amber-400 to-purple-500 transition-all duration-500" style="width: ${pct}%"></div>
+              </div>
+              ${claimed ? `
+                <div class="text-center py-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">
+                  <i class="fa-solid fa-check mr-1"></i> Trophy Claimed
+                </div>
+              ` : unlocked ? `
+                <button onclick="claimAchievement('${a.id}')" class="w-full py-2 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 text-white text-xs font-bold shadow">
+                  Claim +${a.xp.toLocaleString()} XP
+                </button>
+              ` : `
+                <div class="text-right text-[11px] text-slate-400">${pct}% Complete</div>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.claimAchievement = async function (achId) {
+      const a = ACHIEVEMENTS_LIST.find(x => x.id === achId);
+      if (!a || state.claimedAchievements.includes(achId) || !a.check(state)) return;
+      state.claimedAchievements.push(achId);
+      state.xp += a.xp;
+      playChime('reward');
+      showToast(`Trophy Claimed: ${a.title} (+${a.xp.toLocaleString()} XP)!`, 'reward');
+      await pushStateToFirestore();
+      refreshAllUI();
+      renderAchievements();
+    };
+
+    function renderExploreWorld() {
+      const grid = document.getElementById('exploreCitiesGrid');
+      if (!grid) return;
+
+      const allCities = [...publicCities];
+      if (state.privacy === 'Public' && !allCities.some(c => c.uniqueId === state.uniqueId)) {
+        allCities.unshift({
+          uid: currentFirebaseUser?.uid || 'local_me',
+          uniqueId: state.uniqueId,
+          username: state.username,
+          region: state.region,
+          avatar: state.avatar,
+          cityName: state.cityName,
+          studyMinutes: state.studyMinutes,
+          streak: state.streak,
+          xp: state.xp,
+          scBalance: state.scBalance,
+          likes: state.likes,
+          visitors: state.visitors,
+          privacy: state.privacy,
+          grid: state.grid
+        });
+      }
+
+      grid.innerHTML = allCities.map(c => {
+        const m = calculateCityMetrics(c);
+        const hrs = (c.studyMinutes / 60).toFixed(1);
+        const isMe = c.uniqueId === state.uniqueId;
+
+        return `
+          <div class="glass-panel rounded-3xl p-5 border ${isMe ? 'border-cyan-400/50' : 'border-slate-800 hover:border-purple-400/50'} transition relative overflow-hidden group flex flex-col justify-between">
+            <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-cyan-500/10 blur-2xl group-hover:bg-purple-500/20 transition pointer-events-none"></div>
+
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="relative">
+                    <span class="text-2xl">${c.avatar}</span>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-900"></span>
+                  </div>
+                  <div>
+                    <div class="font-bold text-sm flex items-center gap-1.5">
+                      ${c.username} ${isMe ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300">YOU</span>' : ''}
+                    </div>
+                    <div class="text-[11px] text-slate-400">${c.region || 'India'} • <span class="font-mono text-cyan-400">${c.uniqueId}</span></div>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">City Lv.${m.cityLevel}</span>
+              </div>
+
+              <h3 class="font-display text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-300 mb-3">
+                ${c.cityName}
+              </h3>
+
+              <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Study Time</span><strong>${hrs} Hrs</strong></div>
+                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">3D Assets</span><strong>${m.buildingCount} Buildings</strong></div>
+                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Citizens</span><strong>${m.totalPop.toLocaleString()}</strong></div>
+                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Net Worth</span><strong class="text-amber-400">${(c.scBalance + m.assetValue).toLocaleString()} SC</strong></div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+              <div class="text-xs text-slate-400 flex items-center gap-3">
+                <span><i class="fa-solid fa-heart text-rose-400 mr-1"></i>${c.likes || 0}</span>
+                <span><i class="fa-solid fa-eye text-cyan-400 mr-1"></i>${c.visitors || 0}</span>
+              </div>
+              <button onclick="visitPublicCity('${c.uniqueId}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-95 text-white text-xs font-bold shadow transition">
+                <i class="fa-solid fa-cubes mr-1"></i> Enter 3D City
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.visitPublicCity = function (uniqueId) {
+      if (uniqueId === state.uniqueId) {
+        exitVisitMode();
+        switchTab('city');
+        return;
+      }
+      const target = publicCities.find(c => c.uniqueId === uniqueId);
+      if (!target) return;
+
+      target.visitors = (target.visitors || 0) + 1;
+      state.citiesVisited = (state.citiesVisited || 0) + 1;
+      persistLocalState();
+      visitingCity = target;
+
+      const m = calculateCityMetrics(target);
+      document.getElementById('visitingCityBanner').classList.remove('hidden');
+      document.getElementById('visitCityTitle').textContent = target.cityName;
+      document.getElementById('visitOwnerName').textContent = `${target.username} (${target.uniqueId})`;
+      document.getElementById('visitCityMeta').textContent = `City Lv.${m.cityLevel} • ${(target.studyMinutes / 60).toFixed(1)} Study Hrs • Net Worth: ${(target.scBalance + m.assetValue).toLocaleString()} SC`;
+      document.getElementById('visitLikesCount').textContent = target.likes || 0;
+      document.getElementById('activeCityHeaderName').textContent = `${target.cityName} (3D Visit)`;
+
+      switchTab('city');
+      triggerCityReactor('🚀');
+      showToast(`Teleported to ${target.cityName} in 3D!`, 'info');
+    };
+
+    window.likeVisitedCity = function () {
+      if (!visitingCity) return;
+      visitingCity.likes = (visitingCity.likes || 0) + 1;
+      document.getElementById('visitLikesCount').textContent = visitingCity.likes;
+      triggerCityReactor('❤️');
+    };
+
+    window.exitVisitMode = function () {
+      visitingCity = null;
+      document.getElementById('visitingCityBanner').classList.add('hidden');
+      document.getElementById('activeCityHeaderName').textContent = state.cityName;
+      rebuild3DCityMeshes();
+      renderTileInspector();
+    };
+
+    window.updateCityPrivacy = async function (val) {
+      state.privacy = val;
+      await pushStateToFirestore();
+      refreshAllUI();
+      showToast(`City privacy set to ${val}.`, 'info');
+    };
+
+    window.renderLeaderboard = function (sortBy = 'study') {
+      const tbody = document.getElementById('leaderboardTableBody');
+      if (!tbody) return;
+
+      const list = [...publicCities];
+      if (!list.some(c => c.uniqueId === state.uniqueId)) {
+        list.push({
+          uniqueId: state.uniqueId,
+          username: state.username,
+          region: state.region,
+          avatar: state.avatar,
+          cityName: state.cityName,
+          studyMinutes: state.studyMinutes,
+          streak: state.streak,
+          scBalance: state.scBalance,
+          grid: state.grid
+        });
+      }
+
+      const enriched = list.map(c => {
+        const m = calculateCityMetrics(c);
+        return {
+          ...c,
+          cityLevel: m.cityLevel,
+          netWorth: c.scBalance + m.assetValue
+        };
+      });
+
+      enriched.sort((a, b) => {
+        if (sortBy === 'networth') return b.netWorth - a.netWorth;
+        if (sortBy === 'citylevel') return b.cityLevel - a.cityLevel || b.studyMinutes - a.studyMinutes;
+        if (sortBy === 'streak') return (b.streak || 1) - (a.streak || 1);
+        return b.studyMinutes - a.studyMinutes;
+      });
+
+      tbody.innerHTML = enriched.map((c, idx) => {
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`;
+        const isMe = c.uniqueId === state.uniqueId;
+        return `
+          <tr class="${isMe ? 'bg-cyan-500/10' : 'hover:bg-slate-800/30'}">
+            <td class="py-3 px-3 font-display font-bold">${medal}</td>
+            <td class="py-3 px-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xl">${c.avatar}</span>
+                <div>
+                  <div class="font-bold">${c.username} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
+                  <div class="text-[11px] text-cyan-300">${c.cityName}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-3 text-slate-400 text-xs">${c.region || 'India'}</td>
+            <td class="py-3 px-3 font-bold">${(c.studyMinutes / 60).toFixed(1)} Hrs</td>
+            <td class="py-3 px-3 text-amber-400 font-semibold">${c.streak || 1}d 🔥</td>
+            <td class="py-3 px-3">Lv.${c.cityLevel}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold text-amber-400">${c.netWorth.toLocaleString()} SC</td>
+          </tr>
+        `;
+      }).join('');
+    };
+
+    // =========================================================================
+    // 11. UNLOCKED ADMIN PANEL CONTROLS
+    // =========================================================================
+    function renderAdminPanel() {
+      if (!isAdminAuthenticated) return;
+
+      document.getElementById('adminTotalCities').textContent = publicCities.length + 1;
+      document.getElementById('adminCurrentRate').textContent = `${state.adminConfig.rewardPer10Min} SC`;
+      document.getElementById('adminCurrentCap').textContent = `${state.adminConfig.dailyCapSc} SC`;
+      document.getElementById('adminCatalogCount').textContent = state.catalog.length;
+      document.getElementById('adminRateInput').value = state.adminConfig.rewardPer10Min;
+      document.getElementById('adminCapInput').value = state.adminConfig.dailyCapSc;
+
+      const query = (document.getElementById('adminUserSearch')?.value || '').toLowerCase();
+      const allUsers = [
+        { uniqueId: state.uniqueId, username: state.username, cityName: state.cityName, studyMinutes: state.studyMinutes, scBalance: state.scBalance, isSelf: true },
+        ...publicCities.filter(c => c.uniqueId !== state.uniqueId)
+      ].filter(u =>
+        u.username.toLowerCase().includes(query) ||
+        u.uniqueId.toLowerCase().includes(query) ||
+        u.cityName.toLowerCase().includes(query)
+      );
+
+      document.getElementById('adminUsersTableBody').innerHTML = allUsers.map(u => `
+        <tr class="hover:bg-slate-800/30">
+          <td class="py-2.5 px-3 font-mono text-cyan-300">${u.uniqueId}</td>
+          <td class="py-2.5 px-3 font-bold">${u.username}</td>
+          <td class="py-2.5 px-3">${u.cityName}</td>
+          <td class="py-2.5 px-3">${(u.studyMinutes / 60).toFixed(1)}h</td>
+          <td class="py-2.5 px-3 font-mono text-amber-400">${u.scBalance.toLocaleString()} SC</td>
+          <td class="py-2.5 px-3 text-right">
+            <button onclick="document.getElementById('adjTargetId').value='${u.uniqueId}'" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">
+              Select ID
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      document.getElementById('adminAuditLogList').innerHTML = state.auditLogs.map(log => `
+        <div class="p-2.5 rounded-xl bg-slate-900/75 border border-slate-800">${log}</div>
+      `).join('');
+    }
+
+    window.saveAdminEconomySettings = async function () {
+      if (!isAdminAuthenticated) return;
+      const rate = Math.max(1, parseInt(document.getElementById('adminRateInput').value || '10', 10));
+      const cap = Math.max(60, parseInt(document.getElementById('adminCapInput').value || '600', 10));
+      state.adminConfig.rewardPer10Min = rate;
+      state.adminConfig.dailyCapSc = cap;
+      await logAdminAction(`Updated reward rate to ${rate} SC/10m and daily cap to ${cap} SC.`);
+      refreshAllUI();
+      renderAdminPanel();
+      showToast('Economy rules saved & audited!', 'success');
+    };
+
+    window.adminAdjustUserCredits = async function () {
+      if (!isAdminAuthenticated) return;
+      const targetId = document.getElementById('adjTargetId').value.trim();
+      const amount = parseInt(document.getElementById('adjAmount').value || '0', 10);
+      const reason = document.getElementById('adjReason').value.trim();
+
+      if (!targetId || !amount || !reason) {
+        showToast('Provide Citizen ID, non-zero SC amount, and mandatory audit reason.', 'error');
+        return;
+      }
+
+      if (targetId === state.uniqueId) {
+        state.scBalance = Math.max(0, state.scBalance + amount);
+        state.transactions.unshift({
+          id: 'tx_' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          type: 'GRANT',
+          desc: `Admin Adjustment: ${reason}`,
+          amount
+        });
+        await pushStateToFirestore();
+      } else {
+        const bot = publicCities.find(c => c.uniqueId === targetId);
+        if (bot) bot.scBalance = Math.max(0, bot.scBalance + amount);
+      }
+
+      await logAdminAction(`Adjusted ${targetId} by ${amount >= 0 ? '+' : ''}${amount} SC. Reason: "${reason}".`);
+      refreshAllUI();
+      renderAdminPanel();
+      showToast(`Audited adjustment of ${amount} SC applied to ${targetId}.`, 'success');
+    };
+
+    // =========================================================================
+    // 12. NAVIGATION, ONBOARDING & MASTER UI REFRESH
+    // =========================================================================
+    window.switchTab = function (tabName) {
+      document.querySelectorAll('.tab-view').forEach(sec => sec.classList.add('hidden'));
+      const target = document.getElementById('view-' + tabName);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.tab === tabName) {
+          btn.classList.add('bg-gradient-to-r', 'from-cyan-500/20', 'to-purple-500/20', 'text-cyan-300', 'border', 'border-cyan-500/30');
+          btn.classList.remove('text-slate-400');
+        } else {
+          btn.classList.remove('bg-gradient-to-r', 'from-cyan-500/20', 'to-purple-500/20', 'text-cyan-300', 'border', 'border-cyan-500/30');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      document.getElementById('sidebarNav').classList.add('-translate-x-full');
+
+      if (tabName === 'city') {
+        setTimeout(() => {
+          initThreeCity();
+          resizeThreeCanvas();
+          rebuild3DCityMeshes();
+          renderTileInspector();
+        }, 40);
+      }
+      if (tabName === 'store') renderBuildingStore();
+      if (tabName === 'bank') renderBankLedger();
+      if (tabName === 'achievements') renderAchievements();
+      if (tabName === 'explore') renderExploreWorld();
+      if (tabName === 'leaderboard') renderLeaderboard('study');
+      if (tabName === 'admin') updateAdminLockUI();
+    };
+
+    window.toggleMobileSidebar = function () {
+      document.getElementById('sidebarNav').classList.toggle('-translate-x-full');
+    };
+
+    window.toggleTheme = function () {
+      const html = document.documentElement;
+      const icon = document.getElementById('themeIcon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.className = 'fa-solid fa-moon';
+      } else {
+        html.classList.add('dark');
+        icon.className = 'fa-solid fa-sun';
+      }
+    };
+
+    window.openOnboardingEdit = function () {
+      document.getElementById('onboardUsername').value = state.username;
+      document.getElementById('onboardCityName').value = state.cityName;
+      document.getElementById('onboardRegion').value = state.region || 'India';
+      document.getElementById('onboardPreviewId').textContent = state.uniqueId;
+
+      document.getElementById('avatarPicker').innerHTML = AVATARS.map(av => `
+        <button type="button" onclick="selectOnboardAvatar('${av}')"
+          class="text-2xl p-2 rounded-xl border transition ${av === state.avatar ? 'bg-cyan-500/25 border-cyan-400 scale-105' : 'bg-slate-900/60 border-slate-700 hover:border-slate-500'}">
+          ${av}
+        </button>
+      `).join('');
+      document.getElementById('onboardingModal').classList.remove('hidden');
+    };
+
+    window.selectOnboardAvatar = function (av) {
+      state.avatar = av;
+      openOnboardingEdit();
+    };
+
+    window.saveOnboardingProfile = async function () {
+      const u = document.getElementById('onboardUsername').value.trim();
+      const c = document.getElementById('onboardCityName').value.trim();
+      const reg = document.getElementById('onboardRegion').value.trim();
+      if (u) state.username = u;
+      if (c) state.cityName = c;
+      if (reg) state.region = reg;
+      state.onboarded = true;
+      document.getElementById('onboardingModal').classList.add('hidden');
+      showToast(`Identity Saved: ${state.username} — Mayor of ${state.cityName}!`, 'success');
+      await pushStateToFirestore();
+      refreshAllUI();
+    };
+
+    window.updateDailyGoal = async function (mins) {
+      state.dailyGoalMinutes = parseInt(mins, 10);
+      await pushStateToFirestore();
+      refreshAllUI();
+    };
+
+    window.openUniversalModal = function (titleHtml, bodyHtml) {
+      document.getElementById('modalTitle').innerHTML = titleHtml;
+      document.getElementById('modalBody').innerHTML = bodyHtml;
+      document.getElementById('universalModal').classList.remove('hidden');
+    };
+
+    window.closeUniversalModal = function () {
+      document.getElementById('universalModal').classList.add('hidden');
+    };
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const styles = {
+        success: 'border-emerald-400/50 bg-slate-900/95 text-emerald-300',
+        error: 'border-rose-500/50 bg-slate-900/95 text-rose-300',
+        reward: 'border-amber-400/60 bg-slate-900/95 text-amber-300',
+        info: 'border-cyan-400/50 bg-slate-900/95 text-cyan-200'
+      };
+      const icons = {
+        success: 'fa-circle-check',
+        error: 'fa-triangle-exclamation',
+        reward: 'fa-coins',
+        info: 'fa-circle-info'
+      };
+      const el = document.createElement('div');
+      el.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-2xl backdrop-blur-md text-xs sm:text-sm font-medium transition-all duration-300 ${styles[type] || styles.info}`;
+      el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-base"></i><span>${message}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 3600);
+    }
+
+    function playChime(type = 'reward') {
+      try {
+        if (typeof Tone === 'undefined') return;
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        synth.volume.value = -10;
+        if (type === 'reward') synth.triggerAttackRelease(['C5', 'E5', 'G5', 'B5'], '8n');
+        else synth.triggerAttackRelease(['G4', 'C5'], '16n');
+      } catch (e) {}
+    }
+
+    function refreshAllUI() {
+      const metrics = calculateCityMetrics(state);
+      const netWorth = state.scBalance + metrics.assetValue;
+      const scholarLevel = Math.floor(state.xp / 1000) + 1;
+      const xpInLevel = state.xp % 1000;
+      const titleObj = [...SCHOLAR_TITLES].reverse().find(t => scholarLevel >= t.minLevel) || SCHOLAR_TITLES[0];
+      const unlockedPlots = state.grid.filter(c => c.unlocked).length;
+
+      // Top Header
+      document.getElementById('topScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
+      document.getElementById('topLevel').textContent = scholarLevel;
+      document.getElementById('topXpText').textContent = `${state.xp.toLocaleString()} XP`;
+      document.getElementById('topAvatar').textContent = state.avatar;
+      document.getElementById('topUsername').textContent = state.username;
+      document.getElementById('topUniqueId').textContent = state.uniqueId;
+
+      // Dashboard Bento
+      document.getElementById('dashTitleBadge').textContent = `${titleObj.badge} ${titleObj.title}`;
+      document.getElementById('dashCityName').textContent = state.cityName;
+      document.getElementById('dashUsername').textContent = state.username;
+      document.getElementById('dashScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
+      document.getElementById('dashNetWorth').textContent = `${netWorth.toLocaleString()} SC`;
+      document.getElementById('dashStudyTime').textContent = `${(state.studyMinutes / 60).toFixed(1)} Hrs`;
+      document.getElementById('dashSessionCount').textContent = state.sessions.length;
+      document.getElementById('dashBuildingCount').textContent = metrics.buildingCount;
+      document.getElementById('dashPlotCount').textContent = `${unlockedPlots} / 64`;
+      document.getElementById('dashCityLevel').textContent = metrics.cityLevel;
+      document.getElementById('dashPopulation').textContent = metrics.totalPop.toLocaleString();
+      document.getElementById('dashStreak').textContent = `${state.streak || 1}d 🔥`;
+
+      // Radial & XP Progress
+      const goalPct = Math.min(100, Math.round((state.todayMinutes / state.dailyGoalMinutes) * 100));
+      const dashCircle = document.getElementById('dashRadialCircle');
+      if (dashCircle) {
+        const offset = 314.16 - (314.16 * goalPct) / 100;
+        dashCircle.style.strokeDashoffset = offset;
+      }
+      document.getElementById('dashRadialPercent').textContent = `${goalPct}%`;
+      document.getElementById('dashTodayMins').textContent = `Today: ${state.todayMinutes} mins (${state.todayEarnedSc} SC earned)`;
+      document.getElementById('sidebarGoalText').textContent = `${state.todayMinutes} / ${state.dailyGoalMinutes}m`;
+      document.getElementById('sidebarGoalBar').style.width = `${goalPct}%`;
+
+      document.getElementById('dashScholarLevel').textContent = scholarLevel;
+      document.getElementById('dashXpBar').style.width = `${Math.max(5, (xpInLevel / 1000) * 100)}%`;
+      document.getElementById('dashXpCurrent').textContent = state.xp.toLocaleString();
+      document.getElementById('dashXpNext').textContent = (scholarLevel * 1000).toLocaleString();
+
+      // City Telemetry Brief
+      document.getElementById('briefCityName').textContent = state.cityName;
+      document.getElementById('briefUserId').textContent = state.uniqueId;
+      document.getElementById('briefInfraScore').textContent = `${metrics.totalInfra.toLocaleString()} pts`;
+      document.getElementById('briefDistricts').textContent = `${metrics.districtsCount} / 10`;
+      document.getElementById('briefPrivacy').textContent = state.privacy;
+      if (!visitingCity) document.getElementById('activeCityHeaderName').textContent = state.cityName;
+
+      // Focus Cap & Duel
+      document.getElementById('guardDailyCap').textContent = state.adminConfig.dailyCapSc;
+      document.getElementById('duelMyCity').textContent = `${state.cityName} (${state.username})`;
+      document.getElementById('duelMyHours').textContent = `${(state.studyMinutes / 60).toFixed(1)} Hrs`;
+
+      // Recent Sessions
+      const recentEl = document.getElementById('dashRecentSessions');
+      if (state.sessions.length > 0) {
+        recentEl.innerHTML = state.sessions.slice(0, 4).map(s => `
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/65 border border-slate-800/80">
+            <div>
+              <span class="font-semibold text-slate-200">${s.subject}</span>
+              <span class="text-slate-400 ml-2">(${s.minutes}m • ${s.date})</span>
+            </div>
+            <span class="font-bold text-amber-400">+${s.sc} SC</span>
+          </div>
+        `).join('');
+      }
+
+      // District Mini Bars
+      const distContainer = document.getElementById('cityDistrictMiniBars');
+      if (distContainer) {
+        const allDist = ['Residential', 'Education', 'Healthcare', 'Administration', 'Banking', 'Commercial', 'Industrial', 'Recreation', 'Transport', 'Infrastructure'];
+        const cityData = visitingCity ? visitingCity : state;
+        distContainer.innerHTML = allDist.map(d => {
+          const count = cityData.grid.filter(cell => {
+            if (!cell.buildingId) return false;
+            const b = state.catalog.find(x => x.id === cell.buildingId);
+            return b && b.district === d;
+          }).length;
+          return `
+            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-900/60">
+              <span class="text-slate-300">${d}</span>
+              <span class="font-mono font-bold ${count > 0 ? 'text-cyan-400' : 'text-slate-500'}">${count}</span>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    window.addEventListener('resize', resizeThreeCanvas);
+
+    window.onload = function () {
+      switchTab('dashboard');
+      refreshAllUI();
+      if (!state.onboarded) {
+        openOnboardingEdit();
+      }
+    };
+  </script>
+</body>
+</html>
