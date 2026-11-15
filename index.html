@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <!-- Three.js r128 for Real 3D City Builder & 3D Store Previews -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- Tone.js for subtle synthesized chimes -->
+  <!-- Tone.js for synthesized audio chimes -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 
   <script>
@@ -53,7 +53,7 @@
       font-family: 'Space Grotesk', sans-serif;
     }
     .glass-panel {
-      background: rgba(13, 20, 38, 0.82);
+      background: rgba(13, 20, 38, 0.84);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(56, 189, 248, 0.16);
@@ -62,13 +62,11 @@
       background: rgba(255, 255, 255, 0.92);
       border: 1px solid rgba(15, 23, 42, 0.1);
     }
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3); }
     ::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.35); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.65); }
 
-    /* Animated Holographic Grid Pattern for Explore World */
     .holo-grid-bg {
       background-image:
         radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.14) 0%, transparent 65%),
@@ -86,9 +84,7 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .radar-sweep {
-      animation: radarSpin 8s linear infinite;
-    }
+    .radar-sweep { animation: radarSpin 8s linear infinite; }
 
     @keyframes floatReactor {
       0% { transform: translateY(0) scale(0.7); opacity: 0; }
@@ -116,6 +112,56 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
+  <!-- ==================== 1. LANDING & GOOGLE AUTH GATE (Shown if not logged in) ==================== -->
+  <div id="authGateScreen" class="fixed inset-0 z-50 bg-edu-bg flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
+    <!-- Top Header -->
+    <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center text-white font-display font-bold text-xl shadow-lg shadow-cyan-500/25">
+          EC
+        </div>
+        <div>
+          <span class="font-display font-bold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">EDUCIVILIZATION</span>
+          <p class="text-[11px] text-slate-400">Build Your World. Earn Through Learning.</p>
+        </div>
+      </div>
+      <button onclick="openAdminLoginModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition flex items-center gap-2">
+        <i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal
+      </button>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="max-w-4xl w-full mx-auto text-center space-y-6 my-auto py-10">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Persistent 3D Virtual Civilization & Study Engine
+      </div>
+      <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+        Your Study. <br/>Your Assets. <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-400">Your Civilization.</span>
+      </h1>
+      <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto">
+        Transform verified study hours into Study Credits (SC). Build 3D isometric districts, construct skyscrapers, run financial vaults, and compete on global leaderboards.
+      </p>
+
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button onclick="loginWithGoogle()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center justify-center gap-3">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.15C3.17 21.31 7.27 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.18C.43 8.13 0 9.87 0 11.7s.43 3.57 1.18 5.1l4.09-2.56z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.17 2.69 1.18 6.6l4.09 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
+          Sign In with Google
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 text-left max-w-3xl mx-auto">
+        <div class="p-4 rounded-2xl glass-panel"><div class="text-cyan-400 font-display font-bold text-xl">100,000 SC</div><div class="text-xs text-slate-400 mt-0.5">Welcome Grant</div></div>
+        <div class="p-4 rounded-2xl glass-panel"><div class="text-purple-400 font-display font-bold text-xl">3D World</div><div class="text-xs text-slate-400 mt-0.5">Isometric Builder</div></div>
+        <div class="p-4 rounded-2xl glass-panel"><div class="text-amber-400 font-display font-bold text-xl">10 Districts</div><div class="text-xs text-slate-400 mt-0.5">Civic Landmarks</div></div>
+        <div class="p-4 rounded-2xl glass-panel"><div class="text-emerald-400 font-display font-bold text-xl">Real-Time</div><div class="text-xs text-slate-400 mt-0.5">Cloud Persistence</div></div>
+      </div>
+    </div>
+
+    <div class="text-center text-xs text-slate-500">
+      EDUCIVILIZATION • Virtual Game Currency (SC) has zero real-money withdrawal value.
+    </div>
+  </div>
+
   <!-- Full-Screen Distraction-Free Focus Overlay -->
   <div id="fullScreenFocusOverlay" class="hidden fixed inset-0 z-50 bg-edu-bg/98 backdrop-blur-2xl flex flex-col items-center justify-between p-6 sm:p-10 text-white">
     <div class="w-full max-w-5xl flex items-center justify-between">
@@ -129,9 +175,6 @@
     </div>
 
     <div class="text-center my-auto">
-      <div id="fsModeBadge" class="inline-block px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-cyan-300 text-xs font-semibold uppercase tracking-widest mb-4">
-        Deep Focus Session
-      </div>
       <div id="fsTimerDisplay" class="font-display text-6xl sm:text-8xl md:text-9xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-purple-400 select-none">
         50:00
       </div>
@@ -203,9 +246,9 @@
     </div>
   </div>
 
-  <!-- Universal Modal (City Hall / Details) -->
+  <!-- Universal Modal (City Hall / Admin Login / Details) -->
   <div id="universalModal" class="hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-panel rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-cyan-500/25 shadow-2xl overflow-hidden">
+    <div class="glass-panel rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col border border-cyan-500/25 shadow-2xl overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200/10 flex items-center justify-between">
         <h3 id="modalTitle" class="font-display text-lg sm:text-xl font-bold flex items-center gap-2"></h3>
         <button onclick="closeUniversalModal()" class="w-9 h-9 rounded-xl bg-slate-500/15 hover:bg-slate-500/25 flex items-center justify-center transition">
@@ -240,14 +283,12 @@
 
       <!-- Live Telemetry Pills -->
       <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-        <!-- Active Timer Mini Pill -->
         <button id="headerActiveTimerPill" onclick="switchTab('focus')" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-semibold animate-pulse">
           <i class="fa-solid fa-stopwatch"></i>
           <span id="headerMiniTimerText">50:00</span>
         </button>
 
-        <!-- SC Balance -->
-        <div onclick="switchTab('bank')" class="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition" title="Study Credits (Virtual Currency)">
+        <div onclick="switchTab('bank')" class="cursor-pointer flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition" title="Study Credits">
           <i class="fa-solid fa-coins text-amber-400 text-sm"></i>
           <div>
             <div class="text-[10px] uppercase tracking-wider text-slate-400 leading-none">Wallet</div>
@@ -255,7 +296,6 @@
           </div>
         </div>
 
-        <!-- Level & XP -->
         <div onclick="switchTab('achievements')" class="cursor-pointer hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition">
           <i class="fa-solid fa-bolt text-purple-400 text-sm"></i>
           <div>
@@ -264,24 +304,19 @@
           </div>
         </div>
 
-        <!-- Firebase Status Badge -->
-        <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-500/10 border border-slate-500/20 text-[11px] text-slate-400">
-          <span id="cloudDot" class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span id="cloudStatusText">Connecting Firebase...</span>
-        </div>
-
-        <!-- Theme Toggle -->
         <button onclick="toggleTheme()" class="w-9 h-9 rounded-xl bg-slate-500/10 hover:bg-slate-500/20 border border-slate-500/20 flex items-center justify-center text-slate-400 hover:text-cyan-400 transition" title="Switch Theme">
           <i id="themeIcon" class="fa-solid fa-sun"></i>
         </button>
 
-        <!-- Scholar Profile Pill -->
         <button onclick="openOnboardingEdit()" class="flex items-center gap-2 pl-2 pr-3 py-1 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 transition">
           <span id="topAvatar" class="text-lg">🧑‍🚀</span>
           <div class="text-left">
             <div id="topUsername" class="text-xs font-bold leading-tight">Scholar</div>
             <div id="topUniqueId" class="text-[10px] font-mono text-cyan-400 leading-tight">EC-100001</div>
           </div>
+        </button>
+        <button onclick="logoutGoogle()" class="w-9 h-9 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 flex items-center justify-center text-rose-400 transition" title="Sign Out">
+          <i class="fa-solid fa-right-from-bracket"></i>
         </button>
       </div>
     </div>
@@ -347,9 +382,8 @@
     <!-- Main Dynamic Content -->
     <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
 
-      <!-- ==================== 1. MODERN BENTO DASHBOARD ==================== -->
+      <!-- ==================== 1. MODERN DASHBOARD ==================== -->
       <section id="view-dashboard" class="tab-view space-y-6">
-        <!-- Hero Command Card -->
         <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/25 relative overflow-hidden">
           <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
           <div class="absolute -left-20 -bottom-20 w-72 h-72 rounded-full bg-purple-600/10 blur-3xl pointer-events-none"></div>
@@ -363,7 +397,7 @@
                 Command Center: <span id="dashUsername" class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">Scholar</span>
               </h1>
               <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl">
-                आपकी हर मिनट की पढ़ाई आपकी 3D Civilization की नींव है। Start a timestamp-verified Focus Session to earn Study Credits (SC) and construct real 3D landmarks.
+                Start a timestamp-verified Focus Session to earn Study Credits (SC) and construct real 3D landmarks in your civilization.
               </p>
             </div>
 
@@ -417,12 +451,10 @@
           </div>
         </div>
 
-        <!-- Bento Row 2: Radial Goal + XP Bar + Live City Telemetry -->
+        <!-- Bento Row 2 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Radial Daily Focus Ring + XP -->
           <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-6">
             <div class="flex flex-col sm:flex-row items-center gap-6">
-              <!-- Animated SVG Radial Progress -->
               <div class="relative w-32 h-32 flex-shrink-0 flex items-center justify-center">
                 <svg class="w-32 h-32 transform -rotate-90" viewBox="0 0 120 120">
                   <circle cx="60" cy="60" r="50" stroke="rgba(148,163,184,0.18)" stroke-width="10" fill="none" />
@@ -454,7 +486,6 @@
                   </select>
                 </div>
 
-                <!-- Scholar XP Bar -->
                 <div>
                   <div class="flex justify-between text-xs mb-1.5">
                     <span class="font-semibold text-purple-300">Scholar Level <span id="dashScholarLevel">1</span></span>
@@ -467,7 +498,6 @@
               </div>
             </div>
 
-            <!-- Recent Verified Study Logs -->
             <div class="pt-4 border-t border-slate-200/10">
               <div class="flex items-center justify-between mb-3">
                 <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Recent Verified Study Logs</h4>
@@ -479,7 +509,6 @@
             </div>
           </div>
 
-          <!-- City Hall Quick Telemetry -->
           <div class="glass-panel rounded-3xl p-6 flex flex-col justify-between border border-purple-500/20">
             <div>
               <div class="flex items-center justify-between mb-3">
@@ -523,7 +552,6 @@
               </button>
             </div>
 
-            <!-- Timer Mode Tabs -->
             <div class="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-slate-900/80 border border-slate-800 mb-6">
               <button onclick="setTimerMode('pomodoro')" id="modeBtn-pomodoro" class="timer-mode-btn py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition bg-cyan-500 text-slate-950">
                 Pomodoro (50m)
@@ -536,7 +564,6 @@
               </button>
             </div>
 
-            <!-- Subject & Duration -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-1">Focus Subject / Syllabus Topic</label>
@@ -553,7 +580,6 @@
               </div>
             </div>
 
-            <!-- Real-Time Clock Display -->
             <div class="my-6 py-8 px-4 rounded-3xl bg-slate-950/80 border border-cyan-500/20 text-center relative">
               <div id="timerStatusPill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-semibold mb-3">
                 <span class="w-2 h-2 rounded-full bg-slate-400"></span> Ready for Verified Focus
@@ -562,7 +588,6 @@
                 50:00
               </div>
 
-              <!-- Real-time 10-minute Reward Tick Progress -->
               <div class="max-w-md mx-auto mt-4">
                 <div class="flex justify-between text-[11px] text-slate-400 mb-1">
                   <span>Next +10 SC Reward Tick</span>
@@ -582,7 +607,6 @@
               </div>
             </div>
 
-            <!-- Controls -->
             <div class="flex flex-wrap items-center justify-center gap-3">
               <button id="startTimerBtn" onclick="startFocusSession()" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:opacity-95 text-white font-bold text-sm shadow-lg shadow-cyan-500/25 transition flex items-center gap-2">
                 <i class="fa-solid fa-play"></i> Start Verified Session
@@ -598,7 +622,6 @@
               </button>
             </div>
 
-            <!-- Quick Verification Test Bar -->
             <div class="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
               <div class="text-xs text-slate-400">
                 <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> <strong>Instant Demo Verify:</strong> Test SC & 3D City unlocks right now:
@@ -617,7 +640,6 @@
             </div>
           </div>
 
-          <!-- Verification Telemetry Card -->
           <div class="space-y-6">
             <div class="glass-panel rounded-3xl p-6 border border-emerald-500/25">
               <h3 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
@@ -626,15 +648,11 @@
               <ul class="space-y-2.5 text-xs text-slate-300">
                 <li class="flex items-start gap-2">
                   <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
-                  <span><strong>Real Wall-Clock Delta:</strong> Computed via <code>Date.now()</code> timestamps so background throttling never cheats or loses seconds.</span>
+                  <span><strong>Real Wall-Clock Delta:</strong> Computed via <code>Date.now()</code> timestamps so background throttling never cheats seconds.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
                   <span><strong>BroadcastChannel Tab Lock:</strong> Prevents earning duplicate SC across multiple browser tabs simultaneously.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
-                  <span><strong>Visibility Integrity Audit:</strong> Monitors tab switches during focus and displays an honest Focus Integrity score.</span>
                 </li>
                 <li class="flex items-start gap-2">
                   <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
@@ -649,16 +667,14 @@
                 <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Minutes Focus</span><span class="font-bold text-amber-400">10 SC + 100 XP</span></div>
                 <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>1 Hour Focus</span><span class="font-bold text-amber-400">60 SC + 600 XP</span></div>
                 <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>5 Hours Focus</span><span class="font-bold text-amber-400">300 SC + 3,000 XP</span></div>
-                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Hours Focus</span><span class="font-bold text-amber-400">600 SC + 6,000 XP</span></div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ==================== 3. REAL 3D VIRTUAL CITY BUILDER (THREE.JS) ==================== -->
+      <!-- ==================== 3. 3D VIRTUAL CITY BUILDER ==================== -->
       <section id="view-city" class="tab-view hidden space-y-4">
-        <!-- Visitor Mode Banner -->
         <div id="visitingCityBanner" class="hidden glass-panel rounded-2xl p-4 border border-purple-500/40 bg-purple-950/40 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <span class="px-3 py-1 rounded-full bg-purple-500 text-white text-xs font-bold uppercase tracking-wider animate-pulse">3D Visit Mode</span>
@@ -668,7 +684,6 @@
             </div>
           </div>
 
-          <!-- Live Social Reactors Bar -->
           <div class="flex flex-wrap items-center gap-2">
             <div class="flex items-center gap-1 bg-slate-900/80 border border-slate-700 rounded-xl p-1">
               <button onclick="triggerCityReactor('👏')" class="px-2.5 py-1 hover:bg-white/10 rounded-lg text-base transition" title="Applaud">👏</button>
@@ -686,7 +701,6 @@
           </div>
         </div>
 
-        <!-- 3D Toolbar -->
         <div class="glass-panel rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3">
             <h2 class="font-display font-bold text-lg sm:text-xl flex items-center gap-2">
@@ -696,14 +710,12 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
-            <!-- Atmosphere / Lighting Switcher -->
             <div class="flex items-center rounded-xl bg-slate-900/80 border border-slate-700 overflow-hidden text-xs">
               <button onclick="setCityAtmosphere('day')" id="atmoBtn-day" class="atmo-btn px-3 py-1.5 hover:bg-slate-800 transition">☀️ Day</button>
               <button onclick="setCityAtmosphere('sunset')" id="atmoBtn-sunset" class="atmo-btn px-3 py-1.5 hover:bg-slate-800 border-x border-slate-700 transition">🌅 Sunset</button>
               <button onclick="setCityAtmosphere('night')" id="atmoBtn-night" class="atmo-btn px-3 py-1.5 bg-cyan-500/20 text-cyan-300 font-semibold transition">🌙 Cyber Night</button>
             </div>
 
-            <!-- Camera Orbit Controls -->
             <div class="flex items-center rounded-xl bg-slate-900/80 border border-slate-700 overflow-hidden text-xs">
               <button onclick="rotateCityCamera(-0.35)" class="px-2.5 py-1.5 hover:bg-slate-800" title="Rotate Left"><i class="fa-solid fa-rotate-left"></i></button>
               <button onclick="adjustCityZoom(-2.5)" class="px-2.5 py-1.5 hover:bg-slate-800 border-l border-slate-700" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
@@ -718,27 +730,20 @@
           </div>
         </div>
 
-        <!-- 3D Viewport + Tile Inspector -->
         <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
           <div id="threeCityContainer" class="xl:col-span-3 glass-panel rounded-3xl overflow-hidden border border-cyan-500/25 relative h-[480px] sm:h-[600px]">
-            <!-- Three.js WebGL Canvas mounts here -->
             <div id="reactorOverlayLayer" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
-
-            <!-- Controls Hint Pill -->
             <div class="absolute bottom-3 left-3 right-3 sm:right-auto glass-panel rounded-2xl px-3.5 py-2 text-[11px] flex flex-wrap items-center gap-3 pointer-events-none">
               <span class="text-cyan-300 font-semibold"><i class="fa-solid fa-hand-pointer mr-1"></i> Click Plot to Build / Upgrade</span>
               <span class="text-slate-400">• Drag to Orbit 360° • Scroll / Pinch to Zoom</span>
             </div>
           </div>
 
-          <!-- Plot & Building Inspector -->
           <div class="glass-panel rounded-3xl p-5 flex flex-col justify-between space-y-4">
             <div id="tileInspectorPanel">
               <div class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-1">3D Plot Inspector</div>
               <h3 class="font-display text-lg font-bold">Click Any Plot in 3D World</h3>
-              <p class="text-xs text-slate-400 mt-1">
-                Select any land plot in your 3D city to construct realistic architectural buildings, unlock new territory, or upgrade towers up to Level 3!
-              </p>
+              <p class="text-xs text-slate-400 mt-1">Select any land plot in your 3D city to construct realistic architectural buildings or upgrade towers up to Level 3!</p>
             </div>
 
             <div class="pt-3 border-t border-slate-800">
@@ -756,19 +761,14 @@
             <h2 class="font-display text-2xl font-bold flex items-center gap-2">
               <i class="fa-solid fa-store text-purple-400"></i> 3D Architectural Building Store
             </h2>
-            <p class="text-xs sm:text-sm text-slate-400 mt-1">
-              Every building includes a real-time 3D architectural model preview. Unlock advanced landmarks through Study Hour milestones!
-            </p>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">Every building includes a real-time 3D architectural preview. Unlock advanced landmarks through Study Hour milestones!</p>
           </div>
           <div class="px-4 py-2 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-display font-bold text-sm">
             Wallet: <span id="storeBalanceDisplay">100,000 SC</span>
           </div>
         </div>
 
-        <!-- District Filter Bar -->
         <div id="storeDistrictFilters" class="flex flex-wrap gap-2"></div>
-
-        <!-- 3D Building Cards Grid -->
         <div id="storeCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
       </section>
 
@@ -780,9 +780,7 @@
               <h2 class="font-display text-2xl font-bold flex items-center gap-2">
                 <i class="fa-solid fa-vault text-amber-400"></i> Reserve Bank of Educivilization
               </h2>
-              <p class="text-xs text-slate-400 mt-1">
-                Study Credits (SC) are a virtual in-game reward currency with zero real-money withdrawal value.
-              </p>
+              <p class="text-xs text-slate-400 mt-1">Study Credits (SC) are a virtual in-game reward currency with zero real-money withdrawal value.</p>
             </div>
             <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
               <i class="fa-solid fa-shield-check mr-1"></i> Double-Entry Verified
@@ -837,29 +835,25 @@
         </div>
       </section>
 
-      <!-- ==================== 6. ENHANCED ACHIEVEMENTS & XP ==================== -->
+      <!-- ==================== 6. ACHIEVEMENTS & XP ==================== -->
       <section id="view-achievements" class="tab-view hidden space-y-6">
         <div class="glass-panel rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-purple-500/25">
           <div>
             <h2 class="font-display text-2xl font-bold flex items-center gap-2">
               <i class="fa-solid fa-trophy text-amber-400"></i> Scholar Ranks, XP & Trophies
             </h2>
-            <p class="text-xs sm:text-sm text-slate-400 mt-1">
-              Complete Study, Architecture, and Exploration milestones to earn XP and unlock prestigious Scholar Titles.
-            </p>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">Complete Study, Architecture, and Exploration milestones to earn XP and unlock prestigious Scholar Titles.</p>
           </div>
           <div class="px-4 py-2.5 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-300 font-display font-bold text-sm">
             Current Rank: <span id="achCurrentTitle">🌱 Novice Learner</span>
           </div>
         </div>
 
-        <!-- Scholar Titles Ladder -->
         <div class="glass-panel rounded-3xl p-6">
           <h3 class="font-display font-bold text-lg mb-4">Scholar Title Hierarchy</h3>
           <div id="titlesLadderGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"></div>
         </div>
 
-        <!-- Category Filter -->
         <div class="flex flex-wrap gap-2">
           <button onclick="filterAchievements('ALL')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
           <button onclick="filterAchievements('STUDY')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
@@ -870,11 +864,9 @@
         <div id="achievementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
       </section>
 
-      <!-- ==================== 7. EXPLORE WORLD (HOLOGRAPHIC MAP, EFFECTS, REACTORS) ==================== -->
+      <!-- ==================== 7. EXPLORE WORLD ==================== -->
       <section id="view-explore" class="tab-view hidden space-y-6">
-        <!-- Animated Holographic World Radar Header -->
         <div class="glass-panel holo-grid-bg rounded-3xl p-6 sm:p-8 border border-cyan-500/30 relative overflow-hidden">
-          <!-- Animated Orbital Rings SVG -->
           <div class="absolute right-6 top-1/2 -translate-y-1/2 w-56 h-56 opacity-35 pointer-events-none hidden md:block">
             <svg viewBox="0 0 200 200" class="w-full h-full">
               <circle cx="100" cy="100" r="88" stroke="#06B6D4" stroke-width="1" stroke-dasharray="6 6" fill="none" class="radar-sweep" style="transform-origin: 100px 100px;" />
@@ -892,9 +884,7 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Civilization Telemetry Matrix
               </div>
               <h2 class="font-display text-2xl sm:text-3xl font-bold">Explore World Civilizations</h2>
-              <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
-                Orbit around fellow scholars' 3D cities in real time, inspect their architectural districts, and fire live Social Reactors (👏 🔥 🚀 💎 ❤️)!
-              </p>
+              <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">Orbit around fellow scholars' 3D cities in real time, inspect their architectural districts, and fire live Social Reactors (👏 🔥 🚀 💎 ❤️)!</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
               <label class="text-xs text-slate-300 font-semibold">My City Privacy:</label>
@@ -907,13 +897,11 @@
           </div>
         </div>
 
-        <!-- Public Cities Cards Grid -->
         <div id="exploreCitiesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"></div>
       </section>
 
-      <!-- ==================== 8. REALISTIC STUDENT LEADERBOARDS ==================== -->
+      <!-- ==================== 8. LEADERBOARDS ==================== -->
       <section id="view-leaderboard" class="tab-view hidden space-y-6">
-        <!-- Weekly City vs City Duel -->
         <div class="glass-panel rounded-3xl p-6 border border-cyan-500/30 bg-gradient-to-r from-cyan-950/40 via-slate-900/60 to-purple-950/40">
           <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div>
@@ -937,7 +925,6 @@
           </div>
         </div>
 
-        <!-- Global Rankings Table -->
         <div class="glass-panel rounded-3xl p-6">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
             <h3 class="font-display text-xl font-bold">National & Global Scholar Rankings</h3>
@@ -967,9 +954,8 @@
         </div>
       </section>
 
-      <!-- ==================== 9. LOCKED FIREBASE ADMIN CONTROL PANEL ==================== -->
+      <!-- ==================== 9. LOCKED ADMIN PANEL ==================== -->
       <section id="view-admin" class="tab-view hidden space-y-6">
-        <!-- LOCK SCREEN (Shown until Firebase Auth signs in strictly as educivilization@gmail.com) -->
         <div id="adminLockScreen" class="max-w-md mx-auto glass-panel rounded-3xl p-8 border border-rose-500/30 shadow-2xl text-center space-y-5 my-6">
           <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 flex items-center justify-center text-2xl mx-auto shadow-lg">
             <i class="fa-solid fa-shield-keyhole"></i>
@@ -977,34 +963,31 @@
           <div>
             <span class="text-[11px] font-bold uppercase tracking-widest text-rose-400">Restricted Root Access</span>
             <h2 class="font-display text-2xl font-bold mt-1">Admin Control Panel Locked</h2>
-            <p class="text-xs text-slate-400 mt-1.5">
-              Authenticate via Firebase Email & Password using the authorized administrator account (<code>educivilization@gmail.com</code>).
-            </p>
+            <p class="text-xs text-slate-400 mt-1.5">Authenticate via Firebase credentials to access root governance.</p>
           </div>
 
-          <form onsubmit="handleAdminFirebaseLogin(event)" class="space-y-3.5 text-left">
+          <form onsubmit="handleAdminEmailLogin(event)" class="space-y-3.5 text-left">
             <div>
-              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Firebase Email</label>
-              <input id="adminLoginEmail" type="email" value="educivilization@gmail.com" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm text-cyan-300 font-mono focus:border-rose-400 focus:outline-none" />
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
+              <input id="adminEmailInput" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
-              <input id="adminLoginPassword" type="password" placeholder="Enter Firebase Auth password" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+              <input id="adminPassInput" type="password" placeholder="Enter admin password" required class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
             </div>
-            <div id="adminLoginError" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
-            <button type="submit" id="adminLoginSubmitBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 hover:opacity-95 text-white font-bold text-sm shadow-lg transition">
-              <i class="fa-solid fa-unlock-keyhole mr-1.5"></i> Verify & Unlock Admin Panel
+            <div id="adminLoginErrorMsg" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 hover:opacity-95 text-white font-bold text-sm shadow-lg transition">
+              <i class="fa-solid fa-unlock-keyhole mr-1.5"></i> Unlock Admin Panel
             </button>
           </form>
         </div>
 
-        <!-- UNLOCKED ADMIN DASHBOARD (Visible ONLY when verified Firebase user.email === 'educivilization@gmail.com') -->
         <div id="adminUnlockedContent" class="hidden space-y-6">
           <div class="glass-panel rounded-3xl p-6 border border-emerald-500/30">
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold mb-1">
-                  <i class="fa-solid fa-shield-check"></i> Authenticated Root Admin: educivilization@gmail.com
+                  <i class="fa-solid fa-shield-check"></i> Root Admin Authorized
                 </div>
                 <h2 class="font-display text-2xl font-bold">EDUCIVILIZATION Command & Governance</h2>
               </div>
@@ -1013,7 +996,6 @@
               </button>
             </div>
 
-            <!-- Platform KPIs -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
                 <div class="text-xs text-slate-400">Tracked Civilizations</div>
@@ -1033,7 +1015,6 @@
               </div>
             </div>
 
-            <!-- Economy Rules & Grant/Deduct Controls -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
                 <h3 class="font-display font-bold text-base text-cyan-300">Global Economy Parameters</h3>
@@ -1066,7 +1047,6 @@
             </div>
           </div>
 
-          <!-- Registered Citizens Table -->
           <div class="glass-panel rounded-3xl p-6">
             <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
               <h3 class="font-display font-bold text-lg">Live Scholar & City Directory</h3>
@@ -1089,9 +1069,8 @@
             </div>
           </div>
 
-          <!-- Immutable Audit Logs -->
           <div class="glass-panel rounded-3xl p-6">
-            <h3 class="font-display font-bold text-lg mb-3">Firestore & System Admin Audit Trail</h3>
+            <h3 class="font-display font-bold text-lg mb-3">Immutable Audit Logs</h3>
             <div id="adminAuditLogList" class="space-y-2 text-xs font-mono text-slate-300 max-h-60 overflow-y-auto"></div>
           </div>
         </div>
@@ -1100,12 +1079,13 @@
     </main>
   </div>
 
-  <!-- Firebase v10.14.1 Modular SDK + Complete Application Engine -->
+  <!-- Firebase v10.14.1 Modular SDK & App Engine -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import {
       getAuth,
-      signInAnonymously,
+      GoogleAuthProvider,
+      signInWithPopup,
       signInWithEmailAndPassword,
       signOut,
       onAuthStateChanged
@@ -1121,7 +1101,7 @@
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
     // =========================================================================
-    // 1. EXACT USER-PROVIDED FIREBASE CONFIGURATION
+    // 1. EXACT FIREBASE CONFIGURATION (Project ID: educivilization-c1c5a)
     // =========================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBIn-SB8aJyJGu5qYWIx6ddCulFB_-z4bw",
@@ -1138,12 +1118,13 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const googleProvider = new GoogleAuthProvider();
 
     let currentFirebaseUser = null;
     let isAdminAuthenticated = false;
 
     // =========================================================================
-    // 2. CATALOG, ACHIEVEMENTS & REALISTIC INDIAN STUDENT LEADERBOARDS
+    // 2. CATALOG, ACHIEVEMENTS & COMMUNITY LEADERBOARD PROFILES
     // =========================================================================
     const AVATARS = ['🧑‍🚀', '👩‍🔬', '🧑‍🎓', '🧙‍♂️', '🥷', '🤖', '🦁', '🦉', '⚡', '🏛️', '🚀', '💎'];
 
@@ -1193,7 +1174,6 @@
       { id: 'networth_300k', cat: 'SOCIAL', title: 'Grand Sovereign', desc: 'Reach 300,000 SC Total Net Worth', check: (s) => (s.scBalance + calculateCityMetrics(s).assetValue) >= 300000, progress: (s) => Math.min(100, Math.round(((s.scBalance + calculateCityMetrics(s).assetValue) / 300000) * 100)), xp: 3500, badge: '👑', rarity: 'Legendary' },
     ];
 
-    // Realistic Indian Student Community Cities & Leaderboard Profiles
     const COMMUNITY_SCHOLARS = [
       {
         uid: 'bot_ravi',
@@ -1202,7 +1182,7 @@
         region: 'Jaipur, RJ',
         avatar: '🧑‍🚀',
         cityName: 'Pink City Citadel',
-        studyMinutes: 2550, // 42.5 hrs
+        studyMinutes: 2550,
         streak: 19,
         xp: 25500,
         scBalance: 48200,
@@ -1223,7 +1203,7 @@
         region: 'Kota, RJ',
         avatar: '🧑‍🎓',
         cityName: 'Quantum Kota Hub',
-        studyMinutes: 4920, // 82.0 hrs
+        studyMinutes: 4920,
         streak: 34,
         xp: 49200,
         scBalance: 76400,
@@ -1245,7 +1225,7 @@
         region: 'New Delhi, DL',
         avatar: '👩‍🔬',
         cityName: 'Indraprastha Nova',
-        studyMinutes: 3780, // 63.0 hrs
+        studyMinutes: 3780,
         streak: 27,
         xp: 37800,
         scBalance: 63900,
@@ -1266,7 +1246,7 @@
         region: 'Ahmedabad, GJ',
         avatar: '🧙‍♂️',
         cityName: 'Sabarmati Zenith',
-        studyMinutes: 1980, // 33.0 hrs
+        studyMinutes: 1980,
         streak: 14,
         xp: 19800,
         scBalance: 54100,
@@ -1286,7 +1266,7 @@
         region: 'Jodhpur, RJ',
         avatar: '🦁',
         cityName: 'Mehrangarh Cyberia',
-        studyMinutes: 3120, // 52.0 hrs
+        studyMinutes: 3120,
         streak: 22,
         xp: 31200,
         scBalance: 58900,
@@ -1307,7 +1287,7 @@
         region: 'Lucknow, UP',
         avatar: '🦉',
         cityName: 'Awadh TechnoPolis',
-        studyMinutes: 1440, // 24.0 hrs
+        studyMinutes: 1440,
         streak: 11,
         xp: 14400,
         scBalance: 67300,
@@ -1318,45 +1298,6 @@
           [3, 3, 'city_hall', 2], [3, 4, 'school', 2], [4, 3, 'hospital', 1],
           [4, 4, 'small_house', 2], [2, 3, 'neon_park', 1], [2, 4, 'police_station', 1],
           [3, 2, 'solar_grid', 1], [4, 2, 'tech_mall', 1]
-        ])
-      },
-      {
-        uid: 'bot_rohan',
-        uniqueId: 'EC-100184',
-        username: 'Rohan Meena',
-        region: 'Udaipur, RJ',
-        avatar: '⚡',
-        cityName: 'Lakefront Aether',
-        studyMinutes: 1080, // 18.0 hrs
-        streak: 8,
-        xp: 10800,
-        scBalance: 72500,
-        likes: 24,
-        visitors: 150,
-        privacy: 'Public',
-        grid: createPresetGrid([
-          [3, 3, 'city_hall', 2], [3, 4, 'school', 1], [4, 3, 'small_house', 2],
-          [4, 4, 'neon_park', 2], [2, 3, 'hospital', 1], [2, 4, 'solar_grid', 1]
-        ])
-      },
-      {
-        uid: 'bot_kavita',
-        uniqueId: 'EC-100192',
-        username: 'Kavita Joshi',
-        region: 'Pune, MH',
-        avatar: '💎',
-        cityName: 'Sahyadri Silicon',
-        studyMinutes: 2220, // 37.0 hrs
-        streak: 16,
-        xp: 22200,
-        scBalance: 51400,
-        likes: 52,
-        visitors: 330,
-        privacy: 'Public',
-        grid: createPresetGrid([
-          [3, 3, 'city_hall', 2], [3, 4, 'university', 2], [4, 3, 'tech_mall', 2],
-          [4, 4, 'clean_factory', 1], [2, 3, 'sky_apartments', 2], [2, 4, 'metro_station', 1],
-          [3, 2, 'hospital', 1], [4, 2, 'neon_park', 2]
         ])
       }
     ];
@@ -1403,9 +1344,9 @@
     }
 
     // =========================================================================
-    // 3. APPLICATION STATE & LOCAL + FIRESTORE PERSISTENCE
+    // 3. APPLICATION STATE
     // =========================================================================
-    const LOCAL_STORAGE_KEY = 'educivilization_state_v2';
+    const LOCAL_STORAGE_KEY = 'educivilization_state_v3';
 
     let state = {
       uniqueId: 'EC-' + Math.floor(100200 + Math.random() * 899000),
@@ -1444,11 +1385,10 @@
         dailyCapSc: 600
       },
       auditLogs: [
-        `[${new Date().toLocaleTimeString()}] SYSTEM: Educivilization Economy initialized (10 SC / 10m, 100,000 SC Founding Grant).`
+        `[${new Date().toLocaleTimeString()}] SYSTEM: Educivilization Economy initialized.`
       ]
     };
 
-    // Load saved local state immediately for zero-latency boot
     try {
       const savedRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (savedRaw) {
@@ -1470,41 +1410,151 @@
     }
 
     // =========================================================================
-    // 4. FIREBASE AUTH & FIRESTORE REAL-TIME SYNC
+    // 4. FIREBASE AUTH & GOOGLE SIGN-IN
     // =========================================================================
     onAuthStateChanged(auth, async (user) => {
-      const dot = document.getElementById('cloudDot');
-      const statusText = document.getElementById('cloudStatusText');
-
+      const gateScreen = document.getElementById('authGateScreen');
       if (user) {
         currentFirebaseUser = user;
+        gateScreen.classList.add('hidden');
+
         const email = (user.email || '').toLowerCase();
         isAdminAuthenticated = (email === ADMIN_AUTHORIZED_EMAIL);
-
         updateAdminLockUI();
 
-        if (isAdminAuthenticated) {
-          dot.className = 'w-2 h-2 rounded-full bg-rose-400';
-          statusText.textContent = 'Admin Verified';
-        } else {
-          dot.className = 'w-2 h-2 rounded-full bg-emerald-400';
-          statusText.textContent = 'Firebase Synced';
+        if (user.displayName && !state.onboarded) {
+          state.username = user.displayName;
         }
 
         await syncUserWithFirestore(user.uid);
         subscribeToFirestorePublicCities();
+        refreshAllUI();
       } else {
+        currentFirebaseUser = null;
         isAdminAuthenticated = false;
         updateAdminLockUI();
-        try {
-          await signInAnonymously(auth);
-        } catch (err) {
-          console.warn('Anonymous Auth fallback:', err.message);
-          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
-          statusText.textContent = 'Local Sync Active';
-        }
+        gateScreen.classList.remove('hidden');
       }
     });
+
+    window.loginWithGoogle = async function () {
+      try {
+        await signInWithPopup(auth, googleProvider);
+        showToast('Successfully signed in with Google!', 'success');
+      } catch (err) {
+        showToast('Google Sign-In Error: ' + err.message, 'error');
+      }
+    };
+
+    window.logoutGoogle = async function () {
+      try {
+        await signOut(auth);
+        showToast('Signed out successfully.', 'info');
+      } catch (e) {}
+    };
+
+    // Admin Login Modal (No prefilled admin email on UI)
+    window.openAdminLoginModal = function () {
+      openUniversalModal(
+        `<i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal Login`,
+        `
+          <form onsubmit="handleModalAdminLogin(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
+              <input id="modalAdminEmail" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
+              <input id="modalAdminPass" type="password" placeholder="Enter password" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div id="modalAdminErr" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-sm shadow-lg transition">
+              Authenticate Root Admin
+            </button>
+          </form>
+        `
+      );
+    };
+
+    window.handleModalAdminLogin = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('modalAdminEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('modalAdminPass').value;
+      const errEl = document.getElementById('modalAdminErr');
+      errEl.classList.add('hidden');
+
+      if (email !== ADMIN_AUTHORIZED_EMAIL) {
+        errEl.textContent = 'Access Denied: Unauthorized administrator email.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+          isAdminAuthenticated = true;
+          closeUniversalModal();
+          updateAdminLockUI();
+          switchTab('admin');
+          showToast('Admin Panel Unlocked!', 'success');
+        }
+      } catch (err) {
+        errEl.textContent = 'Authentication Failed: ' + err.message;
+        errEl.classList.remove('hidden');
+      }
+    };
+
+    window.handleAdminEmailLogin = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+      const pass = document.getElementById('adminPassInput').value;
+      const errEl = document.getElementById('adminLoginErrorMsg');
+      errEl.classList.add('hidden');
+
+      if (email !== ADMIN_AUTHORIZED_EMAIL) {
+        errEl.textContent = 'Access Denied: Unauthorized admin credentials.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+          isAdminAuthenticated = true;
+          updateAdminLockUI();
+          showToast('Admin Panel Unlocked!', 'success');
+        }
+      } catch (err) {
+        errEl.textContent = 'Auth Error: ' + err.message;
+        errEl.classList.remove('hidden');
+      }
+    };
+
+    window.handleAdminLogout = async function () {
+      try {
+        await signOut(auth);
+        isAdminAuthenticated = false;
+        updateAdminLockUI();
+        showToast('Admin Panel Locked & Signed Out.', 'info');
+      } catch (e) {}
+    };
+
+    function updateAdminLockUI() {
+      const lockScreen = document.getElementById('adminLockScreen');
+      const unlockedContent = document.getElementById('adminUnlockedContent');
+      const sidebarIcon = document.getElementById('sidebarAdminLockIcon');
+
+      if (isAdminAuthenticated) {
+        lockScreen?.classList.add('hidden');
+        unlockedContent?.classList.remove('hidden');
+        if (sidebarIcon) sidebarIcon.className = 'fa-solid fa-lock-open w-5 text-center text-emerald-400';
+        renderAdminPanel();
+      } else {
+        lockScreen?.classList.remove('hidden');
+        unlockedContent?.classList.add('hidden');
+        if (sidebarIcon) sidebarIcon.className = 'fa-solid fa-lock w-5 text-center text-rose-400';
+      }
+    }
 
     async function syncUserWithFirestore(uid) {
       try {
@@ -1522,9 +1572,8 @@
           }
         }
         await pushStateToFirestore();
-        refreshAllUI();
       } catch (err) {
-        console.warn('Firestore sync notice (check rules):', err.message);
+        console.warn('Firestore sync notice:', err.message);
       }
     }
 
@@ -1578,7 +1627,7 @@
           }, { merge: true });
         }
       } catch (err) {
-        console.warn('Firestore write skipped:', err.message);
+        console.warn('Firestore write notice:', err.message);
       }
     }
 
@@ -1607,72 +1656,8 @@
       } catch (e) {}
     }
 
-    // =========================================================================
-    // 5. LOCKED FIREBASE EMAIL/PASSWORD ADMIN AUTHENTICATION
-    // =========================================================================
-    window.handleAdminFirebaseLogin = async function (event) {
-      event.preventDefault();
-      const email = document.getElementById('adminLoginEmail').value.trim().toLowerCase();
-      const password = document.getElementById('adminLoginPassword').value;
-      const errBox = document.getElementById('adminLoginError');
-      const btn = document.getElementById('adminLoginSubmitBtn');
-
-      errBox.classList.add('hidden');
-
-      if (email !== ADMIN_AUTHORIZED_EMAIL) {
-        errBox.textContent = `Access Denied: Only ${ADMIN_AUTHORIZED_EMAIL} is permitted to unlock the Admin Panel.`;
-        errBox.classList.remove('hidden');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Verifying with Firebase...`;
-
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
-          isAdminAuthenticated = true;
-          updateAdminLockUI();
-          logAdminAction(`Admin authenticated via Firebase Email/Password (${email}).`);
-          showToast('Admin Control Panel Unlocked!', 'success');
-        }
-      } catch (err) {
-        errBox.textContent = `Firebase Auth Error: ${err.message}`;
-        errBox.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-unlock-keyhole mr-1.5"></i> Verify & Unlock Admin Panel`;
-      }
-    };
-
-    window.handleAdminLogout = async function () {
-      try {
-        await signOut(auth);
-        isAdminAuthenticated = false;
-        updateAdminLockUI();
-        showToast('Admin Panel Locked & Signed Out.', 'info');
-      } catch (e) {}
-    };
-
-    function updateAdminLockUI() {
-      const lockScreen = document.getElementById('adminLockScreen');
-      const unlockedContent = document.getElementById('adminUnlockedContent');
-      const sidebarIcon = document.getElementById('sidebarAdminLockIcon');
-
-      if (isAdminAuthenticated) {
-        lockScreen.classList.add('hidden');
-        unlockedContent.classList.remove('hidden');
-        sidebarIcon.className = 'fa-solid fa-lock-open w-5 text-center text-emerald-400';
-        renderAdminPanel();
-      } else {
-        lockScreen.classList.remove('hidden');
-        unlockedContent.classList.add('hidden');
-        sidebarIcon.className = 'fa-solid fa-lock w-5 text-center text-rose-400';
-      }
-    }
-
     async function logAdminAction(message) {
-      const entry = `[${new Date().toLocaleTimeString()}] ADMIN (${ADMIN_AUTHORIZED_EMAIL}): ${message}`;
+      const entry = `[${new Date().toLocaleTimeString()}] ADMIN: ${message}`;
       state.auditLogs.unshift(entry);
       persistLocalState();
       if (isAdminAuthenticated) {
@@ -1687,7 +1672,7 @@
     }
 
     // =========================================================================
-    // 6. REAL 3D VIRTUAL CITY ENGINE (THREE.JS WEBGL)
+    // 5. THREE.JS 3D CITY BUILDER
     // =========================================================================
     let scene, camera3D, renderer3D, raycaster, mouseVec;
     let plotMeshes = [];
@@ -1717,7 +1702,6 @@
       renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
       container.prepend(renderer3D.domElement);
 
-      // Lighting
       hemiLight = new THREE.HemisphereLight(0x7dd3fc, 0x0f172a, 0.75);
       scene.add(hemiLight);
 
@@ -1727,23 +1711,15 @@
       sunLight = new THREE.DirectionalLight(0xfef08a, 1.15);
       sunLight.position.set(14, 22, 12);
       sunLight.castShadow = true;
-      sunLight.shadow.mapSize.width = 1024;
-      sunLight.shadow.mapSize.height = 1024;
       scene.add(sunLight);
 
-      // Base Ocean / Cyber Ground Plane
       const waterGeo = new THREE.PlaneGeometry(80, 80);
-      const waterMat = new THREE.MeshStandardMaterial({
-        color: 0x082f49,
-        roughness: 0.25,
-        metalness: 0.65
-      });
+      const waterMat = new THREE.MeshStandardMaterial({ color: 0x082f49, roughness: 0.25, metalness: 0.65 });
       const waterPlane = new THREE.Mesh(waterGeo, waterMat);
       waterPlane.rotation.x = -Math.PI / 2;
       waterPlane.position.y = -0.22;
       scene.add(waterPlane);
 
-      // City Island Platform Base
       const islandGeo = new THREE.BoxGeometry(17.6, 0.4, 17.6);
       const islandMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
       const islandMesh = new THREE.Mesh(islandGeo, islandMat);
@@ -1873,7 +1849,6 @@
       }
     };
 
-    // Build Detailed 3D Architectural Mesh for any Building Type & Level
     function create3DBuildingMesh(b, level = 1) {
       const group = new THREE.Group();
       const levelScaleH = 1 + (level - 1) * 0.38;
@@ -1881,100 +1856,44 @@
       const mainColor = new THREE.Color(b.color);
       const accentColor = new THREE.Color(b.accent || '#ffffff');
 
-      const bodyMat = new THREE.MeshStandardMaterial({
-        color: mainColor,
-        roughness: 0.35,
-        metalness: 0.25
-      });
-      const glassMat = new THREE.MeshStandardMaterial({
-        color: 0xe0f2fe,
-        emissive: 0x38bdf8,
-        emissiveIntensity: 0.45,
-        roughness: 0.15,
-        metalness: 0.8
-      });
-      const roofMat = new THREE.MeshStandardMaterial({
-        color: accentColor,
-        roughness: 0.4,
-        metalness: 0.3
-      });
+      const bodyMat = new THREE.MeshStandardMaterial({ color: mainColor, roughness: 0.35, metalness: 0.25 });
+      const glassMat = new THREE.MeshStandardMaterial({ color: 0xe0f2fe, emissive: 0x38bdf8, emissiveIntensity: 0.45, roughness: 0.15, metalness: 0.8 });
+      const roofMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.4, metalness: 0.3 });
 
       if (b.shape === 'house') {
         const base = new THREE.Mesh(new THREE.BoxGeometry(1.1, h * 0.65, 1.0), bodyMat);
         base.position.y = (h * 0.65) / 2;
-        base.castShadow = true;
         group.add(base);
-
         const roof = new THREE.Mesh(new THREE.ConeGeometry(0.92, h * 0.5, 4), roofMat);
         roof.position.y = h * 0.65 + (h * 0.25);
         roof.rotation.y = Math.PI / 4;
-        roof.castShadow = true;
         group.add(roof);
       } else if (b.shape === 'capitol' || b.shape === 'hospital') {
         const base = new THREE.Mesh(new THREE.BoxGeometry(1.45, h * 0.75, 1.25), bodyMat);
         base.position.y = (h * 0.75) / 2;
-        base.castShadow = true;
         group.add(base);
-
         const dome = new THREE.Mesh(new THREE.SphereGeometry(0.52, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2), roofMat);
         dome.position.y = h * 0.75;
         group.add(dome);
-
-        // Glowing window band
-        const winBand = new THREE.Mesh(new THREE.BoxGeometry(1.48, h * 0.16, 1.28), glassMat);
-        winBand.position.y = h * 0.45;
-        group.add(winBand);
       } else if (b.shape === 'park') {
         const lawn = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.8, 0.18, 16), bodyMat);
         lawn.position.y = 0.09;
         group.add(lawn);
-
-        const dome = new THREE.Mesh(
-          new THREE.SphereGeometry(0.62, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2),
-          new THREE.MeshPhysicalMaterial({ color: 0x34d399, transparent: true, opacity: 0.55, roughness: 0.1 })
-        );
-        dome.position.y = 0.18;
-        group.add(dome);
       } else if (b.shape === 'spire') {
         const base = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.75, h * 0.75, 8), bodyMat);
         base.position.y = (h * 0.75) / 2;
-        base.castShadow = true;
         group.add(base);
-
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.08, 8, 24), glassMat);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = h * 0.65;
-        group.add(ring);
-
         const needle = new THREE.Mesh(new THREE.ConeGeometry(0.14, h * 0.4, 8), roofMat);
         needle.position.y = h * 0.75 + h * 0.2;
         group.add(needle);
       } else {
-        // Modern Tower / Campus / Mall / Factory
         const tower = new THREE.Mesh(new THREE.BoxGeometry(1.25, h, 1.25), bodyMat);
         tower.position.y = h / 2;
-        tower.castShadow = true;
         group.add(tower);
-
-        // Tiered glowing window strips
-        const tiers = level + 1;
-        for (let t = 1; t <= tiers; t++) {
-          const strip = new THREE.Mesh(new THREE.BoxGeometry(1.29, 0.14, 1.29), glassMat);
-          strip.position.y = (h / (tiers + 1)) * t;
-          group.add(strip);
-        }
-
-        const crown = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.22, 0.85), roofMat);
-        crown.position.y = h + 0.11;
-        group.add(crown);
       }
 
-      // Level 3 Golden Beacon Spire
       if (level >= 3) {
-        const beacon = new THREE.Mesh(
-          new THREE.OctahedronGeometry(0.18),
-          new THREE.MeshBasicMaterial({ color: 0xfbbf24 })
-        );
+        const beacon = new THREE.Mesh(new THREE.OctahedronGeometry(0.18), new THREE.MeshBasicMaterial({ color: 0xfbbf24 }));
         beacon.position.y = h + 0.48;
         group.add(beacon);
       }
@@ -2002,31 +1921,12 @@
         tileGroup.position.set(wx, 0, wz);
         tileGroup.userData = { r: cell.r, c: cell.c };
 
-        // Plot Tile Pad
-        const padColor = !cell.unlocked
-          ? 0x334155
-          : cell.buildingId
-            ? 0x1e293b
-            : 0x065f46;
-
-        const padMat = new THREE.MeshStandardMaterial({
-          color: isSelected ? 0xf59e0b : padColor,
-          roughness: 0.7
-        });
+        const padColor = !cell.unlocked ? 0x334155 : cell.buildingId ? 0x1e293b : 0x065f46;
+        const padMat = new THREE.MeshStandardMaterial({ color: isSelected ? 0xf59e0b : padColor, roughness: 0.7 });
         const padMesh = new THREE.Mesh(new THREE.BoxGeometry(1.85, 0.14, 1.85), padMat);
         padMesh.position.y = 0.07;
-        padMesh.receiveShadow = true;
         tileGroup.add(padMesh);
 
-        // Neon selection ring
-        if (isSelected) {
-          const borderGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.94, 0.22, 1.94));
-          const borderLine = new THREE.LineSegments(borderGeo, new THREE.LineBasicMaterial({ color: 0xfde047 }));
-          borderLine.position.y = 0.11;
-          tileGroup.add(borderLine);
-        }
-
-        // If building exists, construct 3D building mesh
         if (cell.buildingId) {
           const b = state.catalog.find(x => x.id === cell.buildingId);
           if (b) {
@@ -2034,13 +1934,6 @@
             bMesh.position.y = 0.14;
             tileGroup.add(bMesh);
           }
-        } else if (cell.unlocked) {
-          // Decorative corner tree on unlocked plots
-          const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.22), new THREE.MeshStandardMaterial({ color: 0x78350f }));
-          trunk.position.set(-0.65, 0.25, -0.65);
-          const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.35, 6), new THREE.MeshStandardMaterial({ color: 0x10b981 }));
-          leaves.position.set(-0.65, 0.48, -0.65);
-          tileGroup.add(trunk, leaves);
         }
 
         cityGroup.add(tileGroup);
@@ -2068,10 +1961,9 @@
     }
 
     // =========================================================================
-    // 7. 3D ARCHITECTURAL PREVIEWS IN BUILDING STORE ("3D IMAGES")
+    // 6. 3D BUILDING STORE PREVIEWS
     // =========================================================================
     function generate3DBuildingPreviewSVG(b) {
-      // High-detail isometric 3D architectural vector illustration tailored to each building's colors & shape
       const c1 = b.color;
       const c2 = shadeHex(b.color, -26);
       const c3 = b.accent || '#38BDF8';
@@ -2080,39 +1972,12 @@
 
       return `
         <svg viewBox="0 0 180 130" class="w-full h-36 rounded-2xl bg-gradient-to-b from-slate-900 via-slate-900/95 to-cyan-950/50 border border-slate-800/80">
-          <defs>
-            <linearGradient id="glow_${b.id}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="${c3}" stop-opacity="0.45"/>
-              <stop offset="100%" stop-color="${c1}" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <!-- Isometric Base Platform -->
           <polygon points="90,82 146,104 90,124 34,104" fill="#0f172a" stroke="#38bdf8" stroke-opacity="0.35" stroke-width="1.2"/>
-          <polygon points="90,85 138,104 90,120 42,104" fill="url(#glow_${b.id})"/>
-
-          <!-- Left 3D Facade -->
           <polygon points="56,${topY + 18} 90,${topY + 34} 90,112 56,96" fill="${c1}" />
-          <!-- Right 3D Facade (Shaded) -->
           <polygon points="124,${topY + 18} 90,${topY + 34} 90,112 124,96" fill="${c2}" />
-          <!-- 3D Roof Deck -->
           <polygon points="90,${topY + 2} 124,${topY + 18} 90,${topY + 34} 56,${topY + 18}" fill="${c3}" />
-
-          <!-- Illuminated Architectural Windows -->
           <line x1="64" y1="${topY + 32}" x2="83" y2="${topY + 41}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-          <line x1="64" y1="${topY + 46}" x2="83" y2="${topY + 55}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-          <line x1="64" y1="${topY + 60}" x2="83" y2="${topY + 69}" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-
           <line x1="116" y1="${topY + 32}" x2="97" y2="${topY + 41}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
-          <line x1="116" y1="${topY + 46}" x2="97" y2="${topY + 55}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
-          <line x1="116" y1="${topY + 60}" x2="97" y2="${topY + 69}" stroke="#bae6fd" stroke-width="3" stroke-linecap="round" opacity="0.65"/>
-
-          ${b.shape === 'capitol' || b.shape === 'hospital' ? `
-            <ellipse cx="90" cy="${topY + 14}" rx="18" ry="11" fill="${c3}" stroke="#ffffff" stroke-width="1" stroke-opacity="0.5"/>
-          ` : ''}
-          ${b.shape === 'spire' ? `
-            <line x1="90" y1="${topY + 16}" x2="90" y2="6" stroke="#fde047" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="90" cy="6" r="3" fill="#f43f5e"/>
-          ` : ''}
         </svg>
       `;
     }
@@ -2127,7 +1992,7 @@
     }
 
     // =========================================================================
-    // 8. VERIFIED FOCUS ROOM (REAL TIMESTAMP DELTA + ANTI-CHEAT)
+    // 7. VERIFIED FOCUS ROOM
     // =========================================================================
     let timerState = {
       mode: 'pomodoro',
@@ -2146,21 +2011,14 @@
       focusChannel.onmessage = (ev) => {
         if (ev.data && ev.data.type === 'SESSION_ACTIVE' && ev.data.tabId !== timerState.tabId && timerState.running) {
           cancelFocusSession();
-          showToast('Focus Session paused/stopped because another tab started a verified session.', 'error');
+          showToast('Focus session paused because another tab started a verified session.', 'error');
         }
       };
     }
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden && timerState.running && !timerState.paused) {
-        timerState.tabSwitches += 1;
-        updateFocusClockUI();
-      }
-    });
-
     window.setTimerMode = function (mode) {
       if (timerState.running) {
-        showToast('Finish or cancel your active session before changing timer mode.', 'error');
+        showToast('Finish or cancel active session before changing mode.', 'error');
         return;
       }
       timerState.mode = mode;
@@ -2208,7 +2066,6 @@
       timerState.targetSeconds = timerState.mode === 'stopwatch' ? 0 : mins * 60;
       timerState.accumulatedVerifiedMs = 0;
       timerState.lastResumeTimestamp = Date.now();
-      timerState.tabSwitches = 0;
       timerState.running = true;
       timerState.paused = false;
 
@@ -2229,7 +2086,7 @@
       }, 500);
 
       updateFocusClockUI();
-      showToast('Verified Focus Session started! Real-time clock active.', 'info');
+      showToast('Verified Focus Session started!', 'info');
     };
 
     window.toggleTimerPause = function () {
@@ -2244,7 +2101,6 @@
       const label = timerState.paused ? 'Resume' : 'Pause';
       const icon = timerState.paused ? 'fa-play' : 'fa-pause';
       document.getElementById('pauseTimerBtn').innerHTML = `<i class="fa-solid ${icon}"></i> <span>${label}</span>`;
-      document.getElementById('fsPauseBtn').innerHTML = `<i class="fa-solid ${icon}"></i> <span>${label}</span>`;
       updateFocusClockUI();
     };
 
@@ -2267,7 +2123,6 @@
       if (!timerState.running) return;
       const totalSeconds = getRealVerifiedElapsedSeconds();
       const verifiedMins = Math.floor(totalSeconds / 60);
-      const integrity = Math.max(60, 100 - timerState.tabSwitches * 5);
 
       clearInterval(timerState.intervalId);
       timerState.running = false;
@@ -2288,7 +2143,7 @@
       }
 
       const subject = document.getElementById('focusSubjectInput').value.trim() || 'Focused Study';
-      await awardVerifiedStudy(verifiedMins, subject, integrity);
+      await awardVerifiedStudy(verifiedMins, subject, 100);
       setTimerMode(timerState.mode);
     };
 
@@ -2323,7 +2178,7 @@
         id: 'tx_' + Date.now(),
         timestamp: new Date().toLocaleString(),
         type: 'STUDY_REWARD',
-        desc: `Verified Study (${mins}m • ${integrity}% Integrity): ${subject}`,
+        desc: `Verified Study (${mins}m): ${subject}`,
         amount: earnedSc
       });
 
@@ -2355,24 +2210,10 @@
       document.getElementById('estRewardText').textContent = `${accruedSc} SC`;
       document.getElementById('fsEarnedSC').textContent = `${accruedSc} SC`;
 
-      const integrity = Math.max(60, 100 - timerState.tabSwitches * 5);
-      document.getElementById('sessionIntegrityScore').textContent = `${integrity}%`;
-      document.getElementById('fsIntegrityLabel').textContent = `${integrity}%`;
-
-      // Next 10-min tick progress bar
       const secIntoCycle = elapsedSec % 600;
       const remCycle = 600 - secIntoCycle;
       document.getElementById('nextTickCountdown').textContent = `${Math.floor(remCycle / 60)}m ${String(remCycle % 60).padStart(2, '0')}s`;
       document.getElementById('nextTickBar').style.width = `${(secIntoCycle / 600) * 100}%`;
-
-      const pill = document.getElementById('timerStatusPill');
-      if (!timerState.running) {
-        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> Ready for Verified Focus`;
-      } else if (timerState.paused) {
-        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-400"></span> Paused (Clock Halted)`;
-      } else {
-        pill.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Recording Verified Delta`;
-      }
     }
 
     window.toggleFullScreenFocus = function (open) {
@@ -2387,7 +2228,7 @@
     };
 
     // =========================================================================
-    // 9. TILE INSPECTOR, CONSTRUCTION, UPGRADES & SOCIAL REACTORS
+    // 8. TILE INSPECTOR, CONSTRUCTION & SOCIAL REACTORS
     // =========================================================================
     function countBuildings(cityObj) {
       return cityObj.grid.filter(c => Boolean(c.buildingId)).length;
@@ -2457,12 +2298,10 @@
           ${generate3DBuildingPreviewSVG(b)}
           <h3 class="font-display text-lg font-bold mt-2">${b.name}</h3>
           <p class="text-xs text-slate-400 mt-1">${b.desc}</p>
-
           <div class="my-3 p-3 rounded-2xl bg-slate-900/75 border border-slate-800 space-y-1.5 text-xs">
             <div class="flex justify-between"><span class="text-slate-400">Population</span><span class="text-emerald-400 font-bold">+${Math.round(b.pop * (1 + (cell.level - 1) * 0.5))}</span></div>
             <div class="flex justify-between"><span class="text-slate-400">Infrastructure</span><span class="text-cyan-400 font-bold">+${Math.round(b.infra * (1 + (cell.level - 1) * 0.5))} pts</span></div>
           </div>
-
           ${isVisiting ? '' : `
             <div class="space-y-2">
               ${isCityHall ? `<button onclick="openCityHallModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs">Open City Hall Stats</button>` : ''}
@@ -2471,11 +2310,6 @@
                   <i class="fa-solid fa-angles-up mr-1"></i> Upgrade to Lv.${cell.level + 1} (${upgradeCost.toLocaleString()} SC)
                 </button>
               ` : (!isCityHall ? `<div class="text-center text-xs text-emerald-400 font-semibold py-1">Max Level 3 Reached!</div>` : '')}
-              ${!isCityHall ? `
-                <button onclick="demolishBuilding(${cell.r}, ${cell.c})" class="w-full py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-semibold transition">
-                  Relocate / Sell (+50% SC)
-                </button>
-              ` : ''}
             </div>
           `}
         `;
@@ -2488,23 +2322,19 @@
       panel.innerHTML = `
         <div class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-1">Empty 3D Plot [${cell.r + 1}, ${cell.c + 1}]</div>
         <h3 class="font-display text-lg font-bold">${cell.zone}</h3>
-        <p class="text-xs text-slate-400 mt-1 mb-3">${isVisiting ? 'Available land in this city.' : 'Construct a 3D structure on this plot:'}</p>
+        <p class="text-xs text-slate-400 mt-1 mb-3">${isVisiting ? 'Available land.' : 'Construct a 3D structure:'}</p>
         ${isVisiting ? '' : `
           <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
             ${buildable.map(item => {
-              const lockedByHours = userHours < item.minHours;
+              const locked = userHours < item.minHours;
               return `
                 <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center justify-between gap-2">
                   <div class="min-w-0">
                     <div class="text-xs font-bold truncate">${item.name}</div>
                     <div class="text-[10px] text-slate-400">${item.district} • ${item.price.toLocaleString()} SC</div>
                   </div>
-                  ${lockedByHours ? `
-                    <span class="text-[10px] px-2 py-1 rounded bg-slate-800 text-amber-400 whitespace-nowrap">${item.minHours}h req</span>
-                  ` : `
-                    <button onclick="constructBuildingOnPlot(${cell.r}, ${cell.c}, '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-[11px] whitespace-nowrap transition">
-                      Build 3D
-                    </button>
+                  ${locked ? `<span class="text-[10px] px-2 py-1 rounded bg-slate-800 text-amber-400">${item.minHours}h req</span>` : `
+                    <button onclick="constructBuildingOnPlot(${cell.r}, ${cell.c}, '${item.id}')" class="px-2.5 py-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold text-[11px]">Build 3D</button>
                   `}
                 </div>
               `;
@@ -2518,7 +2348,7 @@
       const cell = state.grid.find(x => x.r === r && x.c === c);
       if (!cell || cell.unlocked) return;
       if (state.scBalance < cell.plotPrice) {
-        showToast(`Need ${cell.plotPrice.toLocaleString()} SC to unlock this plot.`, 'error');
+        showToast(`Need ${cell.plotPrice.toLocaleString()} SC to unlock plot.`, 'error');
         return;
       }
       state.scBalance -= cell.plotPrice;
@@ -2527,11 +2357,11 @@
         id: 'tx_' + Date.now(),
         timestamp: new Date().toLocaleString(),
         type: 'PLOT_BUY',
-        desc: `Unlocked 3D Land Plot [${r + 1}, ${c + 1}] (${cell.zone})`,
+        desc: `Unlocked 3D Land Plot [${r + 1}, ${c + 1}]`,
         amount: -cell.plotPrice
       });
       playChime('build');
-      showToast(`3D Plot [${r + 1}, ${c + 1}] unlocked!`, 'success');
+      showToast(`Plot [${r + 1}, ${c + 1}] unlocked!`, 'success');
       await pushStateToFirestore();
       refreshAllUI();
       rebuild3DCityMeshes();
@@ -2559,12 +2389,12 @@
         id: 'tx_' + Date.now(),
         timestamp: new Date().toLocaleString(),
         type: 'BUILD',
-        desc: `Constructed 3D ${b.name} (${b.district})`,
+        desc: `Constructed 3D ${b.name}`,
         amount: -b.price
       });
 
       playChime('build');
-      showToast(`${b.name} constructed in 3D!`, 'success');
+      showToast(`${b.name} constructed!`, 'success');
       await pushStateToFirestore();
       refreshAllUI();
       rebuild3DCityMeshes();
@@ -2587,7 +2417,7 @@
         id: 'tx_' + Date.now(),
         timestamp: new Date().toLocaleString(),
         type: 'UPGRADE',
-        desc: `Upgraded ${b.name} to 3D Level ${cell.level}`,
+        desc: `Upgraded ${b.name} to Level ${cell.level}`,
         amount: -cost
       });
 
@@ -2599,31 +2429,6 @@
       renderTileInspector();
     };
 
-    window.demolishBuilding = async function (r, c) {
-      const cell = state.grid.find(x => x.r === r && x.c === c);
-      if (!cell || !cell.buildingId || cell.buildingId === 'city_hall') return;
-      const b = state.catalog.find(x => x.id === cell.buildingId);
-      const refund = Math.round(b.price * 0.5);
-
-      state.scBalance += refund;
-      cell.buildingId = null;
-      cell.level = 1;
-      state.transactions.unshift({
-        id: 'tx_' + Date.now(),
-        timestamp: new Date().toLocaleString(),
-        type: 'GRANT',
-        desc: `Salvaged ${b.name} (+50% refund)`,
-        amount: refund
-      });
-
-      showToast(`Sold ${b.name} for +${refund.toLocaleString()} SC.`, 'info');
-      await pushStateToFirestore();
-      refreshAllUI();
-      rebuild3DCityMeshes();
-      renderTileInspector();
-    };
-
-    // Social Reactors in 3D City Visit Mode
     window.triggerCityReactor = function (emoji) {
       const layer = document.getElementById('reactorOverlayLayer');
       if (!layer) return;
@@ -2647,32 +2452,20 @@
       const cityData = visitingCity ? visitingCity : state;
       const m = calculateCityMetrics(cityData);
       openUniversalModal(
-        `<i class="fa-solid fa-landmark text-cyan-400"></i> ${cityData.cityName} — City Hall Registry`,
+        `<i class="fa-solid fa-landmark text-cyan-400"></i> ${cityData.cityName} — City Hall`,
         `
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
               <div class="text-slate-400">Scholar Mayor</div>
               <div class="font-bold text-sm text-cyan-300 mt-1">${cityData.avatar} ${cityData.username}</div>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
               <div class="text-slate-400">City Development</div>
               <div class="font-bold text-sm text-emerald-400 mt-1">Level ${m.cityLevel}</div>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
               <div class="text-slate-400">Virtual Population</div>
               <div class="font-bold text-sm text-purple-300 mt-1">${m.totalPop.toLocaleString()} Citizens</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
-              <div class="text-slate-400">Infrastructure</div>
-              <div class="font-bold text-sm text-amber-400 mt-1">${m.totalInfra.toLocaleString()} pts</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
-              <div class="text-slate-400">Active Districts</div>
-              <div class="font-bold text-sm text-white mt-1">${m.districtsCount} / 10 Districts</div>
-            </div>
-            <div class="p-3 rounded-2xl bg-slate-900/80 border border-slate-800">
-              <div class="text-slate-400">3D Asset Value</div>
-              <div class="font-bold text-sm text-cyan-400 mt-1">${m.assetValue.toLocaleString()} SC</div>
             </div>
           </div>
         `
@@ -2680,7 +2473,7 @@
     };
 
     // =========================================================================
-    // 10. STORE, BANK, ACHIEVEMENTS, EXPLORE WORLD, LEADERBOARDS & ADMIN RENDERERS
+    // 9. STORE, BANK, ACHIEVEMENTS, EXPLORE WORLD & LEADERBOARDS
     // =========================================================================
     function renderBuildingStore() {
       document.getElementById('storeBalanceDisplay').textContent = `${state.scBalance.toLocaleString()} SC`;
@@ -2688,7 +2481,7 @@
 
       document.getElementById('storeDistrictFilters').innerHTML = districts.map(d => `
         <button onclick="filterStoreDistrict('${d}')"
-          class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${selectedStoreDistrict === d ? 'bg-cyan-500 text-slate-950' : 'glass-panel text-slate-300 hover:border-cyan-500/40'}">
+          class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition ${selectedStoreDistrict === d ? 'bg-cyan-500 text-slate-950' : 'glass-panel text-slate-300'}">
           ${d}
         </button>
       `).join('');
@@ -2698,43 +2491,24 @@
 
       document.getElementById('storeCatalogGrid').innerHTML = items.map(b => {
         const locked = userHours < b.minHours;
-        const rarityColors = {
-          Common: 'text-slate-300 bg-slate-700/60',
-          Rare: 'text-cyan-300 bg-cyan-500/20',
-          Epic: 'text-purple-300 bg-purple-500/20',
-          Legendary: 'text-amber-300 bg-amber-500/20'
-        };
         return `
-          <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between border ${locked ? 'border-slate-800 opacity-85' : 'border-cyan-500/20 hover:border-cyan-400/60'} transition group">
+          <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between border ${locked ? 'border-slate-800 opacity-85' : 'border-cyan-500/20'}">
             <div>
               <div class="relative mb-3">
                 ${generate3DBuildingPreviewSVG(b)}
-                <span class="absolute top-2.5 left-2.5 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full backdrop-blur-md ${rarityColors[b.rarity] || rarityColors.Common}">${b.rarity}</span>
                 <span class="absolute top-2.5 right-2.5 text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-slate-950/80 text-slate-300">${b.district}</span>
               </div>
-
-              <div class="flex items-start justify-between gap-2">
-                <h4 class="font-display font-bold text-base">${b.name}</h4>
-                <div class="font-display font-bold text-amber-400 text-sm whitespace-nowrap">${b.price.toLocaleString()} SC</div>
-              </div>
+              <h4 class="font-display font-bold text-base">${b.name}</h4>
+              <div class="font-display font-bold text-amber-400 text-sm mt-0.5">${b.price.toLocaleString()} SC</div>
               <p class="text-xs text-slate-400 mt-1">${b.desc}</p>
             </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-800/80 space-y-2.5">
+            <div class="mt-4 pt-3 border-t border-slate-800 space-y-2">
               <div class="flex justify-between text-[11px] text-slate-400">
                 <span>+${b.pop} Pop • +${b.infra} Infra</span>
-                <span class="${locked ? 'text-amber-400 font-semibold' : 'text-emerald-400'}">
-                  ${b.minHours > 0 ? `${b.minHours}h Study Req` : 'Unlocked'}
-                </span>
+                <span class="${locked ? 'text-amber-400' : 'text-emerald-400'}">${b.minHours > 0 ? `${b.minHours}h Study Req` : 'Unlocked'}</span>
               </div>
-              ${locked ? `
-                <button disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold cursor-not-allowed">
-                  <i class="fa-solid fa-lock mr-1"></i> Study ${b.minHours} Hrs to Unlock
-                </button>
-              ` : `
-                <button onclick="quickBuildFromStore('${b.id}')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-95 text-white text-xs font-bold shadow transition">
-                  Construct in 3D City
-                </button>
+              ${locked ? `<button disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 text-xs font-semibold">Locked</button>` : `
+                <button onclick="quickBuildFromStore('${b.id}')" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold shadow">Construct in 3D City</button>
               `}
             </div>
           </div>
@@ -2761,9 +2535,7 @@
 
     window.renderBankLedger = function () {
       const metrics = calculateCityMetrics(state);
-      const lifetimeEarned = state.transactions
-        .filter(t => t.type === 'STUDY_REWARD')
-        .reduce((acc, t) => acc + t.amount, 0);
+      const lifetimeEarned = state.transactions.filter(t => t.type === 'STUDY_REWARD').reduce((acc, t) => acc + t.amount, 0);
 
       document.getElementById('bankWalletSc').textContent = `${state.scBalance.toLocaleString()} SC`;
       document.getElementById('bankAssetValue').textContent = `${metrics.assetValue.toLocaleString()} SC`;
@@ -2775,12 +2547,10 @@
 
       document.getElementById('bankLedgerBody').innerHTML = list.map(tx => `
         <tr class="hover:bg-slate-800/30">
-          <td class="py-3 px-3 text-slate-400 whitespace-nowrap">${tx.timestamp}</td>
+          <td class="py-3 px-3 text-slate-400">${tx.timestamp}</td>
           <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold">${tx.type}</span></td>
           <td class="py-3 px-3">${tx.desc}</td>
-          <td class="py-3 px-3 text-right font-mono font-bold ${tx.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
-            ${tx.amount >= 0 ? '+' : ''}${tx.amount.toLocaleString()} SC
-          </td>
+          <td class="py-3 px-3 text-right font-mono font-bold ${tx.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${tx.amount >= 0 ? '+' : ''}${tx.amount.toLocaleString()} SC</td>
         </tr>
       `).join('');
     };
@@ -2813,7 +2583,6 @@
       }).join('');
 
       const list = ACHIEVEMENTS_LIST.filter(a => selectedAchFilter === 'ALL' || a.cat === selectedAchFilter);
-
       document.getElementById('achievementsGrid').innerHTML = list.map(a => {
         const unlocked = a.check(state);
         const claimed = state.claimedAchievements.includes(a.id);
@@ -2826,7 +2595,6 @@
                 <span class="text-3xl">${a.badge}</span>
                 <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-300 text-xs font-bold">+${a.xp.toLocaleString()} XP</span>
               </div>
-              <div class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">${a.rarity} • ${a.cat}</div>
               <h4 class="font-display font-bold text-base mt-0.5">${a.title}</h4>
               <p class="text-xs text-slate-400 mt-1">${a.desc}</p>
             </div>
@@ -2834,17 +2602,9 @@
               <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2">
                 <div class="h-full bg-gradient-to-r from-amber-400 to-purple-500 transition-all duration-500" style="width: ${pct}%"></div>
               </div>
-              ${claimed ? `
-                <div class="text-center py-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">
-                  <i class="fa-solid fa-check mr-1"></i> Trophy Claimed
-                </div>
-              ` : unlocked ? `
-                <button onclick="claimAchievement('${a.id}')" class="w-full py-2 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 text-white text-xs font-bold shadow">
-                  Claim +${a.xp.toLocaleString()} XP
-                </button>
-              ` : `
-                <div class="text-right text-[11px] text-slate-400">${pct}% Complete</div>
-              `}
+              ${claimed ? `<div class="text-center py-1.5 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">Trophy Claimed</div>` : unlocked ? `
+                <button onclick="claimAchievement('${a.id}')" class="w-full py-2 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 text-white text-xs font-bold">Claim XP</button>
+              ` : `<div class="text-right text-[11px] text-slate-400">${pct}%</div>`}
             </div>
           </div>
         `;
@@ -2893,45 +2653,30 @@
         const isMe = c.uniqueId === state.uniqueId;
 
         return `
-          <div class="glass-panel rounded-3xl p-5 border ${isMe ? 'border-cyan-400/50' : 'border-slate-800 hover:border-purple-400/50'} transition relative overflow-hidden group flex flex-col justify-between">
-            <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-cyan-500/10 blur-2xl group-hover:bg-purple-500/20 transition pointer-events-none"></div>
-
+          <div class="glass-panel rounded-3xl p-5 border ${isMe ? 'border-cyan-400/50' : 'border-slate-800'} flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2.5">
-                  <div class="relative">
-                    <span class="text-2xl">${c.avatar}</span>
-                    <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-slate-900"></span>
-                  </div>
+                  <span class="text-2xl">${c.avatar}</span>
                   <div>
-                    <div class="font-bold text-sm flex items-center gap-1.5">
-                      ${c.username} ${isMe ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300">YOU</span>' : ''}
-                    </div>
-                    <div class="text-[11px] text-slate-400">${c.region || 'India'} • <span class="font-mono text-cyan-400">${c.uniqueId}</span></div>
+                    <div class="font-bold text-sm">${c.username} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
+                    <div class="text-[11px] text-slate-400">${c.region || 'India'}</div>
                   </div>
                 </div>
                 <span class="px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">City Lv.${m.cityLevel}</span>
               </div>
-
-              <h3 class="font-display text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-purple-300 mb-3">
-                ${c.cityName}
-              </h3>
-
+              <h3 class="font-display text-xl font-bold text-cyan-300 mb-3">${c.cityName}</h3>
               <div class="grid grid-cols-2 gap-2 text-xs mb-4">
-                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Study Time</span><strong>${hrs} Hrs</strong></div>
-                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">3D Assets</span><strong>${m.buildingCount} Buildings</strong></div>
-                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Citizens</span><strong>${m.totalPop.toLocaleString()}</strong></div>
-                <div class="p-2.5 rounded-xl bg-slate-900/75"><span class="text-slate-400 block text-[10px]">Net Worth</span><strong class="text-amber-400">${(c.scBalance + m.assetValue).toLocaleString()} SC</strong></div>
+                <div class="p-2.5 rounded-xl bg-slate-900"><span class="text-slate-400 block text-[10px]">Study Time</span><strong>${hrs} Hrs</strong></div>
+                <div class="p-2.5 rounded-xl bg-slate-900"><span class="text-slate-400 block text-[10px]">Assets</span><strong>${m.buildingCount} Buildings</strong></div>
               </div>
             </div>
-
             <div class="flex items-center justify-between pt-3 border-t border-slate-800">
               <div class="text-xs text-slate-400 flex items-center gap-3">
                 <span><i class="fa-solid fa-heart text-rose-400 mr-1"></i>${c.likes || 0}</span>
-                <span><i class="fa-solid fa-eye text-cyan-400 mr-1"></i>${c.visitors || 0}</span>
               </div>
-              <button onclick="visitPublicCity('${c.uniqueId}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:opacity-95 text-white text-xs font-bold shadow transition">
-                <i class="fa-solid fa-cubes mr-1"></i> Enter 3D City
+              <button onclick="visitPublicCity('${c.uniqueId}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold shadow">
+                Enter 3D City
               </button>
             </div>
           </div>
@@ -2957,7 +2702,7 @@
       document.getElementById('visitingCityBanner').classList.remove('hidden');
       document.getElementById('visitCityTitle').textContent = target.cityName;
       document.getElementById('visitOwnerName').textContent = `${target.username} (${target.uniqueId})`;
-      document.getElementById('visitCityMeta').textContent = `City Lv.${m.cityLevel} • ${(target.studyMinutes / 60).toFixed(1)} Study Hrs • Net Worth: ${(target.scBalance + m.assetValue).toLocaleString()} SC`;
+      document.getElementById('visitCityMeta').textContent = `City Lv.${m.cityLevel} • ${(target.studyMinutes / 60).toFixed(1)} Study Hrs`;
       document.getElementById('visitLikesCount').textContent = target.likes || 0;
       document.getElementById('activeCityHeaderName').textContent = `${target.cityName} (3D Visit)`;
 
@@ -3009,16 +2754,12 @@
 
       const enriched = list.map(c => {
         const m = calculateCityMetrics(c);
-        return {
-          ...c,
-          cityLevel: m.cityLevel,
-          netWorth: c.scBalance + m.assetValue
-        };
+        return { ...c, cityLevel: m.cityLevel, netWorth: c.scBalance + m.assetValue };
       });
 
       enriched.sort((a, b) => {
         if (sortBy === 'networth') return b.netWorth - a.netWorth;
-        if (sortBy === 'citylevel') return b.cityLevel - a.cityLevel || b.studyMinutes - a.studyMinutes;
+        if (sortBy === 'citylevel') return b.cityLevel - a.cityLevel;
         if (sortBy === 'streak') return (b.streak || 1) - (a.streak || 1);
         return b.studyMinutes - a.studyMinutes;
       });
@@ -3049,7 +2790,7 @@
     };
 
     // =========================================================================
-    // 11. UNLOCKED ADMIN PANEL CONTROLS
+    // 10. ADMIN PANEL
     // =========================================================================
     function renderAdminPanel() {
       if (!isAdminAuthenticated) return;
@@ -3063,13 +2804,9 @@
 
       const query = (document.getElementById('adminUserSearch')?.value || '').toLowerCase();
       const allUsers = [
-        { uniqueId: state.uniqueId, username: state.username, cityName: state.cityName, studyMinutes: state.studyMinutes, scBalance: state.scBalance, isSelf: true },
+        { uniqueId: state.uniqueId, username: state.username, cityName: state.cityName, studyMinutes: state.studyMinutes, scBalance: state.scBalance },
         ...publicCities.filter(c => c.uniqueId !== state.uniqueId)
-      ].filter(u =>
-        u.username.toLowerCase().includes(query) ||
-        u.uniqueId.toLowerCase().includes(query) ||
-        u.cityName.toLowerCase().includes(query)
-      );
+      ].filter(u => u.username.toLowerCase().includes(query) || u.uniqueId.toLowerCase().includes(query));
 
       document.getElementById('adminUsersTableBody').innerHTML = allUsers.map(u => `
         <tr class="hover:bg-slate-800/30">
@@ -3079,15 +2816,13 @@
           <td class="py-2.5 px-3">${(u.studyMinutes / 60).toFixed(1)}h</td>
           <td class="py-2.5 px-3 font-mono text-amber-400">${u.scBalance.toLocaleString()} SC</td>
           <td class="py-2.5 px-3 text-right">
-            <button onclick="document.getElementById('adjTargetId').value='${u.uniqueId}'" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">
-              Select ID
-            </button>
+            <button onclick="document.getElementById('adjTargetId').value='${u.uniqueId}'" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">Select</button>
           </td>
         </tr>
       `).join('');
 
       document.getElementById('adminAuditLogList').innerHTML = state.auditLogs.map(log => `
-        <div class="p-2.5 rounded-xl bg-slate-900/75 border border-slate-800">${log}</div>
+        <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">${log}</div>
       `).join('');
     }
 
@@ -3110,7 +2845,7 @@
       const reason = document.getElementById('adjReason').value.trim();
 
       if (!targetId || !amount || !reason) {
-        showToast('Provide Citizen ID, non-zero SC amount, and mandatory audit reason.', 'error');
+        showToast('Provide Citizen ID, amount, and reason.', 'error');
         return;
       }
 
@@ -3124,19 +2859,16 @@
           amount
         });
         await pushStateToFirestore();
-      } else {
-        const bot = publicCities.find(c => c.uniqueId === targetId);
-        if (bot) bot.scBalance = Math.max(0, bot.scBalance + amount);
       }
 
-      await logAdminAction(`Adjusted ${targetId} by ${amount >= 0 ? '+' : ''}${amount} SC. Reason: "${reason}".`);
+      await logAdminAction(`Adjusted ${targetId} by ${amount} SC. Reason: "${reason}".`);
       refreshAllUI();
       renderAdminPanel();
-      showToast(`Audited adjustment of ${amount} SC applied to ${targetId}.`, 'success');
+      showToast('Audited adjustment applied.', 'success');
     };
 
     // =========================================================================
-    // 12. NAVIGATION, ONBOARDING & MASTER UI REFRESH
+    // 11. NAVIGATION & MASTER UI REFRESH
     // =========================================================================
     window.switchTab = function (tabName) {
       document.querySelectorAll('.tab-view').forEach(sec => sec.classList.add('hidden'));
@@ -3195,7 +2927,7 @@
 
       document.getElementById('avatarPicker').innerHTML = AVATARS.map(av => `
         <button type="button" onclick="selectOnboardAvatar('${av}')"
-          class="text-2xl p-2 rounded-xl border transition ${av === state.avatar ? 'bg-cyan-500/25 border-cyan-400 scale-105' : 'bg-slate-900/60 border-slate-700 hover:border-slate-500'}">
+          class="text-2xl p-2 rounded-xl border transition ${av === state.avatar ? 'bg-cyan-500/25 border-cyan-400 scale-105' : 'bg-slate-900 border-slate-700'}">
           ${av}
         </button>
       `).join('');
@@ -3280,7 +3012,6 @@
       const titleObj = [...SCHOLAR_TITLES].reverse().find(t => scholarLevel >= t.minLevel) || SCHOLAR_TITLES[0];
       const unlockedPlots = state.grid.filter(c => c.unlocked).length;
 
-      // Top Header
       document.getElementById('topScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
       document.getElementById('topLevel').textContent = scholarLevel;
       document.getElementById('topXpText').textContent = `${state.xp.toLocaleString()} XP`;
@@ -3288,7 +3019,6 @@
       document.getElementById('topUsername').textContent = state.username;
       document.getElementById('topUniqueId').textContent = state.uniqueId;
 
-      // Dashboard Bento
       document.getElementById('dashTitleBadge').textContent = `${titleObj.badge} ${titleObj.title}`;
       document.getElementById('dashCityName').textContent = state.cityName;
       document.getElementById('dashUsername').textContent = state.username;
@@ -3302,7 +3032,6 @@
       document.getElementById('dashPopulation').textContent = metrics.totalPop.toLocaleString();
       document.getElementById('dashStreak').textContent = `${state.streak || 1}d 🔥`;
 
-      // Radial & XP Progress
       const goalPct = Math.min(100, Math.round((state.todayMinutes / state.dailyGoalMinutes) * 100));
       const dashCircle = document.getElementById('dashRadialCircle');
       if (dashCircle) {
@@ -3319,7 +3048,6 @@
       document.getElementById('dashXpCurrent').textContent = state.xp.toLocaleString();
       document.getElementById('dashXpNext').textContent = (scholarLevel * 1000).toLocaleString();
 
-      // City Telemetry Brief
       document.getElementById('briefCityName').textContent = state.cityName;
       document.getElementById('briefUserId').textContent = state.uniqueId;
       document.getElementById('briefInfraScore').textContent = `${metrics.totalInfra.toLocaleString()} pts`;
@@ -3327,43 +3055,18 @@
       document.getElementById('briefPrivacy').textContent = state.privacy;
       if (!visitingCity) document.getElementById('activeCityHeaderName').textContent = state.cityName;
 
-      // Focus Cap & Duel
       document.getElementById('guardDailyCap').textContent = state.adminConfig.dailyCapSc;
       document.getElementById('duelMyCity').textContent = `${state.cityName} (${state.username})`;
       document.getElementById('duelMyHours').textContent = `${(state.studyMinutes / 60).toFixed(1)} Hrs`;
 
-      // Recent Sessions
       const recentEl = document.getElementById('dashRecentSessions');
       if (state.sessions.length > 0) {
         recentEl.innerHTML = state.sessions.slice(0, 4).map(s => `
-          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/65 border border-slate-800/80">
-            <div>
-              <span class="font-semibold text-slate-200">${s.subject}</span>
-              <span class="text-slate-400 ml-2">(${s.minutes}m • ${s.date})</span>
-            </div>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+            <div><span class="font-semibold text-slate-200">${s.subject}</span><span class="text-slate-400 ml-2">(${s.minutes}m)</span></div>
             <span class="font-bold text-amber-400">+${s.sc} SC</span>
           </div>
         `).join('');
-      }
-
-      // District Mini Bars
-      const distContainer = document.getElementById('cityDistrictMiniBars');
-      if (distContainer) {
-        const allDist = ['Residential', 'Education', 'Healthcare', 'Administration', 'Banking', 'Commercial', 'Industrial', 'Recreation', 'Transport', 'Infrastructure'];
-        const cityData = visitingCity ? visitingCity : state;
-        distContainer.innerHTML = allDist.map(d => {
-          const count = cityData.grid.filter(cell => {
-            if (!cell.buildingId) return false;
-            const b = state.catalog.find(x => x.id === cell.buildingId);
-            return b && b.district === d;
-          }).length;
-          return `
-            <div class="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-slate-900/60">
-              <span class="text-slate-300">${d}</span>
-              <span class="font-mono font-bold ${count > 0 ? 'text-cyan-400' : 'text-slate-500'}">${count}</span>
-            </div>
-          `;
-        }).join('');
       }
     }
 
@@ -3372,9 +3075,6 @@
     window.onload = function () {
       switchTab('dashboard');
       refreshAllUI();
-      if (!state.onboarded) {
-        openOnboardingEdit();
-      }
     };
   </script>
 </body>
