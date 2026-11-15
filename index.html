@@ -834,10 +834,10 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <button onclick=\"filterAchievements('ALL', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
-          <button onclick=\"filterAchievements('STUDY', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
-          <button onclick=\"filterAchievements('CITY', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">City Architecture</button>
-          <button onclick=\"filterAchievements('SOCIAL', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Exploration & Economy</button>
+          <button data-cat="ALL" onclick="filterAchievements(this)" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
+          <button data-cat="STUDY" onclick="filterAchievements(this)" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
+          <button data-cat="CITY" onclick="filterAchievements(this)" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">City Architecture</button>
+          <button data-cat="SOCIAL" onclick="filterAchievements(this)" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Exploration & Economy</button>
         </div>
 
         <div id="achievementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
@@ -2735,7 +2735,8 @@
       `).join('');
     };
 
-    window.filterAchievements = function (cat, btn) {
+    window.filterAchievements = function (btn) {
+      const cat = btn && btn.dataset ? btn.dataset.cat : 'ALL';
       selectedAchFilter = cat;
       document.querySelectorAll('.ach-filter-btn').forEach(b => {
         b.classList.remove('bg-purple-500', 'text-white', 'font-bold');
