@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EDUCIVILIZATION — Build Your World. Earn Through Learning.</title>
-  <!-- Tailwind CSS -->
+  <meta name="description" content="EDUCIVILIZATION - study with verified focus sessions, earn SC, and build your own 3D city." />
+  <meta name="theme-color" content="#060A14" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>" />
+  <!-- Tailwind CSS (CDN build; for max performance later, compile CSS with the Tailwind CLI) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -125,7 +128,7 @@
         </div>
       </div>
       <button onclick="openAdminLoginModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300 transition flex items-center gap-2">
-        <i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal
+        <i class="fa-solid fa-shield-halved text-rose-400"></i> Admin Portal
       </button>
     </div>
 
@@ -182,7 +185,7 @@
           <i class="fa-solid fa-coins text-amber-400 mr-1.5"></i>Verified Earned: <strong id="fsEarnedSC" class="text-amber-300">0 SC</strong>
         </span>
         <span class="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10">
-          <i class="fa-solid fa-shield-check text-emerald-400 mr-1.5"></i>Integrity: <strong id="fsIntegrityLabel" class="text-emerald-300">100%</strong>
+          <i class="fa-solid fa-shield-halved text-emerald-400 mr-1.5"></i>Integrity: <strong id="fsIntegrityLabel" class="text-emerald-300">100%</strong>
         </span>
       </div>
     </div>
@@ -325,7 +328,7 @@
       <div class="space-y-1.5 mt-14 lg:mt-0">
         <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Command Deck</div>
         <button data-tab="dashboard" onclick="switchTab('dashboard')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
-          <i class="fa-solid fa-grid-2 w-5 text-center"></i> Dashboard
+          <i class="fa-solid fa-table-cells-large w-5 text-center"></i> Dashboard
         </button>
         <button data-tab="focus" onclick="switchTab('focus')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition">
           <i class="fa-solid fa-stopwatch w-5 text-center"></i> Focus Room
@@ -369,7 +372,7 @@
         <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
           <div id="sidebarGoalBar" class="h-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-500" style="width: 0%"></div>
         </div>
-        <p class="text-[10px] text-slate-400 mt-2">10m Verified Study = 10 SC + 100 XP</p>
+        <p class="text-[10px] text-slate-400 mt-2">10m Verified Study = 100 SC + 100 XP</p>
       </div>
     </aside>
 
@@ -472,7 +475,7 @@
                   <select id="dailyGoalSelect" onchange="updateDailyGoal(this.value)" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-xs text-cyan-300 font-semibold">
                     <option value="120">2 Hrs / Day</option>
                     <option value="240" selected>4 Hrs / Day</option>
-                    <option value="300">5 Hrs / Day (300 SC)</option>
+                    <option value="300">5 Hrs / Day</option>
                     <option value="480">8 Hrs / Day</option>
                   </select>
                 </div>
@@ -536,7 +539,7 @@
                 <h2 class="font-display text-2xl font-bold flex items-center gap-2">
                   <i class="fa-solid fa-stopwatch text-cyan-400"></i> Verified Focus Room
                 </h2>
-                <p class="text-xs text-slate-400">Hardware Timestamp Delta Engine • 10m Verified Study = 10 SC + 100 XP</p>
+                <p class="text-xs text-slate-400">Hardware Timestamp Delta Engine • 10m Verified Study = 100 SC + 100 XP</p>
               </div>
               <button onclick="toggleFullScreenFocus(true)" class="px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-xs font-semibold transition flex items-center gap-2">
                 <i class="fa-solid fa-expand"></i> Fullscreen Mode
@@ -558,7 +561,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
               <div>
                 <label class="block text-xs font-semibold text-slate-400 mb-1">Focus Subject / Syllabus Topic</label>
-                <input id="focusSubjectInput" type="text" value="Physics & Calculus Mastery" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-sm focus:border-cyan-400 focus:outline-none" />
+                <input id="focusSubjectInput" maxlength="60" type="text" value="Physics & Calculus Mastery" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/70 border border-slate-700 text-sm focus:border-cyan-400 focus:outline-none" />
               </div>
               <div id="customMinutesWrapper">
                 <label class="block text-xs font-semibold text-slate-400 mb-1">Duration (Minutes)</label>
@@ -581,7 +584,7 @@
 
               <div class="max-w-md mx-auto mt-4">
                 <div class="flex justify-between text-[11px] text-slate-400 mb-1">
-                  <span>Next +10 SC Reward Tick</span>
+                  <span>Next +100 SC Reward Tick</span>
                   <span id="nextTickCountdown">10m 00s</span>
                 </div>
                 <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
@@ -613,22 +616,7 @@
               </button>
             </div>
 
-            <div class="mt-6 pt-5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
-              <div class="text-xs text-slate-400">
-                <i class="fa-solid fa-bolt text-amber-400 mr-1"></i> <strong>Instant Demo Verify:</strong> Test SC & 3D City unlocks right now:
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <button onclick="simulateVerifiedStudy(10)" class="px-3 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-300 text-xs font-semibold transition">
-                  +10m (+10 SC)
-                </button>
-                <button onclick="simulateVerifiedStudy(60)" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 text-xs font-semibold transition">
-                  +1 Hr (+60 SC)
-                </button>
-                <button onclick="simulateVerifiedStudy(300)" class="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-semibold transition">
-                  +5 Hrs (+300 SC)
-                </button>
-              </div>
-            </div>
+            
           </div>
 
           <div class="space-y-6">
@@ -647,7 +635,7 @@
                 </li>
                 <li class="flex items-start gap-2">
                   <i class="fa-solid fa-check text-emerald-400 mt-0.5"></i>
-                  <span><strong>Daily Economy Cap:</strong> Up to <span id="guardDailyCap">600</span> SC/day to keep leaderboards fair.</span>
+                  <span><strong>Daily Economy Cap:</strong> Up to <span id="guardDailyCap">6000</span> SC/day to keep leaderboards fair.</span>
                 </li>
               </ul>
             </div>
@@ -655,9 +643,9 @@
             <div class="glass-panel rounded-3xl p-6">
               <h3 class="font-display font-bold text-lg mb-3">Reward Conversion</h3>
               <div class="space-y-2 text-xs">
-                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Minutes Focus</span><span class="font-bold text-amber-400">10 SC + 100 XP</span></div>
-                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>1 Hour Focus</span><span class="font-bold text-amber-400">60 SC + 600 XP</span></div>
-                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>5 Hours Focus</span><span class="font-bold text-amber-400">300 SC + 3,000 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>10 Minutes Focus</span><span class="font-bold text-amber-400">100 SC + 100 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>1 Hour Focus</span><span class="font-bold text-amber-400">600 SC + 600 XP</span></div>
+                <div class="flex justify-between p-2.5 rounded-xl bg-slate-900/60"><span>5 Hours Focus</span><span class="font-bold text-amber-400">3,000 SC + 3,000 XP</span></div>
               </div>
             </div>
           </div>
@@ -774,7 +762,7 @@
               <p class="text-xs text-slate-400 mt-1">Study Credits (SC) are a virtual in-game reward currency with zero real-money withdrawal value.</p>
             </div>
             <span class="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-              <i class="fa-solid fa-shield-check mr-1"></i> Double-Entry Verified
+              <i class="fa-solid fa-shield-halved mr-1"></i> Double-Entry Verified
             </span>
           </div>
 
@@ -846,10 +834,10 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <button onclick="filterAchievements('ALL')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
-          <button onclick="filterAchievements('STUDY')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
-          <button onclick="filterAchievements('CITY')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">City Architecture</button>
-          <button onclick="filterAchievements('SOCIAL')" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Exploration & Economy</button>
+          <button onclick=\"filterAchievements('ALL', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl bg-purple-500 text-white text-xs font-bold">All Trophies (16)</button>
+          <button onclick=\"filterAchievements('STUDY', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Study Mastery</button>
+          <button onclick=\"filterAchievements('CITY', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">City Architecture</button>
+          <button onclick=\"filterAchievements('SOCIAL', this)\" class="ach-filter-btn px-3.5 py-1.5 rounded-xl glass-panel text-slate-300 text-xs font-semibold">Exploration & Economy</button>
         </div>
 
         <div id="achievementsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
@@ -949,7 +937,7 @@
       <section id="view-admin" class="tab-view hidden space-y-6">
         <div id="adminLockScreen" class="max-w-md mx-auto glass-panel rounded-3xl p-8 border border-rose-500/30 shadow-2xl text-center space-y-5 my-6">
           <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 flex items-center justify-center text-2xl mx-auto shadow-lg">
-            <i class="fa-solid fa-shield-keyhole"></i>
+            <i class="fa-solid fa-shield-halved"></i>
           </div>
           <div>
             <span class="text-[11px] font-bold uppercase tracking-widest text-rose-400">Restricted Root Access</span>
@@ -978,7 +966,7 @@
             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div>
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold mb-1">
-                  <i class="fa-solid fa-shield-check"></i> Root Admin Authorized
+                  <i class="fa-solid fa-shield-halved"></i> Root Admin Authorized
                 </div>
                 <h2 class="font-display text-2xl font-bold">EDUCIVILIZATION Command & Governance</h2>
               </div>
@@ -994,11 +982,11 @@
               </div>
               <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
                 <div class="text-xs text-slate-400">Reward Rate (SC / 10m)</div>
-                <div id="adminCurrentRate" class="font-display text-2xl font-bold text-amber-400 mt-1">10 SC</div>
+                <div id="adminCurrentRate" class="font-display text-2xl font-bold text-amber-400 mt-1">100 SC</div>
               </div>
               <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
                 <div class="text-xs text-slate-400">Daily Earning Cap</div>
-                <div id="adminCurrentCap" class="font-display text-2xl font-bold text-emerald-400 mt-1">600 SC</div>
+                <div id="adminCurrentCap" class="font-display text-2xl font-bold text-emerald-400 mt-1">6000 SC</div>
               </div>
               <div class="p-4 rounded-2xl bg-slate-900/75 border border-slate-800">
                 <div class="text-xs text-slate-400">3D Store Buildings</div>
@@ -1012,11 +1000,11 @@
                 <div class="grid grid-cols-2 gap-3">
                   <div>
                     <label class="block text-xs text-slate-400 mb-1">SC per 10 Mins Study</label>
-                    <input id="adminRateInput" type="number" min="1" max="200" value="10" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
+                    <input id="adminRateInput" type="number" min="1" max="10000" value="100" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
                   </div>
                   <div>
                     <label class="block text-xs text-slate-400 mb-1">Daily Earning Cap (SC)</label>
-                    <input id="adminCapInput" type="number" min="60" max="10000" value="600" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
+                    <input id="adminCapInput" type="number" min="60" max="1000000" value="6000" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-sm" />
                   </div>
                 </div>
                 <button onclick="saveAdminEconomySettings()" class="px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs transition">
@@ -1078,7 +1066,6 @@
       GoogleAuthProvider,
       signInWithPopup,
       signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
       signOut,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -1088,6 +1075,9 @@
       getDoc,
       setDoc,
       addDoc,
+      deleteDoc,
+      query,
+      where,
       collection,
       onSnapshot
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
@@ -1338,9 +1328,66 @@
     // =========================================================================
     // 3. APPLICATION STATE
     // =========================================================================
-    const LOCAL_STORAGE_KEY = 'educivilization_state_v3';
+    // Economy: 10 minutes of verified study = 100 SC (was 10). Daily cap scaled x10 (was 600).
+    const ECONOMY_DEFAULTS = Object.freeze({ rewardPer10Min: 100, dailyCapSc: 6000 });
+    let economy = { ...ECONOMY_DEFAULTS };
+    let storageUid = 'guest';
+    const storageKey = () => 'educivilization_state_v4:' + storageUid;
+    const DEMO_MODE = ['localhost', '127.0.0.1'].includes(location.hostname);
 
-    let state = {
+    function esc(v) {
+      return String(v ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+    function num(v, d = 0) { const n = Number(v); return Number.isFinite(n) ? n : d; }
+    function str(v, max, d = '') { return typeof v === 'string' ? v.slice(0, max) : d; }
+    function clampInt(v, min, max, d) {
+      const n = parseInt(v, 10);
+      if (!Number.isFinite(n)) return d;
+      return Math.max(min, Math.min(max, n));
+    }
+    function dayKeyOf(d = new Date()) {
+      const p = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+    }
+    function sanitizeGrid(input) {
+      const fallback = () => createPresetGrid([[3, 3, 'city_hall', 1]]);
+      try {
+        const arr = typeof input === 'string' ? JSON.parse(input) : input;
+        if (!Array.isArray(arr)) return fallback();
+        const grid = createPresetGrid([]);
+        arr.forEach(x => {
+          if (!x) return;
+          const cell = grid.find(g => g.r === num(x.r, -1) && g.c === num(x.c, -1));
+          if (!cell) return;
+          if (x.unlocked) cell.unlocked = true;
+          cell.buildingId = DEFAULT_BUILDINGS.some(b => b.id === x.buildingId) ? x.buildingId : null;
+          cell.level = Math.max(1, Math.min(3, num(x.level, 1)));
+          if (cell.buildingId) cell.unlocked = true;
+        });
+        return grid;
+      } catch (e) { return fallback(); }
+    }
+    function sanitizeCity(d) {
+      return {
+        uid: str(d.uid, 128),
+        uniqueId: str(d.uniqueId, 24, 'EC-000000'),
+        username: str(d.username, 24, 'Scholar'),
+        region: str(d.region, 24),
+        avatar: AVATARS.includes(d.avatar) ? d.avatar : AVATARS[0],
+        cityName: str(d.cityName, 28, 'Unnamed City'),
+        privacy: 'Public',
+        studyMinutes: Math.max(0, num(d.studyMinutes)),
+        streak: Math.max(0, num(d.streak)),
+        xp: Math.max(0, num(d.xp)),
+        scBalance: Math.max(0, num(d.scBalance)),
+        likes: Math.max(0, num(d.likes)),
+        visitors: Math.max(0, num(d.visitors)),
+        grid: sanitizeGrid(d.gridJson)
+      };
+    }
+
+    function freshState() {
+    return {
       uniqueId: 'EC-' + Math.floor(100200 + Math.random() * 899000),
       username: 'Aarav Scholar',
       region: 'Jodhpur, IN',
@@ -1352,8 +1399,12 @@
       studyMinutes: 0,
       todayMinutes: 0,
       todayEarnedSc: 0,
+      dayKey: '',
+      lastStudyDate: '',
+      lifetimeEarnedSc: 0,
+      sessionCount: 0,
       dailyGoalMinutes: 240,
-      streak: 1,
+      streak: 0,
       likes: 1,
       visitors: 1,
       citiesVisited: 0,
@@ -1372,22 +1423,49 @@
       ],
       grid: createPresetGrid([[3, 3, 'city_hall', 1]]),
       catalog: [...DEFAULT_BUILDINGS],
-      adminConfig: {
-        rewardPer10Min: 10,
-        dailyCapSc: 600
-      },
+      adminConfig: economy,
       auditLogs: [
         `[${new Date().toLocaleTimeString()}] SYSTEM: Educivilization Economy initialized.`
       ]
     };
+    }
+    let state = freshState();
 
-    try {
-      const savedRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (savedRaw) {
+    function loadLocalState(uid) {
+      try {
+        const savedRaw = localStorage.getItem('educivilization_state_v4:' + uid);
+        if (!savedRaw) return;
         const parsed = JSON.parse(savedRaw);
-        state = { ...state, ...parsed, catalog: parsed.catalog || [...DEFAULT_BUILDINGS] };
+        state = { ...state, ...parsed, catalog: [...DEFAULT_BUILDINGS] };
+        state.grid = sanitizeGrid(parsed.grid);
+        if (!Array.isArray(state.claimedAchievements)) state.claimedAchievements = [];
+        state.adminConfig = economy;
+      } catch (e) {}
+    }
+
+    function rolloverDay() {
+      const today = dayKeyOf();
+      let changed = false;
+      if (state.dayKey !== today) {
+        state.dayKey = today;
+        state.todayMinutes = 0;
+        state.todayEarnedSc = 0;
+        changed = true;
       }
-    } catch (e) {}
+      if (state.lastStudyDate && state.streak !== 0) {
+        const y = new Date(); y.setDate(y.getDate() - 1);
+        if (state.lastStudyDate !== today && state.lastStudyDate !== dayKeyOf(y)) { state.streak = 0; changed = true; }
+      }
+      return changed;
+    }
+
+    function bumpStreak() {
+      const today = dayKeyOf();
+      if (state.lastStudyDate === today) return;
+      const y = new Date(); y.setDate(y.getDate() - 1);
+      state.streak = (state.lastStudyDate === dayKeyOf(y)) ? (state.streak || 0) + 1 : 1;
+      state.lastStudyDate = today;
+    }
 
     let publicCities = [...COMMUNITY_SCHOLARS];
     let visitingCity = null;
@@ -1397,34 +1475,56 @@
 
     function persistLocalState() {
       try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(storageKey(), JSON.stringify(state));
       } catch (e) {}
     }
 
     // =========================================================================
     // 4. FIREBASE AUTH & GLOBAL HANDLERS (Assigned to window)
     // =========================================================================
+    let authEpoch = 0;
+    let unsubPublic = null;
+    let unsubEconomy = null;
+    let publicDocPublished = null;
+
     onAuthStateChanged(auth, async (user) => {
+      const epoch = ++authEpoch;
       const gateScreen = document.getElementById('authGateScreen');
+      if (unsubPublic) { unsubPublic(); unsubPublic = null; }
+      if (unsubEconomy) { unsubEconomy(); unsubEconomy = null; }
+      if (timerState.running) cancelFocusSession();
+      if (visitingCity) exitVisitMode();
+
       if (user) {
         currentFirebaseUser = user;
-        gateScreen.classList.add('hidden');
-
         const email = (user.email || '').toLowerCase();
-        isAdminAuthenticated = (email === ADMIN_AUTHORIZED_EMAIL);
-        updateAdminLockUI();
+        isAdminAuthenticated = (email === ADMIN_AUTHORIZED_EMAIL && user.emailVerified === true);
+        publicDocPublished = null;
 
-        if (user.displayName && !state.onboarded) {
-          state.username = user.displayName;
-        }
+        storageUid = user.uid;
+        state = freshState();
+        loadLocalState(user.uid);
+        if (user.displayName && !state.onboarded) state.username = user.displayName.slice(0, 24);
 
         await syncUserWithFirestore(user.uid);
+        if (epoch !== authEpoch) return;
+
+        state.adminConfig = economy;
+        rolloverDay();
+        gateScreen.classList.add('hidden');
+        subscribeToEconomyConfig();
         subscribeToFirestorePublicCities();
+        updateAdminLockUI();
         refreshAllUI();
+        if (!state.onboarded) openOnboardingEdit();
       } else {
         currentFirebaseUser = null;
         isAdminAuthenticated = false;
+        storageUid = 'guest';
+        state = freshState();
+        publicCities = [...COMMUNITY_SCHOLARS];
         updateAdminLockUI();
+        refreshAllUI();
         gateScreen.classList.remove('hidden');
       }
     });
@@ -1434,7 +1534,13 @@
         await signInWithPopup(auth, googleProvider);
         showToast('Successfully signed in with Google!', 'success');
       } catch (err) {
-        showToast('Google Sign-In Error: ' + err.message, 'error');
+        if (['auth/popup-closed-by-user', 'auth/cancelled-popup-request'].includes(err.code)) return;
+        const msg = err.code === 'auth/popup-blocked'
+          ? 'Popup was blocked by your browser. Allow popups for this site and try again.'
+          : err.code === 'auth/network-request-failed'
+            ? 'Network error. Check your internet connection and try again.'
+            : 'Google Sign-In failed. Please try again.';
+        showToast(msg, 'error');
       }
     };
 
@@ -1447,7 +1553,7 @@
 
     window.openAdminLoginModal = function () {
       openUniversalModal(
-        `<i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal Login`,
+        `<i class="fa-solid fa-shield-halved text-rose-400"></i> Admin Portal Login`,
         `
           <form onsubmit="handleModalAdminLogin(event)" class="space-y-4">
             <div>
@@ -1481,19 +1587,10 @@
       }
 
       try {
-        let cred;
-        try {
-          cred = await signInWithEmailAndPassword(auth, email, pass);
-        } catch (signInErr) {
-          if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
-            try {
-              cred = await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (createErr) {
-              throw signInErr;
-            }
-          } else {
-            throw signInErr;
-          }
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if (cred.user.emailVerified !== true) {
+          await signOut(auth);
+          throw new Error('Admin email is not verified. Sign in with Google using the admin email instead.');
         }
 
         if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
@@ -1504,7 +1601,7 @@
           showToast('Admin Panel Unlocked!', 'success');
         }
       } catch (err) {
-        errEl.textContent = 'Authentication Failed: ' + err.message;
+        errEl.textContent = 'Authentication failed. Check your credentials.';
         errEl.classList.remove('hidden');
       }
     };
@@ -1523,19 +1620,10 @@
       }
 
       try {
-        let cred;
-        try {
-          cred = await signInWithEmailAndPassword(auth, email, pass);
-        } catch (signInErr) {
-          if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
-            try {
-              cred = await createUserWithEmailAndPassword(auth, email, pass);
-            } catch (createErr) {
-              throw signInErr;
-            }
-          } else {
-            throw signInErr;
-          }
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if (cred.user.emailVerified !== true) {
+          await signOut(auth);
+          throw new Error('Admin email is not verified. Sign in with Google using the admin email instead.');
         }
 
         if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
@@ -1544,7 +1632,7 @@
           showToast('Admin Panel Unlocked!', 'success');
         }
       } catch (err) {
-        errEl.textContent = 'Auth Error: ' + err.message;
+        errEl.textContent = 'Authentication failed. Check your credentials.';
         errEl.classList.remove('hidden');
       }
     };
@@ -1575,34 +1663,44 @@
       }
     }
 
+    let syncWarned = false;
+    function warnSync(err) {
+      console.warn('[Educivilization] Cloud sync issue:', (err && err.code) || err);
+      if (!syncWarned) {
+        syncWarned = true;
+        showToast('Cloud sync unavailable - progress is saved on this device only.', 'error');
+      }
+    }
+
     async function syncUserWithFirestore(uid) {
       try {
-        const userRef = doc(db, 'users', uid);
-        const snap = await getDoc(userRef);
-        if (snap.exists() && !isAdminAuthenticated) {
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (snap.exists()) {
           const remote = snap.data();
-          if ((remote.updatedAt || 0) > (state.updatedAt || 0)) {
-            state = {
-              ...state,
-              ...remote,
-              grid: remote.gridJson ? JSON.parse(remote.gridJson) : state.grid
-            };
+          if (num(remote.updatedAt) > num(state.updatedAt)) {
+            const { gridJson, ...rest } = remote;
+            const claimed = [...new Set([
+              ...(Array.isArray(state.claimedAchievements) ? state.claimedAchievements : []),
+              ...(Array.isArray(rest.claimedAchievements) ? rest.claimedAchievements : [])
+            ])];
+            state = { ...state, ...rest, grid: gridJson ? sanitizeGrid(gridJson) : state.grid, claimedAchievements: claimed, catalog: [...DEFAULT_BUILDINGS] };
+            state.adminConfig = economy;
             persistLocalState();
           }
         }
         await pushStateToFirestore();
-      } catch (err) {}
+      } catch (err) { warnSync(err); }
     }
 
     async function pushStateToFirestore() {
       state.updatedAt = Date.now();
       persistLocalState();
       if (!currentFirebaseUser) return;
+      const uid = currentFirebaseUser.uid;
 
       try {
-        const userRef = doc(db, 'users', currentFirebaseUser.uid);
-        await setDoc(userRef, {
-          uid: currentFirebaseUser.uid,
+        await setDoc(doc(db, 'users', uid), {
+          uid,
           uniqueId: state.uniqueId,
           username: state.username,
           region: state.region,
@@ -1614,25 +1712,34 @@
           studyMinutes: state.studyMinutes,
           todayMinutes: state.todayMinutes,
           todayEarnedSc: state.todayEarnedSc,
+          dayKey: state.dayKey || '',
+          lastStudyDate: state.lastStudyDate || '',
+          lifetimeEarnedSc: state.lifetimeEarnedSc || 0,
+          sessionCount: state.sessionCount || 0,
           streak: state.streak,
           likes: state.likes,
           visitors: state.visitors,
+          citiesVisited: state.citiesVisited || 0,
+          reactorsSent: state.reactorsSent || 0,
+          dailyGoalMinutes: state.dailyGoalMinutes,
+          onboarded: Boolean(state.onboarded),
+          claimedAchievements: state.claimedAchievements,
           sessions: state.sessions.slice(0, 25),
           transactions: state.transactions.slice(0, 40),
           gridJson: JSON.stringify(state.grid),
           updatedAt: state.updatedAt
         }, { merge: true });
 
+        const pubRef = doc(db, 'public_cities', uid);
         if (state.privacy === 'Public') {
-          const pubRef = doc(db, 'public_cities', currentFirebaseUser.uid);
           await setDoc(pubRef, {
-            uid: currentFirebaseUser.uid,
+            uid,
             uniqueId: state.uniqueId,
             username: state.username,
             region: state.region,
             avatar: state.avatar,
             cityName: state.cityName,
-            privacy: state.privacy,
+            privacy: 'Public',
             studyMinutes: state.studyMinutes,
             streak: state.streak,
             xp: state.xp,
@@ -1642,45 +1749,69 @@
             gridJson: JSON.stringify(state.grid),
             updatedAt: state.updatedAt
           }, { merge: true });
+          publicDocPublished = true;
+        } else if (publicDocPublished !== false) {
+          // City was set to Private: take it off the public map/leaderboard
+          await deleteDoc(pubRef);
+          publicDocPublished = false;
         }
-      } catch (err) {}
+      } catch (err) { warnSync(err); }
     }
 
     function subscribeToFirestorePublicCities() {
       try {
-        onSnapshot(collection(db, 'public_cities'), (snapshot) => {
-          const remoteList = [];
-          snapshot.forEach(docSnap => {
-            const d = docSnap.data();
-            if (d.privacy === 'Public' && d.cityName) {
-              remoteList.push({
-                ...d,
-                grid: d.gridJson ? JSON.parse(d.gridJson) : createPresetGrid([[3, 3, 'city_hall', 1]])
-              });
-            }
-          });
-          const seenIds = new Set(remoteList.map(x => x.uniqueId));
-          publicCities = [
-            ...remoteList,
-            ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
-          ];
+        unsubPublic = onSnapshot(
+          query(collection(db, 'public_cities'), where('privacy', '==', 'Public')),
+          (snapshot) => {
+            const remoteList = [];
+            snapshot.forEach(docSnap => {
+              const d = docSnap.data();
+              if (d && d.cityName && docSnap.id !== (currentFirebaseUser && currentFirebaseUser.uid)) remoteList.push(sanitizeCity(d));
+            });
+            const seenIds = new Set(remoteList.map(x => x.uniqueId));
+            publicCities = [
+              ...remoteList,
+              ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
+            ];
+            refreshAllUI();
+          },
+          (err) => warnSync(err)
+        );
+      } catch (e) { warnSync(e); }
+    }
+
+    function subscribeToEconomyConfig() {
+      try {
+        unsubEconomy = onSnapshot(doc(db, 'config', 'economy'), (snap) => {
+          if (snap.exists()) {
+            const d = snap.data();
+            economy = {
+              rewardPer10Min: clampInt(d.rewardPer10Min, 1, 10000, ECONOMY_DEFAULTS.rewardPer10Min),
+              dailyCapSc: clampInt(d.dailyCapSc, 60, 1000000, ECONOMY_DEFAULTS.dailyCapSc)
+            };
+          } else {
+            economy = { ...ECONOMY_DEFAULTS };
+          }
+          state.adminConfig = economy;
           refreshAllUI();
-        });
-      } catch (e) {}
+          if (isAdminAuthenticated) renderAdminPanel();
+        }, (err) => warnSync(err));
+      } catch (e) { warnSync(e); }
     }
 
     async function logAdminAction(actionDesc) {
       const logEntry = `[${new Date().toLocaleTimeString()}] ADMIN: ${actionDesc}`;
       state.auditLogs.unshift(logEntry);
+      state.auditLogs = state.auditLogs.slice(0, 100);
       persistLocalState();
       if (!currentFirebaseUser) return;
       try {
         await addDoc(collection(db, 'admin_logs'), {
           adminEmail: currentFirebaseUser.email,
-          description: actionDesc,
+          description: String(actionDesc).slice(0, 500),
           timestamp: Date.now()
         });
-      } catch (e) {}
+      } catch (e) { warnSync(e); }
     }
 
     // =========================================================================
@@ -1707,7 +1838,14 @@
       camera3D = new THREE.PerspectiveCamera(42, width / height, 0.1, 150);
       updateCamera3DPosition();
 
-      renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      try {
+        renderer3D = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      } catch (e) {
+        renderer3D = null;
+        threeInitialized = true;
+        container.insertAdjacentHTML('afterbegin', '<div class="p-6 text-sm text-slate-400">3D view needs WebGL, which is unavailable on this device/browser.</div>');
+        return;
+      }
       renderer3D.setSize(width, height);
       renderer3D.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer3D.shadowMap.enabled = true;
@@ -1789,6 +1927,8 @@
           handle3DPlotClick(e.clientX, e.clientY);
         }
       });
+
+      window.addEventListener('pointercancel', () => { isDown = false; });
 
       domEl.addEventListener('wheel', (e) => {
         e.preventDefault();
@@ -1915,7 +2055,12 @@
     function rebuild3DCityMeshes() {
       if (!cityGroup) return;
       while (cityGroup.children.length > 0) {
-        cityGroup.remove(cityGroup.children[0]);
+        const child = cityGroup.children[0];
+        cityGroup.remove(child);
+        child.traverse(o => {
+          if (o.geometry) o.geometry.dispose();
+          if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(mt => mt.dispose());
+        });
       }
       plotMeshes = [];
 
@@ -1954,6 +2099,9 @@
 
     function animateThreeLoop() {
       requestAnimationFrame(animateThreeLoop);
+      if (document.hidden) return;
+      const view = document.getElementById('view-city');
+      if (!view || view.classList.contains('hidden')) return;
       if (renderer3D && scene && camera3D) {
         renderer3D.render(scene, camera3D);
       }
@@ -2159,44 +2307,65 @@
     };
 
     window.simulateVerifiedStudy = async function (mins) {
+      if (!DEMO_MODE) return; // disabled in production
       const subject = document.getElementById('focusSubjectInput').value.trim() || 'Deep Study Sprint';
       await awardVerifiedStudy(mins, `${subject} (Verified)`, 100);
     };
 
+    let awarding = false;
     async function awardVerifiedStudy(mins, subject, integrity = 100) {
-      const ratePerMin = state.adminConfig.rewardPer10Min / 10;
-      const capLeft = Math.max(0, state.adminConfig.dailyCapSc - state.todayEarnedSc);
-      const earnedSc = Math.min(Math.round(mins * ratePerMin), capLeft);
-      const earnedXp = mins * 10;
+      if (awarding) return;
+      awarding = true;
+      try {
+        mins = Math.max(1, Math.min(720, Math.floor(mins)));
+        subject = String(subject || 'Focused Study').slice(0, 60);
+        rolloverDay();
 
-      state.studyMinutes += mins;
-      state.todayMinutes += mins;
-      state.todayEarnedSc += earnedSc;
-      state.scBalance += earnedSc;
-      state.xp += earnedXp;
+        const ratePerMin = state.adminConfig.rewardPer10Min / 10;
+        const capLeft = Math.max(0, state.adminConfig.dailyCapSc - state.todayEarnedSc);
+        const earnedSc = Math.min(Math.round(mins * ratePerMin), capLeft);
+        const earnedXp = mins * 10;
 
-      state.sessions.unshift({
-        id: 'ses_' + Date.now(),
-        subject,
-        minutes: mins,
-        sc: earnedSc,
-        xp: earnedXp,
-        integrity,
-        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      });
+        state.studyMinutes += mins;
+        state.todayMinutes += mins;
+        state.todayEarnedSc += earnedSc;
+        state.lifetimeEarnedSc = (state.lifetimeEarnedSc || 0) + earnedSc;
+        state.sessionCount = (state.sessionCount || 0) + 1;
+        state.scBalance += earnedSc;
+        state.xp += earnedXp;
+        bumpStreak();
 
-      state.transactions.unshift({
-        id: 'tx_' + Date.now(),
-        timestamp: new Date().toLocaleString(),
-        type: 'STUDY_REWARD',
-        desc: `Verified Study (${mins}m): ${subject}`,
-        amount: earnedSc
-      });
+        state.sessions.unshift({
+          id: 'ses_' + Date.now(),
+          subject,
+          minutes: mins,
+          sc: earnedSc,
+          xp: earnedXp,
+          integrity,
+          date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        if (state.sessions.length > 100) state.sessions.length = 100;
 
-      playChime('reward');
-      showToast(`Verified ${mins}m Study! +${earnedSc.toLocaleString()} SC & +${earnedXp.toLocaleString()} XP banked!`, 'reward');
-      await pushStateToFirestore();
-      refreshAllUI();
+        state.transactions.unshift({
+          id: 'tx_' + Date.now(),
+          timestamp: new Date().toLocaleString(),
+          type: 'STUDY_REWARD',
+          desc: `Verified Study (${mins}m): ${subject}`,
+          amount: earnedSc
+        });
+        if (state.transactions.length > 300) state.transactions.length = 300;
+
+        playChime('reward');
+        if (earnedSc === 0 && capLeft === 0) {
+          showToast(`Daily SC cap reached. +${earnedXp.toLocaleString()} XP banked - SC rewards resume tomorrow.`, 'info');
+        } else {
+          showToast(`Verified ${mins}m Study! +${earnedSc.toLocaleString()} SC & +${earnedXp.toLocaleString()} XP banked!`, 'reward');
+        }
+        await pushStateToFirestore();
+        refreshAllUI();
+      } finally {
+        awarding = false;
+      }
     }
 
     function updateFocusClockUI() {
@@ -2217,7 +2386,7 @@
       const elS = elapsedSec % 60;
       document.getElementById('elapsedVerifiedText').textContent = `${elM}m ${elS}s`;
 
-      const accruedSc = Math.floor((elapsedSec / 60) * (state.adminConfig.rewardPer10Min / 10));
+      const accruedSc = Math.min(Math.floor((elapsedSec / 60) * (state.adminConfig.rewardPer10Min / 10)), Math.max(0, state.adminConfig.dailyCapSc - state.todayEarnedSc));
       document.getElementById('estRewardText').textContent = `${accruedSc} SC`;
       document.getElementById('fsEarnedSC').textContent = `${accruedSc} SC`;
 
@@ -2463,12 +2632,12 @@
       const cityData = visitingCity ? visitingCity : state;
       const m = calculateCityMetrics(cityData);
       openUniversalModal(
-        `<i class="fa-solid fa-landmark text-cyan-400"></i> ${cityData.cityName} — City Hall`,
+        `<i class="fa-solid fa-landmark text-cyan-400"></i> ${esc(cityData.cityName)} — City Hall`,
         `
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
             <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
               <div class="text-slate-400">Scholar Mayor</div>
-              <div class="font-bold text-sm text-cyan-300 mt-1">${cityData.avatar} ${cityData.username}</div>
+              <div class="font-bold text-sm text-cyan-300 mt-1">${esc(cityData.avatar)} ${esc(cityData.username)}</div>
             </div>
             <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
               <div class="text-slate-400">City Development</div>
@@ -2546,7 +2715,7 @@
 
     window.renderBankLedger = function () {
       const metrics = calculateCityMetrics(state);
-      const lifetimeEarned = state.transactions.filter(t => t.type === 'STUDY_REWARD').reduce((acc, t) => acc + t.amount, 0);
+      const lifetimeEarned = Math.max(state.lifetimeEarnedSc || 0, state.transactions.filter(t => t.type === 'STUDY_REWARD').reduce((acc, t) => acc + t.amount, 0));
 
       document.getElementById('bankWalletSc').textContent = `${state.scBalance.toLocaleString()} SC`;
       document.getElementById('bankAssetValue').textContent = `${metrics.assetValue.toLocaleString()} SC`;
@@ -2558,22 +2727,24 @@
 
       document.getElementById('bankLedgerBody').innerHTML = list.map(tx => `
         <tr class="hover:bg-slate-800/30">
-          <td class="py-3 px-3 text-slate-400">${tx.timestamp}</td>
-          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold">${tx.type}</span></td>
-          <td class="py-3 px-3">${tx.desc}</td>
+          <td class="py-3 px-3 text-slate-400">${esc(tx.timestamp)}</td>
+          <td class="py-3 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] font-bold">${esc(tx.type)}</span></td>
+          <td class="py-3 px-3">${esc(tx.desc)}</td>
           <td class="py-3 px-3 text-right font-mono font-bold ${tx.amount >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${tx.amount >= 0 ? '+' : ''}${tx.amount.toLocaleString()} SC</td>
         </tr>
       `).join('');
     };
 
-    window.filterAchievements = function (cat) {
+    window.filterAchievements = function (cat, btn) {
       selectedAchFilter = cat;
       document.querySelectorAll('.ach-filter-btn').forEach(b => {
         b.classList.remove('bg-purple-500', 'text-white', 'font-bold');
         b.classList.add('glass-panel', 'text-slate-300');
       });
-      event.target.classList.add('bg-purple-500', 'text-white', 'font-bold');
-      event.target.classList.remove('glass-panel', 'text-slate-300');
+      if (btn) {
+        btn.classList.add('bg-purple-500', 'text-white', 'font-bold');
+        btn.classList.remove('glass-panel', 'text-slate-300');
+      }
       renderAchievements();
     };
 
@@ -2668,15 +2839,15 @@
             <div>
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2.5">
-                  <span class="text-2xl">${c.avatar}</span>
+                  <span class="text-2xl">${esc(c.avatar)}</span>
                   <div>
-                    <div class="font-bold text-sm">${c.username} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
-                    <div class="text-[11px] text-slate-400">${c.region || 'India'}</div>
+                    <div class="font-bold text-sm">${esc(c.username)} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
+                    <div class="text-[11px] text-slate-400">${esc(c.region || 'India')}</div>
                   </div>
                 </div>
                 <span class="px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-400 text-xs font-bold">City Lv.${m.cityLevel}</span>
               </div>
-              <h3 class="font-display text-xl font-bold text-cyan-300 mb-3">${c.cityName}</h3>
+              <h3 class="font-display text-xl font-bold text-cyan-300 mb-3">${esc(c.cityName)}</h3>
               <div class="grid grid-cols-2 gap-2 text-xs mb-4">
                 <div class="p-2.5 rounded-xl bg-slate-900"><span class="text-slate-400 block text-[10px]">Study Time</span><strong>${hrs} Hrs</strong></div>
                 <div class="p-2.5 rounded-xl bg-slate-900"><span class="text-slate-400 block text-[10px]">Assets</span><strong>${m.buildingCount} Buildings</strong></div>
@@ -2686,7 +2857,7 @@
               <div class="text-xs text-slate-400 flex items-center gap-3">
                 <span><i class="fa-solid fa-heart text-rose-400 mr-1"></i>${c.likes || 0}</span>
               </div>
-              <button onclick="visitPublicCity('${c.uniqueId}')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold shadow">
+              <button onclick="visitPublicCity(this.dataset.uid)" data-uid="${esc(c.uniqueId)}" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold shadow">
                 Enter 3D City
               </button>
             </div>
@@ -2722,8 +2893,14 @@
       showToast(`Teleported to ${target.cityName} in 3D!`, 'info');
     };
 
+    const likedThisSession = new Set();
     window.likeVisitedCity = function () {
       if (!visitingCity) return;
+      if (likedThisSession.has(visitingCity.uniqueId)) {
+        showToast('You already liked this city.', 'info');
+        return;
+      }
+      likedThisSession.add(visitingCity.uniqueId);
       visitingCity.likes = (visitingCity.likes || 0) + 1;
       document.getElementById('visitLikesCount').textContent = visitingCity.likes;
       triggerCityReactor('❤️');
@@ -2765,7 +2942,7 @@
 
       const enriched = list.map(c => {
         const m = calculateCityMetrics(c);
-        return { ...c, cityLevel: m.cityLevel, netWorth: c.scBalance + m.assetValue };
+        return { ...c, cityLevel: m.cityLevel, netWorth: (Number(c.scBalance) || 0) + m.assetValue };
       });
 
       enriched.sort((a, b) => {
@@ -2783,14 +2960,14 @@
             <td class="py-3 px-3 font-display font-bold">${medal}</td>
             <td class="py-3 px-3">
               <div class="flex items-center gap-2.5">
-                <span class="text-xl">${c.avatar}</span>
+                <span class="text-xl">${esc(c.avatar)}</span>
                 <div>
-                  <div class="font-bold">${c.username} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
-                  <div class="text-[11px] text-cyan-300">${c.cityName}</div>
+                  <div class="font-bold">${esc(c.username)} ${isMe ? '<span class="text-[10px] text-cyan-400">(You)</span>' : ''}</div>
+                  <div class="text-[11px] text-cyan-300">${esc(c.cityName)}</div>
                 </div>
               </div>
             </td>
-            <td class="py-3 px-3 text-slate-400 text-xs">${c.region || 'India'}</td>
+            <td class="py-3 px-3 text-slate-400 text-xs">${esc(c.region || 'India')}</td>
             <td class="py-3 px-3 font-bold">${(c.studyMinutes / 60).toFixed(1)} Hrs</td>
             <td class="py-3 px-3 text-amber-400 font-semibold">${c.streak || 1}d 🔥</td>
             <td class="py-3 px-3">Lv.${c.cityLevel}</td>
@@ -2821,32 +2998,44 @@
 
       document.getElementById('adminUsersTableBody').innerHTML = allUsers.map(u => `
         <tr class="hover:bg-slate-800/30">
-          <td class="py-2.5 px-3 font-mono text-cyan-300">${u.uniqueId}</td>
-          <td class="py-2.5 px-3 font-bold">${u.username}</td>
-          <td class="py-2.5 px-3">${u.cityName}</td>
+          <td class="py-2.5 px-3 font-mono text-cyan-300">${esc(u.uniqueId)}</td>
+          <td class="py-2.5 px-3 font-bold">${esc(u.username)}</td>
+          <td class="py-2.5 px-3">${esc(u.cityName)}</td>
           <td class="py-2.5 px-3">${(u.studyMinutes / 60).toFixed(1)}h</td>
           <td class="py-2.5 px-3 font-mono text-amber-400">${u.scBalance.toLocaleString()} SC</td>
           <td class="py-2.5 px-3 text-right">
-            <button onclick="document.getElementById('adjTargetId').value='${u.uniqueId}'" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">Select</button>
+            <button onclick="document.getElementById('adjTargetId').value=this.dataset.uid" data-uid="${esc(u.uniqueId)}" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">Select</button>
           </td>
         </tr>
       `).join('');
 
       document.getElementById('adminAuditLogList').innerHTML = state.auditLogs.map(log => `
-        <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">${log}</div>
+        <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">${esc(log)}</div>
       `).join('');
     }
 
     window.saveAdminEconomySettings = async function () {
       if (!isAdminAuthenticated) return;
-      const rate = Math.max(1, parseInt(document.getElementById('adminRateInput').value || '10', 10));
-      const cap = Math.max(60, parseInt(document.getElementById('adminCapInput').value || '600', 10));
-      state.adminConfig.rewardPer10Min = rate;
-      state.adminConfig.dailyCapSc = cap;
+      const rate = clampInt(document.getElementById('adminRateInput').value, 1, 10000, ECONOMY_DEFAULTS.rewardPer10Min);
+      const cap = clampInt(document.getElementById('adminCapInput').value, 60, 1000000, ECONOMY_DEFAULTS.dailyCapSc);
+      try {
+        // Published to Firestore so the rule applies to ALL users, not just this browser
+        await setDoc(doc(db, 'config', 'economy'), {
+          rewardPer10Min: rate,
+          dailyCapSc: cap,
+          updatedAt: Date.now(),
+          updatedBy: (currentFirebaseUser && currentFirebaseUser.email) || ''
+        });
+      } catch (err) {
+        showToast('Could not publish economy rules (' + ((err && err.code) || 'error') + '). Check Firestore rules.', 'error');
+        return;
+      }
+      economy = { rewardPer10Min: rate, dailyCapSc: cap };
+      state.adminConfig = economy;
       await logAdminAction(`Updated reward rate to ${rate} SC/10m and daily cap to ${cap} SC.`);
       refreshAllUI();
       renderAdminPanel();
-      showToast('Economy rules saved & audited!', 'success');
+      showToast('Economy rules published for all users & audited!', 'success');
     };
 
     window.adminAdjustUserCredits = async function () {
@@ -2857,6 +3046,11 @@
 
       if (!targetId || !amount || !reason) {
         showToast('Provide Citizen ID, amount, and reason.', 'error');
+        return;
+      }
+
+      if (targetId !== state.uniqueId) {
+        showToast('Adjusting other citizens needs a server-side function (Cloud Function). From the browser you can only adjust your own account.', 'error');
         return;
       }
 
@@ -2930,33 +3124,40 @@
       }
     };
 
+    let pendingAvatar = null;
+    function renderAvatarPicker() {
+      document.getElementById('avatarPicker').innerHTML = AVATARS.map(av => `
+        <button type="button" onclick="selectOnboardAvatar('${av}')"
+          class="text-2xl p-2 rounded-xl border transition ${av === pendingAvatar ? 'bg-cyan-500/25 border-cyan-400 scale-105' : 'bg-slate-900 border-slate-700'}">
+          ${av}
+        </button>
+      `).join('');
+    }
+
     window.openOnboardingEdit = function () {
+      pendingAvatar = state.avatar;
       document.getElementById('onboardUsername').value = state.username;
       document.getElementById('onboardCityName').value = state.cityName;
       document.getElementById('onboardRegion').value = state.region || 'India';
       document.getElementById('onboardPreviewId').textContent = state.uniqueId;
-
-      document.getElementById('avatarPicker').innerHTML = AVATARS.map(av => `
-        <button type="button" onclick="selectOnboardAvatar('${av}')"
-          class="text-2xl p-2 rounded-xl border transition ${av === state.avatar ? 'bg-cyan-500/25 border-cyan-400 scale-105' : 'bg-slate-900 border-slate-700'}">
-          ${av}
-        </button>
-      `).join('');
+      renderAvatarPicker();
       document.getElementById('onboardingModal').classList.remove('hidden');
     };
 
     window.selectOnboardAvatar = function (av) {
-      state.avatar = av;
-      openOnboardingEdit();
+      if (!AVATARS.includes(av)) return;
+      pendingAvatar = av;
+      renderAvatarPicker();
     };
 
     window.saveOnboardingProfile = async function () {
-      const u = document.getElementById('onboardUsername').value.trim();
-      const c = document.getElementById('onboardCityName').value.trim();
-      const reg = document.getElementById('onboardRegion').value.trim();
+      const u = document.getElementById('onboardUsername').value.trim().slice(0, 24);
+      const c = document.getElementById('onboardCityName').value.trim().slice(0, 28);
+      const reg = document.getElementById('onboardRegion').value.trim().slice(0, 24);
       if (u) state.username = u;
       if (c) state.cityName = c;
       if (reg) state.region = reg;
+      if (pendingAvatar && AVATARS.includes(pendingAvatar)) state.avatar = pendingAvatar;
       state.onboarded = true;
       document.getElementById('onboardingModal').classList.add('hidden');
       showToast(`Identity Saved: ${state.username} — Mayor of ${state.cityName}!`, 'success');
@@ -2996,7 +3197,11 @@
       };
       const el = document.createElement('div');
       el.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-2xl backdrop-blur-md text-xs sm:text-sm font-medium transition-all duration-300 ${styles[type] || styles.info}`;
-      el.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-base"></i><span>${message}</span>`;
+      const icon = document.createElement('i');
+      icon.className = `fa-solid ${icons[type] || icons.info} text-base`;
+      const text = document.createElement('span');
+      text.textContent = message;
+      el.append(icon, text);
       container.appendChild(el);
       setTimeout(() => {
         el.style.opacity = '0';
@@ -3005,13 +3210,17 @@
       }, 3600);
     }
 
+    let chimeSynth = null;
     function playChime(type = 'reward') {
       try {
         if (typeof Tone === 'undefined') return;
-        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-        synth.volume.value = -10;
-        if (type === 'reward') synth.triggerAttackRelease(['C5', 'E5', 'G5', 'B5'], '8n');
-        else synth.triggerAttackRelease(['G4', 'C5'], '16n');
+        if (Tone.context.state !== 'running') Tone.start();
+        if (!chimeSynth) {
+          chimeSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+          chimeSynth.volume.value = -10;
+        }
+        if (type === 'reward') chimeSynth.triggerAttackRelease(['C5', 'E5', 'G5', 'B5'], '8n');
+        else chimeSynth.triggerAttackRelease(['G4', 'C5'], '16n');
       } catch (e) {}
     }
 
@@ -3036,12 +3245,12 @@
       document.getElementById('dashScBalance').textContent = `${state.scBalance.toLocaleString()} SC`;
       document.getElementById('dashNetWorth').textContent = `${netWorth.toLocaleString()} SC`;
       document.getElementById('dashStudyTime').textContent = `${(state.studyMinutes / 60).toFixed(1)} Hrs`;
-      document.getElementById('dashSessionCount').textContent = state.sessions.length;
+      document.getElementById('dashSessionCount').textContent = Math.max(state.sessionCount || 0, state.sessions.length);
       document.getElementById('dashBuildingCount').textContent = metrics.buildingCount;
       document.getElementById('dashPlotCount').textContent = `${unlockedPlots} / 64`;
       document.getElementById('dashCityLevel').textContent = metrics.cityLevel;
       document.getElementById('dashPopulation').textContent = metrics.totalPop.toLocaleString();
-      document.getElementById('dashStreak').textContent = `${state.streak || 1}d 🔥`;
+      document.getElementById('dashStreak').textContent = `${state.streak || 0}d 🔥`;
 
       const goalPct = Math.min(100, Math.round((state.todayMinutes / state.dailyGoalMinutes) * 100));
       const dashCircle = document.getElementById('dashRadialCircle');
@@ -3064,6 +3273,10 @@
       document.getElementById('briefInfraScore').textContent = `${metrics.totalInfra.toLocaleString()} pts`;
       document.getElementById('briefDistricts').textContent = `${metrics.districtsCount} / 10`;
       document.getElementById('briefPrivacy').textContent = state.privacy;
+      const privSel = document.getElementById('cityPrivacySelect');
+      if (privSel && privSel.value !== state.privacy) privSel.value = state.privacy;
+      const goalSel = document.getElementById('dailyGoalSelect');
+      if (goalSel && goalSel.value !== String(state.dailyGoalMinutes)) goalSel.value = String(state.dailyGoalMinutes);
       if (!visitingCity) document.getElementById('activeCityHeaderName').textContent = state.cityName;
 
       document.getElementById('guardDailyCap').textContent = state.adminConfig.dailyCapSc;
@@ -3074,7 +3287,7 @@
       if (state.sessions.length > 0) {
         recentEl.innerHTML = state.sessions.slice(0, 4).map(s => `
           <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-            <div><span class="font-semibold text-slate-200">${s.subject}</span><span class="text-slate-400 ml-2">(${s.minutes}m)</span></div>
+            <div><span class="font-semibold text-slate-200">${esc(s.subject)}</span><span class="text-slate-400 ml-2">(${s.minutes}m)</span></div>
             <span class="font-bold text-amber-400">+${s.sc} SC</span>
           </div>
         `).join('');
@@ -3082,6 +3295,16 @@
     }
 
     window.addEventListener('resize', resizeThreeCanvas);
+
+    // Warn before closing the tab in the middle of a focus session
+    window.addEventListener('beforeunload', (e) => {
+      if (timerState.running) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    // Midnight rollover: reset daily counters / streak without needing a reload
+    setInterval(() => {
+      if (currentFirebaseUser && rolloverDay()) { persistLocalState(); refreshAllUI(); }
+    }, 60000);
 
     window.onload = function () {
       switchTab('dashboard');
