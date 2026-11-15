@@ -1801,6 +1801,11 @@
         const snap = await getDoc(doc(db, 'users', uid));
         if (snap.exists()) {
           const remote = snap.data();
+          if (remote.deletedByAdmin && !isAdminAuthenticated) {
+            showToast('Your account has been removed by an administrator.', 'error');
+            await signOut(auth);
+            return;
+          }
           if (num(remote.updatedAt) > num(state.updatedAt)) {
             const { gridJson, ...rest } = remote;
             const claimed = [...new Set([
@@ -1892,10 +1897,11 @@
               const d = docSnap.data();
               if (d && d.cityName && docSnap.id !== (currentFirebaseUser && currentFirebaseUser.uid)) remoteList.push(sanitizeCity(d));
             });
-            const seenIds = new Set(remoteList.map(x => x.uniqueId));
+            const filteredRemote = remoteList.filter(x => !deletedCitizenIds.has(x.uniqueId) && !deletedCitizenIds.has(x.uid));
+            const seenIds = new Set(filteredRemote.map(x => x.uniqueId));
             publicCities = [
-              ...remoteList,
-              ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
+              ...filteredRemote,
+              ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId) && !deletedCitizenIds.has(b.uniqueId) && !deletedCitizenIds.has(b.uid))
             ];
             refreshAllUI();
           },
@@ -1913,6 +1919,11 @@
               rewardPer10Min: clampInt(d.rewardPer10Min, 1, 10000, ECONOMY_DEFAULTS.rewardPer10Min),
               dailyCapSc: clampInt(d.dailyCapSc, 60, 1000000, ECONOMY_DEFAULTS.dailyCapSc)
             };
+            if (Array.isArray(d.deletedCitizens)) {
+              d.deletedCitizens.forEach(id => deletedCitizenIds.add(id));
+              saveDeletedCitizenIdsLocal();
+              publicCities = publicCities.filter(c => !deletedCitizenIds.has(c.uniqueId) && !deletedCitizenIds.has(c.uid));
+            }
           } else {
             economy = { ...ECONOMY_DEFAULTS };
           }
@@ -3113,31 +3124,51 @@
     // =========================================================================
     // 10. ADMIN PANEL
     // =========================================================================
+    let deletedCitizenIds = new Set();
+    try {
+      const savedDel = JSON.parse(localStorage.getItem('educivilization_deleted_citizens') || '[]');
+      if (Array.isArray(savedDel)) deletedCitizenIds = new Set(savedDel);
+    } catch (e) {}
+
+    function saveDeletedCitizenIdsLocal() {
+      try {
+        localStorage.setItem('educivilization_deleted_citizens', JSON.stringify([...deletedCitizenIds]));
+      } catch (e) {}
+    }
+
     function renderAdminPanel() {
       if (!isAdminAuthenticated) return;
 
-      document.getElementById('adminTotalCities').textContent = publicCities.length + 1;
+      const visiblePublicCities = publicCities.filter(c => !deletedCitizenIds.has(c.uniqueId) && !deletedCitizenIds.has(c.uid));
+      document.getElementById('adminTotalCities').textContent = visiblePublicCities.length + 1;
       document.getElementById('adminCurrentRate').textContent = `${state.adminConfig.rewardPer10Min} SC`;
       document.getElementById('adminCurrentCap').textContent = `${state.adminConfig.dailyCapSc} SC`;
       document.getElementById('adminCatalogCount').textContent = state.catalog.length;
       document.getElementById('adminRateInput').value = state.adminConfig.rewardPer10Min;
       document.getElementById('adminCapInput').value = state.adminConfig.dailyCapSc;
 
-      const query = (document.getElementById('adminUserSearch')?.value || '').toLowerCase();
+      const queryStr = (document.getElementById('adminUserSearch')?.value || '').toLowerCase();
       const allUsers = [
-        { uniqueId: state.uniqueId, username: state.username, cityName: state.cityName, studyMinutes: state.studyMinutes, scBalance: state.scBalance },
-        ...publicCities.filter(c => c.uniqueId !== state.uniqueId)
-      ].filter(u => u.username.toLowerCase().includes(query) || u.uniqueId.toLowerCase().includes(query));
+        { uid: currentFirebaseUser?.uid || 'self', uniqueId: state.uniqueId, username: state.username, cityName: state.cityName, studyMinutes: state.studyMinutes, scBalance: state.scBalance, isSelf: true },
+        ...visiblePublicCities.filter(c => c.uniqueId !== state.uniqueId).map(c => ({ ...c, isSelf: false }))
+      ].filter(u =>
+        u.username.toLowerCase().includes(queryStr) ||
+        u.uniqueId.toLowerCase().includes(queryStr) ||
+        (u.cityName || '').toLowerCase().includes(queryStr)
+      );
 
       document.getElementById('adminUsersTableBody').innerHTML = allUsers.map(u => `
         <tr class="hover:bg-slate-800/30">
           <td class="py-2.5 px-3 font-mono text-cyan-300">${esc(u.uniqueId)}</td>
-          <td class="py-2.5 px-3 font-bold">${esc(u.username)}</td>
+          <td class="py-2.5 px-3 font-bold">${esc(u.username)} ${u.isSelf ? '<span class="text-[10px] text-emerald-400">(Admin)</span>' : ''}</td>
           <td class="py-2.5 px-3">${esc(u.cityName)}</td>
           <td class="py-2.5 px-3">${(u.studyMinutes / 60).toFixed(1)}h</td>
           <td class="py-2.5 px-3 font-mono text-amber-400">${u.scBalance.toLocaleString()} SC</td>
           <td class="py-2.5 px-3 text-right">
-            <button onclick="document.getElementById('adjTargetId').value=this.dataset.uid" data-uid="${esc(u.uniqueId)}" class="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 font-semibold">Select</button>
+            <div class="inline-flex items-center gap-1.5">
+              <button onclick="document.getElementById('adjTargetId').value=this.dataset.uid" data-uid="${esc(u.uniqueId)}" class="px-2.5 py-1 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-semibold">Select</button>
+              ${u.isSelf ? '' : `<button onclick="confirmDeleteUserByAdmin(this.dataset.uid, this.dataset.cid, this.dataset.uname)" data-uid="${esc(u.uid || '')}" data-cid="${esc(u.uniqueId)}" data-uname="${esc(u.username)}" class="px-2.5 py-1 rounded bg-rose-500/20 hover:bg-rose-500/35 border border-rose-500/30 text-rose-300 font-semibold" title="Delete User"><i class="fa-solid fa-trash-can mr-1"></i>Delete</button>`}
+            </div>
           </td>
         </tr>
       `).join('');
@@ -3146,6 +3177,79 @@
         <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800">${esc(log)}</div>
       `).join('');
     }
+
+    window.confirmDeleteUserByAdmin = function (firebaseUid, citizenId, username) {
+      if (!isAdminAuthenticated) return;
+      openUniversalModal(
+        `<i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Delete User Account`,
+        `
+          <div class="space-y-4">
+            <p class="text-xs sm:text-sm text-slate-300">
+              Are you sure you want to permanently delete <strong class="text-white">${esc(username)}</strong> (<span class="font-mono text-cyan-300">${esc(citizenId)}</span>)?
+            </p>
+            <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300">
+              This will remove their user data and 3D city from Firestore, Explore World, and Leaderboards.
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Audit Reason (Optional)</label>
+              <input id="deleteUserReasonInput" type="text" placeholder="e.g., Policy violation / Duplicate account" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-xs focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div class="flex items-center justify-end gap-2 pt-2">
+              <button onclick="closeUniversalModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold">Cancel</button>
+              <button onclick="executeDeleteUserByAdmin(this.dataset.uid, this.dataset.cid, this.dataset.uname)" data-uid="${esc(firebaseUid)}" data-cid="${esc(citizenId)}" data-uname="${esc(username)}" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg">
+                <i class="fa-solid fa-trash-can mr-1"></i> Confirm Delete
+              </button>
+            </div>
+          </div>
+        `
+      );
+    };
+
+    window.executeDeleteUserByAdmin = async function (firebaseUid, citizenId, username) {
+      if (!isAdminAuthenticated) return;
+      if (firebaseUid === (currentFirebaseUser && currentFirebaseUser.uid) || citizenId === state.uniqueId) {
+        showToast('You cannot delete your own active admin account.', 'error');
+        return;
+      }
+
+      const reason = (document.getElementById('deleteUserReasonInput')?.value || '').trim() || 'Admin moderation removal';
+      closeUniversalModal();
+
+      // Track deletion in Firestore economy config so deleted users/bots stay hidden across sessions
+      deletedCitizenIds.add(citizenId);
+      if (firebaseUid) deletedCitizenIds.add(firebaseUid);
+      saveDeletedCitizenIdsLocal();
+
+      try {
+        if (firebaseUid && !firebaseUid.startsWith('bot_')) {
+          await deleteDoc(doc(db, 'public_cities', firebaseUid));
+          try {
+            await deleteDoc(doc(db, 'users', firebaseUid));
+          } catch (e) {
+            // In case Firestore rules restrict deleting users/{uid} directly, mark deleted flag if possible
+            try {
+              await setDoc(doc(db, 'users', firebaseUid), { deletedByAdmin: true, deletedAt: Date.now() }, { merge: true });
+            } catch (e2) {}
+          }
+        }
+        await setDoc(doc(db, 'config', 'economy'), {
+          deletedCitizens: [...deletedCitizenIds],
+          updatedAt: Date.now()
+        }, { merge: true });
+      } catch (err) {
+        console.warn('[Educivilization] Delete user Firestore notice:', err);
+      }
+
+      publicCities = publicCities.filter(c => c.uniqueId !== citizenId && c.uid !== firebaseUid);
+      if (visitingCity && (visitingCity.uniqueId === citizenId || visitingCity.uid === firebaseUid)) {
+        exitVisitMode();
+      }
+
+      await logAdminAction(`Deleted user "${username}" (${citizenId}). Reason: "${reason}".`);
+      refreshAllUI();
+      renderAdminPanel();
+      showToast(`User ${username} (${citizenId}) deleted.`, 'success');
+    };
 
     window.saveAdminEconomySettings = async function () {
       if (!isAdminAuthenticated) return;
@@ -3158,7 +3262,7 @@
           dailyCapSc: cap,
           updatedAt: Date.now(),
           updatedBy: (currentFirebaseUser && currentFirebaseUser.email) || ''
-        });
+        }, { merge: true });
       } catch (err) {
         showToast('Could not publish economy rules (' + ((err && err.code) || 'error') + '). Check Firestore rules.', 'error');
         return;
