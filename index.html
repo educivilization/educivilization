@@ -112,9 +112,8 @@
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
-  <!-- ==================== 1. LANDING & GOOGLE AUTH GATE (Shown if not logged in) ==================== -->
+  <!-- ==================== 1. LANDING & GOOGLE AUTH GATE ==================== -->
   <div id="authGateScreen" class="fixed inset-0 z-50 bg-edu-bg flex flex-col justify-between p-6 sm:p-10 overflow-y-auto">
-    <!-- Top Header -->
     <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 via-blue-500 to-purple-600 flex items-center justify-center text-white font-display font-bold text-xl shadow-lg shadow-cyan-500/25">
@@ -130,7 +129,6 @@
       </button>
     </div>
 
-    <!-- Hero Content -->
     <div class="max-w-4xl w-full mx-auto text-center space-y-6 my-auto py-10">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 text-xs font-semibold">
         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> Persistent 3D Virtual Civilization & Study Engine
@@ -246,7 +244,7 @@
     </div>
   </div>
 
-  <!-- Universal Modal (City Hall / Admin Login / Details) -->
+  <!-- Universal Modal -->
   <div id="universalModal" class="hidden fixed inset-0 z-40 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-panel rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col border border-cyan-500/25 shadow-2xl overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200/10 flex items-center justify-between">
@@ -262,7 +260,6 @@
   <!-- Top Navigation Header -->
   <header class="sticky top-0 z-30 glass-panel border-b border-slate-200/60 dark:border-edu-border px-4 lg:px-6 py-3">
     <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
-      <!-- Brand -->
       <div class="flex items-center gap-3">
         <button onclick="toggleMobileSidebar()" class="lg:hidden w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
           <i class="fa-solid fa-bars"></i>
@@ -281,7 +278,6 @@
         </div>
       </div>
 
-      <!-- Live Telemetry Pills -->
       <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
         <button id="headerActiveTimerPill" onclick="switchTab('focus')" class="hidden items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-semibold animate-pulse">
           <i class="fa-solid fa-stopwatch"></i>
@@ -325,7 +321,6 @@
   <!-- Main Workspace Shell -->
   <div class="flex-1 max-w-[1600px] w-full mx-auto flex relative">
 
-    <!-- Sidebar Navigation -->
     <aside id="sidebarNav" class="fixed lg:static inset-y-0 left-0 z-30 w-64 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 glass-panel lg:bg-transparent border-r border-slate-200/60 dark:border-edu-border p-4 flex flex-col justify-between">
       <div class="space-y-1.5 mt-14 lg:mt-0">
         <div class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">Command Deck</div>
@@ -366,7 +361,6 @@
         </button>
       </div>
 
-      <!-- Daily Goal Progress Widget -->
       <div class="mt-6 p-3.5 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-cyan-500/20">
         <div class="flex items-center justify-between text-xs mb-1.5">
           <span class="font-semibold text-cyan-300">Daily Focus Target</span>
@@ -379,10 +373,9 @@
       </div>
     </aside>
 
-    <!-- Main Dynamic Content -->
     <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6">
 
-      <!-- ==================== 1. MODERN DASHBOARD ==================== -->
+      <!-- ==================== 1. DASHBOARD ==================== -->
       <section id="view-dashboard" class="tab-view space-y-6">
         <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/25 relative overflow-hidden">
           <div class="absolute -right-20 -top-20 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
@@ -412,9 +405,8 @@
           </div>
         </div>
 
-        <!-- Bento KPI Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          <div class="glass-panel rounded-2xl p-5 border border-amber-500/25 hover:border-amber-400/50 transition">
+          <div class="glass-panel rounded-2xl p-5 border border-amber-500/25">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Liquid Study Credits</span>
               <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center"><i class="fa-solid fa-coins"></i></div>
@@ -423,7 +415,7 @@
             <div class="text-xs text-slate-400 mt-1">Total Net Worth: <span id="dashNetWorth" class="text-slate-200 font-semibold">100,000 SC</span></div>
           </div>
 
-          <div class="glass-panel rounded-2xl p-5 border border-cyan-500/25 hover:border-cyan-400/50 transition">
+          <div class="glass-panel rounded-2xl p-5 border border-cyan-500/25">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Verified Study Time</span>
               <div class="w-9 h-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
@@ -432,7 +424,7 @@
             <div class="text-xs text-slate-400 mt-1"><span id="dashSessionCount" class="text-slate-200 font-semibold">0</span> Verified Focus Sessions</div>
           </div>
 
-          <div class="glass-panel rounded-2xl p-5 border border-purple-500/25 hover:border-purple-400/50 transition">
+          <div class="glass-panel rounded-2xl p-5 border border-purple-500/25">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">3D Structures</span>
               <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-building"></i></div>
@@ -441,7 +433,7 @@
             <div class="text-xs text-slate-400 mt-1">Unlocked Land: <span id="dashPlotCount" class="text-slate-200 font-semibold">16 / 64</span></div>
           </div>
 
-          <div class="glass-panel rounded-2xl p-5 border border-emerald-500/25 hover:border-emerald-400/50 transition">
+          <div class="glass-panel rounded-2xl p-5 border border-emerald-500/25">
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Civilization Rank</span>
               <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-crown"></i></div>
@@ -451,7 +443,6 @@
           </div>
         </div>
 
-        <!-- Bento Row 2 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2 glass-panel rounded-3xl p-6 space-y-6">
             <div class="flex flex-col sm:flex-row items-center gap-6">
@@ -536,7 +527,7 @@
         </div>
       </section>
 
-      <!-- ==================== 2. VERIFIED FOCUS ROOM ==================== -->
+      <!-- ==================== 2. FOCUS ROOM ==================== -->
       <section id="view-focus" class="tab-view hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="lg:col-span-2 glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-500/30">
@@ -673,7 +664,7 @@
         </div>
       </section>
 
-      <!-- ==================== 3. 3D VIRTUAL CITY BUILDER ==================== -->
+      <!-- ==================== 3. 3D CITY BUILDER ==================== -->
       <section id="view-city" class="tab-view hidden space-y-4">
         <div id="visitingCityBanner" class="hidden glass-panel rounded-2xl p-4 border border-purple-500/40 bg-purple-950/40 flex flex-wrap items-center justify-between gap-3">
           <div class="flex items-center gap-3">
@@ -772,7 +763,7 @@
         <div id="storeCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
       </section>
 
-      <!-- ==================== 5. MY BANK & LEDGER ==================== -->
+      <!-- ==================== 5. BANK & LEDGER ==================== -->
       <section id="view-bank" class="tab-view hidden space-y-6">
         <div class="glass-panel rounded-3xl p-6 border border-amber-500/25">
           <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -954,7 +945,7 @@
         </div>
       </section>
 
-      <!-- ==================== 9. LOCKED ADMIN PANEL ==================== -->
+      <!-- ==================== 9. ADMIN PANEL ==================== -->
       <section id="view-admin" class="tab-view hidden space-y-6">
         <div id="adminLockScreen" class="max-w-md mx-auto glass-panel rounded-3xl p-8 border border-rose-500/30 shadow-2xl text-center space-y-5 my-6">
           <div class="w-16 h-16 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 flex items-center justify-center text-2xl mx-auto shadow-lg">
@@ -1087,6 +1078,7 @@
       GoogleAuthProvider,
       signInWithPopup,
       signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
       signOut,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -1101,7 +1093,7 @@
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
     // =========================================================================
-    // 1. EXACT FIREBASE CONFIGURATION (Project ID: educivilization-c1c5a)
+    // 1. FIREBASE CONFIGURATION
     // =========================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBIn-SB8aJyJGu5qYWIx6ddCulFB_-z4bw",
@@ -1124,7 +1116,7 @@
     let isAdminAuthenticated = false;
 
     // =========================================================================
-    // 2. CATALOG, ACHIEVEMENTS & COMMUNITY LEADERBOARD PROFILES
+    // 2. CATALOG & PROFILES
     // =========================================================================
     const AVATARS = ['🧑‍🚀', '👩‍🔬', '🧑‍🎓', '🧙‍♂️', '🥷', '🤖', '🦁', '🦉', '⚡', '🏛️', '🚀', '💎'];
 
@@ -1138,21 +1130,21 @@
     ];
 
     const DEFAULT_BUILDINGS = [
-      { id: 'city_hall', name: 'Grand City Hall', district: 'Administration', price: 0, minHours: 0, pop: 150, infra: 120, rarity: 'Core', color: '#06B6D4', accent: '#F59E0B', height: 2.2, shape: 'capitol', desc: 'Central administrative command of your civilization.' },
-      { id: 'small_house', name: 'Solar Villa', district: 'Residential', price: 5000, minHours: 0, pop: 120, infra: 30, rarity: 'Common', color: '#38BDF8', accent: '#F8FAFC', height: 1.1, shape: 'house', desc: 'Modern eco-friendly residence with pitched roof.' },
+      { id: 'city_hall', name: 'Grand City Hall', district: 'Administration', price: 0, minHours: 0, pop: 150, infra: 120, rarity: 'Core', color: '#06B6D4', accent: '#F59E0B', height: 2.2, shape: 'capitol', desc: 'Central administrative command.' },
+      { id: 'small_house', name: 'Solar Villa', district: 'Residential', price: 5000, minHours: 0, pop: 120, infra: 30, rarity: 'Common', color: '#38BDF8', accent: '#F8FAFC', height: 1.1, shape: 'house', desc: 'Modern eco-friendly residence.' },
       { id: 'sky_apartments', name: 'Skyline Residency', district: 'Residential', price: 18000, minHours: 3, pop: 450, infra: 75, rarity: 'Rare', color: '#3B82F6', accent: '#93C5FD', height: 2.8, shape: 'tower', desc: 'High-density glass residential skyscraper.' },
-      { id: 'school', name: 'Vidya Public School', district: 'Education', price: 15000, minHours: 1, pop: 80, infra: 100, rarity: 'Common', color: '#A855F7', accent: '#FDE047', height: 1.5, shape: 'campus', desc: 'Foundation academy boosting city knowledge output.' },
-      { id: 'university', name: 'Nalanda Tech University', district: 'Education', price: 50000, minHours: 15, pop: 320, infra: 280, rarity: 'Epic', color: '#7C3AED', accent: '#38BDF8', height: 2.6, shape: 'capitol', desc: 'Premier research campus unlocked at 15 Study Hours.' },
-      { id: 'hospital', name: 'ApolloCare Super Hospital', district: 'Healthcare', price: 25000, minHours: 2, pop: 140, infra: 150, rarity: 'Rare', color: '#F43F5E', accent: '#FFFFFF', height: 2.0, shape: 'hospital', desc: 'Multi-specialty medical tower with helipad.' },
-      { id: 'police_station', name: 'Cyber Command HQ', district: 'Administration', price: 12000, minHours: 0, pop: 60, infra: 90, rarity: 'Common', color: '#2563EB', accent: '#38BDF8', height: 1.4, shape: 'campus', desc: 'Maintains civic safety and smart traffic.' },
+      { id: 'school', name: 'Vidya Public School', district: 'Education', price: 15000, minHours: 1, pop: 80, infra: 100, rarity: 'Common', color: '#A855F7', accent: '#FDE047', height: 1.5, shape: 'campus', desc: 'Foundation academy.' },
+      { id: 'university', name: 'Nalanda Tech University', district: 'Education', price: 50000, minHours: 15, pop: 320, infra: 280, rarity: 'Epic', color: '#7C3AED', accent: '#38BDF8', height: 2.6, shape: 'capitol', desc: 'Research campus unlocked at 15 Study Hours.' },
+      { id: 'hospital', name: 'ApolloCare Super Hospital', district: 'Healthcare', price: 25000, minHours: 2, pop: 140, infra: 150, rarity: 'Rare', color: '#F43F5E', accent: '#FFFFFF', height: 2.0, shape: 'hospital', desc: 'Medical tower with helipad.' },
+      { id: 'police_station', name: 'Cyber Command HQ', district: 'Administration', price: 12000, minHours: 0, pop: 60, infra: 90, rarity: 'Common', color: '#2563EB', accent: '#38BDF8', height: 1.4, shape: 'campus', desc: 'Maintains civic safety.' },
       { id: 'central_bank', name: 'Reserve Vault Tower', district: 'Banking', price: 40000, minHours: 10, pop: 110, infra: 210, rarity: 'Epic', color: '#F59E0B', accent: '#FEF08A', height: 2.5, shape: 'tower', desc: 'Financial hub unlocked at 10 Study Hours.' },
-      { id: 'tech_mall', name: 'CyberHub Galleria', district: 'Commercial', price: 22000, minHours: 4, pop: 220, infra: 120, rarity: 'Rare', color: '#EC4899', accent: '#FBCFE8', height: 1.7, shape: 'mall', desc: 'Bustling commercial plaza & innovation center.' },
-      { id: 'clean_factory', name: 'Quantum Robotics Plant', district: 'Industrial', price: 28000, minHours: 6, pop: 190, infra: 155, rarity: 'Rare', color: '#F97316', accent: '#FED7AA', height: 1.6, shape: 'factory', desc: 'Zero-emission automated clean manufacturing.' },
-      { id: 'neon_park', name: 'Botanical Bio-Dome', district: 'Recreation', price: 8000, minHours: 0, pop: 95, infra: 80, rarity: 'Common', color: '#10B981', accent: '#A7F3D0', height: 0.9, shape: 'park', desc: 'Lush green sanctuary boosting citizen happiness.' },
-      { id: 'metro_station', name: 'Hyperloop Metro Hub', district: 'Transport', price: 32000, minHours: 8, pop: 160, infra: 230, rarity: 'Epic', color: '#14B8A6', accent: '#99F6E4', height: 1.4, shape: 'mall', desc: 'High-speed transit station connecting districts.' },
+      { id: 'tech_mall', name: 'CyberHub Galleria', district: 'Commercial', price: 22000, minHours: 4, pop: 220, infra: 120, rarity: 'Rare', color: '#EC4899', accent: '#FBCFE8', height: 1.7, shape: 'mall', desc: 'Commercial plaza & innovation center.' },
+      { id: 'clean_factory', name: 'Quantum Robotics Plant', district: 'Industrial', price: 28000, minHours: 6, pop: 190, infra: 155, rarity: 'Rare', color: '#F97316', accent: '#FED7AA', height: 1.6, shape: 'factory', desc: 'Zero-emission clean manufacturing.' },
+      { id: 'neon_park', name: 'Botanical Bio-Dome', district: 'Recreation', price: 8000, minHours: 0, pop: 95, infra: 80, rarity: 'Common', color: '#10B981', accent: '#A7F3D0', height: 0.9, shape: 'park', desc: 'Green sanctuary.' },
+      { id: 'metro_station', name: 'Hyperloop Metro Hub', district: 'Transport', price: 32000, minHours: 8, pop: 160, infra: 230, rarity: 'Epic', color: '#14B8A6', accent: '#99F6E4', height: 1.4, shape: 'mall', desc: 'High-speed transit station.' },
       { id: 'solar_grid', name: 'Helios Solar Array', district: 'Infrastructure', price: 16000, minHours: 2, pop: 40, infra: 190, rarity: 'Rare', color: '#EAB308', accent: '#38BDF8', height: 1.0, shape: 'solar', desc: 'Clean renewable energy powerhouse.' },
-      { id: 'wisdom_library', name: 'Great Library Wonder', district: 'World Wonders', price: 75000, minHours: 50, pop: 550, infra: 480, rarity: 'Legendary', color: '#8B5CF6', accent: '#FBBF24', height: 3.1, shape: 'capitol', desc: 'World Wonder unlocked after 50 Verified Study Hours.' },
-      { id: 'space_elevator', name: 'Aether Orbital Spire', district: 'World Wonders', price: 120000, minHours: 100, pop: 1100, infra: 850, rarity: 'Legendary', color: '#06B6D4', accent: '#F43F5E', height: 3.9, shape: 'spire', desc: 'Ultimate Civilization Wonder unlocked at 100 Study Hours.' },
+      { id: 'wisdom_library', name: 'Great Library Wonder', district: 'World Wonders', price: 75000, minHours: 50, pop: 550, infra: 480, rarity: 'Legendary', color: '#8B5CF6', accent: '#FBBF24', height: 3.1, shape: 'capitol', desc: 'World Wonder unlocked after 50 Hours.' },
+      { id: 'space_elevator', name: 'Aether Orbital Spire', district: 'World Wonders', price: 120000, minHours: 100, pop: 1100, infra: 850, rarity: 'Legendary', color: '#06B6D4', accent: '#F43F5E', height: 3.9, shape: 'spire', desc: 'Ultimate Civilization Wonder unlocked at 100 Hours.' },
     ];
 
     const ACHIEVEMENTS_LIST = [
@@ -1410,7 +1402,7 @@
     }
 
     // =========================================================================
-    // 4. FIREBASE AUTH & GOOGLE SIGN-IN
+    // 4. FIREBASE AUTH & GLOBAL HANDLERS (Assigned to window)
     // =========================================================================
     onAuthStateChanged(auth, async (user) => {
       const gateScreen = document.getElementById('authGateScreen');
@@ -1453,112 +1445,111 @@
       } catch (e) {}
     };
 
-    // Admin Login Modal (No prefilled admin email on UI)
     window.openAdminLoginModal = function () {
       openUniversalModal(
         `<i class="fa-solid fa-shield-keyhole text-rose-400"></i> Admin Portal Login`,
         `
           <form onsubmit="handleModalAdminLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
-          <input id="modalAdminEmail" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
-          <input id="modalAdminPass" type="password" placeholder="Enter password" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
-        </div>
-        <div id="modalAdminErr" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
-        <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-sm shadow-lg transition">
-          Authenticate Root Admin
-        </button>
-      </form>
-    `
-  );
-};
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Email</label>
+              <input id="modalAdminEmail" type="email" placeholder="Enter admin email" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 mb-1">Admin Password</label>
+              <input id="modalAdminPass" type="password" placeholder="Enter password" required class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-sm focus:border-rose-400 focus:outline-none" />
+            </div>
+            <div id="modalAdminErr" class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl p-2.5"></div>
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-purple-600 text-white font-bold text-sm shadow-lg transition">
+              Authenticate Root Admin
+            </button>
+          </form>
+        `
+      );
+    };
 
-window.handleModalAdminLogin = async function (e) {
-  e.preventDefault();
-  const email = document.getElementById('modalAdminEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('modalAdminPass').value;
-  const errEl = document.getElementById('modalAdminErr');
-  errEl.classList.add('hidden');
+    window.handleModalAdminLogin = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('modalAdminEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('modalAdminPass').value;
+      const errEl = document.getElementById('modalAdminErr');
+      errEl.classList.add('hidden');
 
-  if (email !== ADMIN_AUTHORIZED_EMAIL) {
-    errEl.textContent = 'Access Denied: Unauthorized administrator email.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  try {
-    let cred;
-    try {
-      cred = await signInWithEmailAndPassword(auth, email, pass);
-    } catch (signInErr) {
-      if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
-        try {
-          cred = await createUserWithEmailAndPassword(auth, email, pass);
-        } catch (createErr) {
-          throw signInErr;
-        }
-      } else {
-        throw signInErr;
+      if (email !== ADMIN_AUTHORIZED_EMAIL) {
+        errEl.textContent = 'Access Denied: Unauthorized administrator email.';
+        errEl.classList.remove('hidden');
+        return;
       }
-    }
 
-    if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
-      isAdminAuthenticated = true;
-      closeUniversalModal();
-      updateAdminLockUI();
-      switchTab('admin');
-      showToast('Admin Panel Unlocked!', 'success');
-    }
-  } catch (err) {
-    errEl.textContent = 'Authentication Failed: ' + err.message;
-    errEl.classList.remove('hidden');
-  }
-};
-
-window.handleAdminEmailLogin = async function (e) {
-  e.preventDefault();
-  const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
-  const pass = document.getElementById('adminPassInput').value;
-  const errEl = document.getElementById('adminLoginErrorMsg');
-  errEl.classList.add('hidden');
-
-  if (email !== ADMIN_AUTHORIZED_EMAIL) {
-    errEl.textContent = 'Access Denied: Unauthorized admin credentials.';
-    errEl.classList.remove('hidden');
-    return;
-  }
-
-  try {
-    let cred;
-    try {
-      cred = await signInWithEmailAndPassword(auth, email, pass);
-    } catch (signInErr) {
-      if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
+      try {
+        let cred;
         try {
-          cred = await createUserWithEmailAndPassword(auth, email, pass);
-        } catch (createErr) {
-          throw signInErr;
+          cred = await signInWithEmailAndPassword(auth, email, pass);
+        } catch (signInErr) {
+          if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
+            try {
+              cred = await createUserWithEmailAndPassword(auth, email, pass);
+            } catch (createErr) {
+              throw signInErr;
+            }
+          } else {
+            throw signInErr;
+          }
         }
-      } else {
-        throw signInErr;
+
+        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+          isAdminAuthenticated = true;
+          closeUniversalModal();
+          updateAdminLockUI();
+          switchTab('admin');
+          showToast('Admin Panel Unlocked!', 'success');
+        }
+      } catch (err) {
+        errEl.textContent = 'Authentication Failed: ' + err.message;
+        errEl.classList.remove('hidden');
       }
-    }
+    };
 
-    if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
-      isAdminAuthenticated = true;
-      updateAdminLockUI();
-      showToast('Admin Panel Unlocked!', 'success');
-    }
-  } catch (err) {
-    errEl.textContent = 'Auth Error: ' + err.message;
-    errEl.classList.remove('hidden');
-  }
-};
+    window.handleAdminEmailLogin = async function (e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+      const pass = document.getElementById('adminPassInput').value;
+      const errEl = document.getElementById('adminLoginErrorMsg');
+      errEl.classList.add('hidden');
 
-window.handleAdminLogout = async function () {
+      if (email !== ADMIN_AUTHORIZED_EMAIL) {
+        errEl.textContent = 'Access Denied: Unauthorized admin credentials.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        let cred;
+        try {
+          cred = await signInWithEmailAndPassword(auth, email, pass);
+        } catch (signInErr) {
+          if (['auth/user-not-found', 'auth/invalid-credential', 'auth/wrong-password'].includes(signInErr.code)) {
+            try {
+              cred = await createUserWithEmailAndPassword(auth, email, pass);
+            } catch (createErr) {
+              throw signInErr;
+            }
+          } else {
+            throw signInErr;
+          }
+        }
+
+        if ((cred.user.email || '').toLowerCase() === ADMIN_AUTHORIZED_EMAIL) {
+          isAdminAuthenticated = true;
+          updateAdminLockUI();
+          showToast('Admin Panel Unlocked!', 'success');
+        }
+      } catch (err) {
+        errEl.textContent = 'Auth Error: ' + err.message;
+        errEl.classList.remove('hidden');
+      }
+    };
+
+    window.handleAdminLogout = async function () {
       try {
         await signOut(auth);
         isAdminAuthenticated = false;
@@ -1600,9 +1591,7 @@ window.handleAdminLogout = async function () {
           }
         }
         await pushStateToFirestore();
-      } catch (err) {
-        console.warn('Firestore sync notice:', err.message);
-      }
+      } catch (err) {}
     }
 
     async function pushStateToFirestore() {
@@ -1654,9 +1643,7 @@ window.handleAdminLogout = async function () {
             updatedAt: state.updatedAt
           }, { merge: true });
         }
-      } catch (err) {
-        console.warn('Firestore write notice:', err.message);
-      }
+      } catch (err) {}
     }
 
     function subscribeToFirestorePublicCities() {
@@ -1677,27 +1664,24 @@ window.handleAdminLogout = async function () {
             ...remoteList,
             ...COMMUNITY_SCHOLARS.filter(b => !seenIds.has(b.uniqueId))
           ];
-  <!-- Firebase v10.14.1 Modular SDK & App Engine -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithEmailAndPassword,
-      createUserWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      addDoc,
-      collection,
-      onSnapshot
-    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+          refreshAllUI();
+        });
+      } catch (e) {}
+    }
+
+    async function logAdminAction(actionDesc) {
+      const logEntry = `[${new Date().toLocaleTimeString()}] ADMIN: ${actionDesc}`;
+      state.auditLogs.unshift(logEntry);
+      persistLocalState();
+      if (!currentFirebaseUser) return;
+      try {
+        await addDoc(collection(db, 'admin_logs'), {
+          adminEmail: currentFirebaseUser.email,
+          description: actionDesc,
+          timestamp: Date.now()
+        });
+      } catch (e) {}
+    }
 
     // =========================================================================
     // 5. THREE.JS 3D CITY BUILDER
@@ -1885,7 +1869,6 @@ window.handleAdminLogout = async function () {
       const accentColor = new THREE.Color(b.accent || '#ffffff');
 
       const bodyMat = new THREE.MeshStandardMaterial({ color: mainColor, roughness: 0.35, metalness: 0.25 });
-      const glassMat = new THREE.MeshStandardMaterial({ color: 0xe0f2fe, emissive: 0x38bdf8, emissiveIntensity: 0.45, roughness: 0.15, metalness: 0.8 });
       const roofMat = new THREE.MeshStandardMaterial({ color: accentColor, roughness: 0.4, metalness: 0.3 });
 
       if (b.shape === 'house') {
@@ -1989,7 +1972,7 @@ window.handleAdminLogout = async function () {
     }
 
     // =========================================================================
-    // 6. 3D BUILDING STORE PREVIEWS
+    // 6. STORE PREVIEW SVGS
     // =========================================================================
     function generate3DBuildingPreviewSVG(b) {
       const c1 = b.color;
@@ -2020,7 +2003,7 @@ window.handleAdminLogout = async function () {
     }
 
     // =========================================================================
-    // 7. VERIFIED FOCUS ROOM
+    // 7. FOCUS ROOM
     // =========================================================================
     let timerState = {
       mode: 'pomodoro',
@@ -2256,7 +2239,7 @@ window.handleAdminLogout = async function () {
     };
 
     // =========================================================================
-    // 8. TILE INSPECTOR, CONSTRUCTION & SOCIAL REACTORS
+    // 8. TILE INSPECTOR & CONSTRUCTION
     // =========================================================================
     function countBuildings(cityObj) {
       return cityObj.grid.filter(c => Boolean(c.buildingId)).length;
@@ -2501,7 +2484,7 @@ window.handleAdminLogout = async function () {
     };
 
     // =========================================================================
-    // 9. STORE, BANK, ACHIEVEMENTS, EXPLORE WORLD & LEADERBOARDS
+    // 9. STORE, BANK, ACHIEVEMENTS & EXPLORE
     // =========================================================================
     function renderBuildingStore() {
       document.getElementById('storeBalanceDisplay').textContent = `${state.scBalance.toLocaleString()} SC`;
@@ -2896,7 +2879,7 @@ window.handleAdminLogout = async function () {
     };
 
     // =========================================================================
-    // 11. NAVIGATION & MASTER UI REFRESH
+    // 11. NAVIGATION & MASTER REFRESH
     // =========================================================================
     window.switchTab = function (tabName) {
       document.querySelectorAll('.tab-view').forEach(sec => sec.classList.add('hidden'));
